@@ -35,6 +35,6 @@ stdenv.mkDerivation {
   meta = with lib; {
     description = "RealTek RTL8188gu WiFi driver ";
     homepage = "https://github.com/McMCCRU/rtl8188gu";
-    broken = kernel.kernelAtLeast "5.15" || kernel.isHardened;
+    # broken = kernel.kernelAtLeast "5.15" || kernel.isHardened;
   };
 }

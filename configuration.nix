@@ -13,6 +13,10 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.extraModulePackages = [ 
+    (pkgs.callPackage ./pkgs/rtl8188gu { kernel = pkgs.linux; })
+    (pkgs.callPackage ./pkgs/rtl8821cu { kernel = pkgs.linux; })
+  ];
 
   # Enable flakes and gc
   nix = {
@@ -43,8 +47,22 @@
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
-  networking.useDHCP = false;
-  networking.interfaces.enp0s3.useDHCP = true;
+
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+  networking = {
+    hostName = "bluespace";
+    firewall.enable = false;
+    useDHCP = false;
+    interfaces.enp0s3.useDHCP = true;
+    networkmanager = {
+      enable = true;
+      dns = "dnsmasq";
+    };
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -99,28 +117,23 @@
     isNormalUser = true;
     initialHashedPassword = "emmm";
     home = "/home/adwin";
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
   };
 
   # Enable home manager
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.adwin = import ./home.nix;
+   useGlobalPkgs = true;
+   useUserPackages = true;
+   users.adwin = import ./home.nix;
   };
    
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    tree
-    git
     v2ray
     qv2ray
-    chromium 
-    ripgrep-all
-    ht-rust
   ];
  
   programs = {
@@ -236,18 +249,8 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-  networking = {
-    hostName = "tardis";
-    firewall.enable = false;
-    networkmanager.dns = "dnsmasq";
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
