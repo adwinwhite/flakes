@@ -80,6 +80,7 @@
 	set -g -x EDITOR nvim
         alias ls="exa"
         alias ll="exa -1la"
+        bind -e \cl
         eval (direnv hook fish)
       '';
       plugins = [
