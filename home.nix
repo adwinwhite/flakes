@@ -56,6 +56,14 @@
       enable = true;
       userName  = "Adwin White";
       userEmail = "adwinw01@gmail.com";
+      extraConfig = {
+        core = {
+          editor = "nvim";
+        };
+        init = {
+          defaultBranch = "main";
+        };
+      };
     };
     fish = {
       enable = true;
@@ -68,6 +76,18 @@
         alias ls="exa"
         alias ll="exa -1la"
       '';
+      plugins = [
+        {
+          name = "theme-budspencer";
+          src = pkgs.fetchFromGitHub {
+            owner = "oh-my-fish";
+            "repo" = "theme-budspencer";
+            "rev" = "835335af8e58dac22894fdd271d3b37789710be2";
+            "sha256" = "kzg1RMj2s2HPWqz9FX/fWQUCiWI65q6U8TcA0QajaX4=";
+            "fetchSubmodules" = true;
+          };
+        }
+      ];
     };
     alacritty = {
       enable = true;
