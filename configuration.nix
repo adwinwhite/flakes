@@ -19,6 +19,7 @@
   ];
 
   # Enable flakes and gc
+  nixpkgs.config.allowUnfree = true;
   nix = {
     package = pkgs.nixUnstable;
     extraOptions = ''

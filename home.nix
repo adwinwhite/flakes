@@ -37,6 +37,7 @@
     v2t
     fortran-language-server
     exa
+    zellij
   ];
 
   xdg.configFile."nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-c}/parser";
@@ -52,6 +53,10 @@
   xdg.configFile."nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
 
   programs = {
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true; 
+    };
     git = {
       enable = true;
       userName  = "Adwin White";
@@ -75,6 +80,7 @@
 	set -g -x EDITOR nvim
         alias ls="exa"
         alias ll="exa -1la"
+        eval (direnv hook fish)
       '';
       plugins = [
         {
