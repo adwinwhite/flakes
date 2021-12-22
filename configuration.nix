@@ -33,7 +33,7 @@
       dates = "weekly";
       options = "--delete-older-than 15";
     };
-    allowedUsers = [ "root" "adwin" ];
+    allowedUsers = [ "root" "adwin" "liugc" ];
     binaryCaches = [ 
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
       "https://mirrors.ustc.edu.cn/nix-channels/store" 
@@ -108,7 +108,7 @@
           # Public key of the peer (not a file path).
           publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
           # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          allowedIPs = [ "10.100.0.1/32" ];
+          allowedIPs = [ "10.100.0.0/24" ];
           endpoint = "47.100.1.192:11454";
           persistentKeepalive = 15;
         }
@@ -173,11 +173,19 @@
     shell = pkgs.fish;
   };
 
+  users.users.liugc = {
+    isNormalUser = true;
+    initialHashedPassword = "nohashedpw";
+    home = "/home/liugc";
+    shell = pkgs.bash;
+  };
+
   # Enable home manager
   home-manager = {
    useGlobalPkgs = true;
    useUserPackages = true;
    users.adwin = import ./home.nix;
+   users.liugc = import ./home-liugc.nix;
   };
    
 
@@ -186,6 +194,7 @@
   environment.systemPackages = with pkgs; [
     wireguard
     wireguard-tools
+    frp
     v2ray
     qv2ray
   ];
@@ -218,70 +227,70 @@
           # export MOZ_ENABLE_WAYLAND=1
         # '';
       # };
-      neovim = {
-        enable = true;
-        package = pkgs.neovim-nightly;
-        vimAlias = true;
-        viAlias = true;
-        defaultEditor = true;
-        configure = {
-          customRC = ''
-            set wildmode=longest,list,full
-            syntax on
-            set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
-            set backspace=indent,eol,start
-            set number
-            set showcmd
-            set ignorecase
-            set autoindent
-            set incsearch
-            set nowrap
-            set scrolloff=8
-            set sidescroll=1
-            set sidescrolloff=8
-            set cmdwinheight=1
-            set clipboard+=unnamedplus
-            
-            filetype plugin indent on
-            let g:tex_flavor = "latex"
-            
-            
-            " Custom mappings
-            let mapleader=";"
-            inoremap jj <Esc>
-            nnoremap : q:i
-            inoremap <C-s> <Esc>:w<CR>a
-            nnoremap <C-s> :w<CR>
+      # neovim = {
+        # enable = true;
+        # package = pkgs.neovim-nightly;
+        # vimAlias = true;
+        # viAlias = true;
+        # defaultEditor = true;
+        # configure = {
+          # customRC = ''
+            # set wildmode=longest,list,full
+            # syntax on
+            # set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+            # set backspace=indent,eol,start
+            # set number
+            # set showcmd
+            # set ignorecase
+            # set autoindent
+            # set incsearch
+            # set nowrap
+            # set scrolloff=8
+            # set sidescroll=1
+            # set sidescrolloff=8
+            # set cmdwinheight=1
+            # set clipboard+=unnamedplus
 
-             " Cycle through completions with tab
-            inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-            inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-            set completeopt=menuone,noinsert,noselect
-            set shortmess+=c
+            # filetype plugin indent on
+            # let g:tex_flavor = "latex"
 
-            " Nerd commenter
-            "
-            " Use compact syntax for prettified multi-line comments
-            let g:NERDCompactSexyComs = 1
-            " Add spaces after comment delimiters by default
-            let g:NERDSpaceDelims = 1
-            " Enable trimming of trailing whitespace when uncommenting
-            let g:NERDTrimTrailingWhitespace = 1
 
-            '';
-            packages.vim = {
-            start = with pkgs.vimPlugins; [
-              onedark-nvim
-              vim-airline
-              vim-airline-themes
-              nvim-lspconfig
-              completion-nvim
-              vim-nix
-              nerdcommenter
-            ];
-          };
-        };
-      };
+            # " Custom mappings
+            # let mapleader=";"
+            # inoremap jj <Esc>
+            # nnoremap : q:i
+            # inoremap <C-s> <Esc>:w<CR>a
+            # nnoremap <C-s> :w<CR>
+
+             # " Cycle through completions with tab
+            # inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+            # inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+            # set completeopt=menuone,noinsert,noselect
+            # set shortmess+=c
+
+            # " Nerd commenter
+            # "
+            # " Use compact syntax for prettified multi-line comments
+            # let g:NERDCompactSexyComs = 1
+            # " Add spaces after comment delimiters by default
+            # let g:NERDSpaceDelims = 1
+            # " Enable trimming of trailing whitespace when uncommenting
+            # let g:NERDTrimTrailingWhitespace = 1
+
+            # '';
+            # packages.vim = {
+            # start = with pkgs.vimPlugins; [
+              # onedark-nvim
+              # vim-airline
+              # vim-airline-themes
+              # nvim-lspconfig
+              # completion-nvim
+              # vim-nix
+              # nerdcommenter
+            # ];
+          # };
+        # };
+      # };
     };
 
 #   systemd.user.targets.sway-session = {
@@ -304,6 +313,21 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  systemd.services.frpc = {
+    enable = true;
+    description = "Frp client to expose ssh";
+    unitConfig = {
+      Type = "simple";
+    };
+    serviceConfig = {
+      ExecStart = "${pkgs.frp}/bin/frpc -c /etc/frp/frpc.ini";
+    };
+    wantedBy = [ "multi-user.target" ];
+    after = ["network.target"];
+  };
+  environment.etc = {
+    frp.source = /home/adwin/.config/frp;
+  };
 
 
   # This value determines the NixOS release from which the default
