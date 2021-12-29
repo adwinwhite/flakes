@@ -313,6 +313,11 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  environment.etc = {
+    frp.source = /home/adwin/.config/frp;
+  };
+
   systemd.services.frpc = {
     enable = true;
     description = "Frp client to expose ssh";
@@ -325,8 +330,17 @@
     wantedBy = [ "multi-user.target" ];
     after = ["network.target"];
   };
-  environment.etc = {
-    frp.source = /home/adwin/.config/frp;
+  systemd.services.netadapter = {
+    enable = true;
+    description = "rtl8188gu adapter usb mode switch";
+    unitConfig = {
+      Type = "oneshot";
+    };
+    serviceConfig = {
+      ExecStart = "${pkgs.usb-modeswitch}/bin/usb_modeswitch -KW -v 0bda -p 1a2b && ${pkgs.usb-modeswitch}/bin/usb_modeswitch -KW -v 0bda -p 1a2b";
+    };
+    wantedBy = [ "multi-user.target" ];
+    after = ["network.target"];
   };
 
 
