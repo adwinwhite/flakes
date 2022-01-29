@@ -51,7 +51,7 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
   networking = {
-    hostName = "tardis";
+    hostName = "vm";
     firewall.enable = false;
     useDHCP = false;
     networkmanager = {
@@ -182,8 +182,9 @@
   environment.systemPackages = with pkgs; [
     wireguard
     wireguard-tools
-    frp
     v2ray
+    v2t
+    # (pkgs.callPackage ./pkgs/cgproxy {})
   ];
  
   programs = {
@@ -207,7 +208,31 @@
   # environment.etc = {
     # frp.source = /home/adwin/.config/frp;
   # };
+  environment.etc = {
+    "v2ray/conf.d".source = ${pkgs.v2t}/conf.d;
+    "v2t.conf".source = /home/adwin/.config/v2t/v2t.conf;
+  };
 
+
+  systemd.services.v2ray = {
+    enable = true;
+    description = "V2Ray Service";
+    serviceConfig = {
+      Type = "exec";
+      DynamicUser = "yes";
+      Slice = "noproxy.slice";
+      MemoryMax = "1G";
+      CPUQuota = "200%";
+      AmbientCapabilities = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
+      NoNewPrivileges = "true";
+      Restart = "on-failure";
+      RestartPreventExitStatus = "23";
+      ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/06_outbounds.json -confdir /etc/v2ray/conf.d";
+    };
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" "nss-lookup.target" ];
+  };
+  
   # systemd.services.frpc = {
     # enable = true;
     # description = "Frp client to expose ssh";
