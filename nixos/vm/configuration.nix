@@ -209,8 +209,8 @@
     # frp.source = /home/adwin/.config/frp;
   # };
   environment.etc = {
-    "v2ray/conf.d".source = ${pkgs.v2t}/conf.d;
-    "v2t.conf".source = /home/adwin/.config/v2t/v2t.conf;
+    "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
+    "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
   };
 
 
