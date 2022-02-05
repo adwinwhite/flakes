@@ -32,6 +32,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     
   };
   outputs = inputs@{ self, nixpkgs, ... }: {
@@ -58,6 +63,25 @@
       system = "x86_64-linux";
       modules = [ 
         ./nixos/vm/configuration.nix
+        inputs.home-manager.nixosModules.home-manager
+        {
+          nixpkgs.overlays = [
+            inputs.neovim.overlay
+            inputs.nixpkgs-wayland.overlay
+            inputs.v2t.overlay
+            inputs.rust-overlay.overlay
+          ];
+          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+          nix.registry.p.flake = self;
+        }
+      ];
+      specialArgs = { inherit nixpkgs inputs; };
+    };
+    nixosConfigurations.tardis = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [ 
+        ./nixos/tardis/configuration.nix
+        inputs.sops-nix.nixosModules.sops
         inputs.home-manager.nixosModules.home-manager
         {
           nixpkgs.overlays = [
