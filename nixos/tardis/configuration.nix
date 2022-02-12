@@ -70,7 +70,7 @@
       enable = true;
       dns = "dnsmasq";
     };
-    proxy.default = "http://192.168.2.16:10809";
+    # proxy.default = "http://192.168.2.99:10809";
   };
 
   # enable NAT
