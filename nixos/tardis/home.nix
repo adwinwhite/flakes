@@ -6,7 +6,6 @@
     htop
     lsof
     wlroots
-    kanshi
     wofi
     wl-clipboard
     clipman
@@ -75,6 +74,34 @@
         { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
         { event = "before-sleep"; command = "${pkgs.swaylock}/bin/swaylock; playerctl pause"; }
       ];
+    };
+    kanshi = {
+      enable = true;
+      profiles = {
+        undocked = {
+          outputs = [
+            {
+              criteria = "eDP-1";
+            }
+          ];
+        };
+        docked = {
+          outputs = [
+            {
+              criteria = "eDP-1";
+              status = "disable";
+            }
+            {
+              criteria = "Dell Inc. DELL U2719DS G67VLS2";
+              scale = 1.0;
+              status = "enable";
+              mode = "2560x1440@59.951Hz";
+              position = "0,0";
+              transform = "normal";
+            }
+          ];
+        };
+      };
     };
   };
 
