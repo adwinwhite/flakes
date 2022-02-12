@@ -79,6 +79,11 @@
 
 
   programs = {
+    broot = {
+      enable = true;
+      enableFishIntegration = true;
+      modal = true;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true; 
@@ -177,6 +182,17 @@
           "${mod}+t" = "exec ${pkgs.tdesktop}/bin/telegram-desktop";
           "${mod}+g" = "splith";
           "${mod}+h" = "focus left";
+          "Ctrl+F1"  = "workspace number 1";
+          "Ctrl+F2"  = "workspace number 2";
+          "Ctrl+F3"  = "workspace number 3";
+          "Ctrl+F4"  = "workspace number 4";
+          "Ctrl+F5"  = "workspace number 5";
+          "Ctrl+F6"  = "workspace number 6";
+          "Ctrl+F7"  = "workspace number 7";
+          "Ctrl+F8"  = "workspace number 8";
+          "Ctrl+F9"  = "workspace number 9";
+          "${mod}+1" = ''exec "swaymsg [app_id=\"Alacritty\" workspace=\"__focused__\"] focus || swaymsg exec alacritty"'';
+          "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium"'';
         };
         colors = {
           focused = {
