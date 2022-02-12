@@ -5,8 +5,8 @@ up = ""
 left_down = ""
 right_down = ""
 down = ""
-left = "wtype -M ctrl -M shift -P tab"
-right = "wtype -M ctrl -P tab"
+left = "wtype -M ctrl -M shift -P tab -p tab -m shift -m ctrl"
+right = "wtype -M ctrl -P tab -p tab -m ctrl"
 
 [swipe.commands.four]
 left_up = ""
