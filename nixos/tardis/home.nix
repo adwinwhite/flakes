@@ -50,7 +50,7 @@
   xdg = {
     enable = true;
     configFile = {
-      "gebaar/gebaar.toml".text = builtins.readFile ./gebaar.toml;
+      "gebaar/gebaard.toml".text = builtins.readFile ./gebaard.toml;
       "nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-c}/parser";
       "nvim/parser/cpp.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-cpp}/parser";
       "nvim/parser/lua.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-lua}/parser";
@@ -69,8 +69,9 @@
     services = {
       gebaar = {
         Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.gebaar-libinput}/bin/gebaard -b";
+          Type = "simple";
+          ExecStart = "${pkgs.gebaar-libinput}/bin/gebaard";
+          Restart = "on-failure";
         };
         Install.WantedBy = [ "sway-session.target" ];
       };
