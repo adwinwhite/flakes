@@ -65,6 +65,19 @@
     };
   };
 
+  services = {
+    swayidle = {
+      enable = true;
+      timeouts = [
+        { timeout = 5; command = ''if pgrep -x swaylock; then swaymsg "output * dpms off"; fi''; resumeCommand = ''swaymsg "output * dpms on"''; }
+      ];
+      events = [
+        { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
+        { event = "before-sleep"; command = "${pkgs.swaylock}/bin/swaylock; playerctl pause"; }
+      ];
+    };
+  };
+
   systemd.user = {
     services = {
       gebaar = {
@@ -194,6 +207,8 @@
           "Ctrl+F9"  = "workspace number 9";
           "${mod}+1" = ''exec "swaymsg [app_id=\"Alacritty\" workspace=\"__focused__\"] focus || swaymsg exec alacritty"'';
           "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium"'';
+          "${mod}+0" = "exec swaylock";
+          "${mod}+Shift+0" = "exec systemctl suspend";
         };
         colors = {
           focused = {
