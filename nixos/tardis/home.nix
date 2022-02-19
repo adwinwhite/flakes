@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    light
+    helix
     drill
     socat
     htop
@@ -44,6 +46,7 @@
     rage
     sops
     tdesktop
+    qv2ray
   ];
 
   xdg = {
@@ -170,6 +173,26 @@
     };
     alacritty = {
       enable = true;
+      settings = {
+        font = {
+          normal = {
+            family = "Source Code Pro for Powerline";
+            style = "Regular";
+          };
+          bold = {
+            family = "Source Code Pro for Powerline";
+            style = "Bold";
+          };
+          italic = {
+            family = "Source Code Pro for Powerline";
+            style = "Italic";
+          };
+          bold_italic = {
+            family = "Source Code Pro for Powerline";
+            style = "Bold Italic";
+          };
+        };
+      };
     };
     neovim = import ./neovim.nix { 
       inherit pkgs;
