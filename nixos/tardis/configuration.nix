@@ -14,6 +14,27 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  virtualisation.virtualbox.host.enable = true;
+
+  fonts = {
+    fonts = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      # (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    ];
+    fontconfig = {
+      enable = true;
+      allowBitmaps = false;
+      antialias = true;
+      hinting = {
+        enable = true;
+        autohint = false;
+      };
+      subpixel.rgba = "rgb";
+    };
+  };
+
   sops = {
     defaultSopsFile = ./secrets.yaml;
     age = {
@@ -66,11 +87,18 @@
     hostName = "tardis";
     firewall.enable = false;
     useDHCP = false;
+    nat = {
+      enable = true;
+      internalInterfaces = ["ve-+"];
+      externalInterface = "wlp2s0";
+    };
     networkmanager = {
       enable = true;
       dns = "dnsmasq";
+      unmanaged = [ "interface-name:ve-*" ];
     };
-    # proxy.default = "http://192.168.2.99:10809";
+    proxy.default = "http://127.0.0.1:10809";
+    proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   };
 
   # enable NAT
@@ -85,7 +113,7 @@
     # # "wg0" is the network interface name. You can name the interface arbitrarily.
     # wg0 = {
       # # Determines the IP address and subnet of the server's end of the tunnel interface.
-      # ips = [ "10.100.0.3/24" ];
+      # ips = [ "10.100.0.1/24" ];
 
       # # The port that WireGuard listens to. Must be accessible by the client.
       # # listenPort = 51820;
@@ -93,13 +121,13 @@
       # # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
       # # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
       # postSetup = ''
-        # ${pkgs.iptables}/bin/iptables -A FORWARD -o wlp0s20u11 -j ACCEPT
+        # ${pkgs.iptables}/bin/iptables -A FORWARD -o wlp2s0 -j ACCEPT
         # ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
       # '';
 
       # # This undoes the above command
       # postShutdown = ''
-        # ${pkgs.iptables}/bin/iptables -D FORWARD -o wlp0s20u11 -j ACCEPT
+        # ${pkgs.iptables}/bin/iptables -D FORWARD -o wlp2s0 -j ACCEPT
         # ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
       # '';
 
@@ -180,6 +208,8 @@
     extraGroups = [ "wheel" "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
   };
+
+  users.extraGroups.vboxusers.members = [ "adwin" ];
 
 
   # Enable home manager
