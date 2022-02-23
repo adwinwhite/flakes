@@ -110,7 +110,7 @@
     };
     networkmanager = {
       enable = true;
-      # dns = "dnsmasq";
+      dns = "dnsmasq";
       unmanaged = [ "interface-name:ve-*" ];
     };
     proxy.default = "http://127.0.0.1:10809";
@@ -129,7 +129,7 @@
     # "wg0" is the network interface name. You can name the interface arbitrarily.
     wg0 = {
       # Determines the IP address and subnet of the server's end of the tunnel interface.
-      ips = [ "10.100.0.1/24" ];
+      ips = [ "10.100.0.2/24" ];
 
       # The port that WireGuard listens to. Must be accessible by the client.
       # listenPort = 51820;
