@@ -1,16 +1,17 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    wezterm
-    bind
+    nmap
+    # mach-nix
+    wezterm    
+    bind         # dnsutils like dig
     appimage-run
-    conda
     cmake
     gnumake
     gh
     unzip
     zip
-    light
+    light        # brightness control
     helix
     socat
     htop
@@ -24,7 +25,7 @@
     tree
     ripgrep
     ripgrep-all
-    ht-rust
+    ht-rust        # xh: curl in rust
     chromium 
     file
     trash-cli
@@ -37,8 +38,8 @@
     rust-analyzer
     clang
     gopls
-    delve
-    tealdeer
+    delve           # go debugger
+    tealdeer        # tldr: brief command help
     graphviz
     rust-bin.stable.latest.default
     poetry
@@ -47,11 +48,11 @@
     exa
     zellij
     powerline-fonts
-    wtype
-    gebaar-libinput
+    wtype           # simulate key events
+    gebaar-libinput # touchpad gestures on wayland
     killall
-    fd
-    rage
+    fd              # find in rust
+    rage            # age in rust
     sops
     tdesktop
     qv2ray
@@ -272,8 +273,8 @@
           "Ctrl+F7"  = "workspace number 7";
           "Ctrl+F8"  = "workspace number 8";
           "Ctrl+F9"  = "workspace number 9";
-          "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm"'';
-          "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium"'';
+          "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm; swaymsg fullscreen enable"'';
+          "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
           "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" $HOME/Pictures/screenshot-$(date +\"%Y-%m-%d-%H-%M-%S\").png";
