@@ -37,6 +37,11 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    berberman = {
+      url = "github:berberman/flakes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     
   };
   outputs = inputs@{ self, nixpkgs, ... }: {
@@ -89,6 +94,7 @@
             inputs.nixpkgs-wayland.overlay
             inputs.v2t.overlay
             inputs.rust-overlay.overlay
+            inputs.berberman.overlay
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;

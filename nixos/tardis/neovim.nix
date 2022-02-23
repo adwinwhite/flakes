@@ -38,13 +38,13 @@
       set termguicolors
     endif
     " Fold
-    " set foldmethod=syntax
+    set foldmethod=syntax
     set foldlevel=2
     set foldnestmax=2
     " set foldclose=all
     " hi Folded ctermbg=242
-    set foldmethod=expr
-    set foldexpr=nvim_treesitter#foldexpr()
+    " set foldmethod=expr
+    " set foldexpr=nvim_treesitter#foldexpr()
     
     
     " Custom mappings
@@ -107,11 +107,11 @@
         };
       }
     }
-    require'nvim-treesitter.configs'.setup {
-      highlight = {
-        enable = true,             
-      },
-    }
+    -- require'nvim-treesitter.configs'.setup {
+    --   highlight = {
+    --     enable = true,             
+    --   },
+    -- }
     local actions = require('telescope.actions')
     require('telescope').setup{
       defaults = {
@@ -191,7 +191,7 @@
     vim-airline
     vim-airline-themes
     nvim-lspconfig
-    nvim-treesitter
+    # nvim-treesitter
     completion-nvim
     telescope-nvim
     completion-buffers

@@ -1,9 +1,17 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    wezterm
+    bind
+    appimage-run
+    conda
+    cmake
+    gnumake
+    gh
+    unzip
+    zip
     light
     helix
-    drill
     socat
     htop
     lsof
@@ -53,6 +61,7 @@
     enable = true;
     configFile = {
       "gebaar/gebaard.toml".text = builtins.readFile ./gebaard.toml;
+      "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
       "nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-c}/parser";
       "nvim/parser/cpp.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-cpp}/parser";
       "nvim/parser/lua.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-lua}/parser";
@@ -68,6 +77,9 @@
   };
 
   services = {
+    flameshot = {
+      enable = true;
+    };
     swayidle = {
       enable = true;
       timeouts = [
@@ -225,6 +237,11 @@
     };
     extraSessionCommands = ''
       export WLR_NO_HARDWARE_CURSORS=1
+      export SDL_VIDEODRIVER=wayland
+      export _JAVA_AWT_WM_NONREPARENTING=1
+      export QT_QPA_PLATFORM=wayland
+      export XDG_CURRENT_DESKTOP=sway
+      export XDG_SESSION_DESKTOP=sway
     '';
     config = {
       gaps = {
@@ -232,7 +249,7 @@
       };
       modifier = "Mod4";
       menu = "${pkgs.wofi}/bin/wofi";
-      terminal = "${pkgs.alacritty}/bin/alacritty";
+      terminal = "${pkgs.wezterm}/bin/wezterm";
       keybindings =
         let
           mod = config.wayland.windowManager.sway.config.modifier;
@@ -255,10 +272,11 @@
           "Ctrl+F7"  = "workspace number 7";
           "Ctrl+F8"  = "workspace number 8";
           "Ctrl+F9"  = "workspace number 9";
-          "${mod}+1" = ''exec "swaymsg [app_id=\"Alacritty\" workspace=\"__focused__\"] focus || swaymsg exec alacritty"'';
+          "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm"'';
           "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
+          "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" $HOME/Pictures/screenshot-$(date +\"%Y-%m-%d-%H-%M-%S\").png";
         };
         colors = {
           focused = {
@@ -320,8 +338,9 @@
       };
       startup = [
         { command = "exec ${pkgs.wl-clipboard}/bin/wl-paste -p -t test --watch clipman store -P -- histpath=\"/tmp/clipman-primary.json\""; }
+        { command = "exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
+        { command = "exec hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
         # { command = "${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY DBUS_SESSION_BUS_ADDRESS SWAYSOCK XDG_SESSION_TYPE XDG_SESSION_DESKTOP XDG_CURRENT_DESKTOP"; } #workaround
-        # { command = "${pkgs.alacritty}/bin/alacritty"; }
       ];
     };
   };
