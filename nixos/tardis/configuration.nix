@@ -14,6 +14,18 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    inputMethod = {
+      enabled = "fcitx5";
+      fcitx5.addons = with pkgs; [
+        # fcitx5-rime
+        fcitx5-chinese-addons
+        # fcitx5-pinyin-zhwiki
+      ];
+    };
+  };
+
   virtualisation.virtualbox.host.enable = true;
 
   fonts = {
@@ -40,6 +52,9 @@
     age = {
       keyFile = "/var/lib/sops.key";
     };
+    secrets = {
+      wireguard_private = {};
+    };
   };
 
   # Enable flakes and gc
@@ -63,11 +78,12 @@
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
         "https://mirrors.ustc.edu.cn/nix-channels/store" 
         "https://nixpkgs-wayland.cachix.org"
+        "https://berberman.cachix.org"
       ];
       builders-use-substitutes = true;
       auto-optimise-store = true;
       trusted-users = [ "root" "adwin" ];
-      trusted-public-keys = [ "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" ];
+      trusted-public-keys = [ "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds=" ];
     };
   };
 
@@ -94,7 +110,7 @@
     };
     networkmanager = {
       enable = true;
-      dns = "dnsmasq";
+      # dns = "dnsmasq";
       unmanaged = [ "interface-name:ve-*" ];
     };
     proxy.default = "http://127.0.0.1:10809";
@@ -109,55 +125,55 @@
     # allowedUDPPorts = [ 51820 ];
   # };
 
-  # networking.wireguard.interfaces = {
-    # # "wg0" is the network interface name. You can name the interface arbitrarily.
-    # wg0 = {
-      # # Determines the IP address and subnet of the server's end of the tunnel interface.
-      # ips = [ "10.100.0.1/24" ];
+  networking.wireguard.interfaces = {
+    # "wg0" is the network interface name. You can name the interface arbitrarily.
+    wg0 = {
+      # Determines the IP address and subnet of the server's end of the tunnel interface.
+      ips = [ "10.100.0.1/24" ];
 
-      # # The port that WireGuard listens to. Must be accessible by the client.
-      # # listenPort = 51820;
+      # The port that WireGuard listens to. Must be accessible by the client.
+      # listenPort = 51820;
 
-      # # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-      # # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-      # postSetup = ''
-        # ${pkgs.iptables}/bin/iptables -A FORWARD -o wlp2s0 -j ACCEPT
-        # ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-      # '';
+      # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
+      # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
+      postSetup = ''
+        ${pkgs.iptables}/bin/iptables -A FORWARD -o wlp2s0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+      '';
 
-      # # This undoes the above command
-      # postShutdown = ''
-        # ${pkgs.iptables}/bin/iptables -D FORWARD -o wlp2s0 -j ACCEPT
-        # ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
-      # '';
+      # This undoes the above command
+      postShutdown = ''
+        ${pkgs.iptables}/bin/iptables -D FORWARD -o wlp2s0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
+      '';
 
-      # # Path to the private key file.
-      # #
-      # # Note: The private key can also be included inline via the privateKey option,
-      # # but this makes the private key world-readable; thus, using privateKeyFile is
-      # # recommended.
-      # privateKeyFile = "/home/adwin/.wireguard/prikey";
+      # Path to the private key file.
+      #
+      # Note: The private key can also be included inline via the privateKey option,
+      # but this makes the private key world-readable; thus, using privateKeyFile is
+      # recommended.
+      privateKeyFile = config.sops.secrets.wireguard_private.path;
 
-      # peers = [
-        # # List of allowed peers.
-        # { # Feel free to give a meaning full name
-          # # Public key of the peer (not a file path).
-          # publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
-          # # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          # allowedIPs = [ "10.100.0.0/24" ];
-          # endpoint = "47.100.1.192:11454";
-          # persistentKeepalive = 15;
-        # }
-      # ];
-    # };
-  # };
+      peers = [
+        # List of allowed peers.
+        { # Feel free to give a meaning full name
+          # Public key of the peer (not a file path).
+          publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
+          # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+          allowedIPs = [ "10.100.0.0/24" ];
+          endpoint = "47.100.1.192:11454";
+          persistentKeepalive = 15;
+        }
+      ];
+    };
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  # i18n.defaultLocale = "en_US.UTF-8";
   # console = {
   #   font = "Lat2-Terminus16";
   #   keyMap = "us";
