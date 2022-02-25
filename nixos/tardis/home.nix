@@ -80,6 +80,11 @@
   services = {
     flameshot = {
       enable = true;
+      settings = {
+        General = {
+          savePathFixed = true;
+        };
+      };
     };
     swayidle = {
       enable = true;
@@ -136,6 +141,14 @@
 
 
   programs = {
+    vscode = {
+      enable = true;
+      package = pkgs.vscodium;    # You can skip this if you want to use the unfree version
+      # extensions = with pkgs.vscode-extensions; [
+        # # Some example extensions...
+        # # vscodevim.vim
+      # ];
+    };
     broot = {
       enable = true;
       enableFishIntegration = true;
@@ -277,7 +290,8 @@
           "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
-          "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" $HOME/Pictures/screenshot-$(date +\"%Y-%m-%d-%H-%M-%S\").png";
+          "Print" = "exec flameshot gui";
+          "Shift+Print" = "exec flameshot full";
         };
         colors = {
           focused = {
@@ -338,9 +352,9 @@
         hideEdgeBorders = "smart";
       };
       startup = [
-        { command = "exec ${pkgs.wl-clipboard}/bin/wl-paste -p -t test --watch clipman store -P -- histpath=\"/tmp/clipman-primary.json\""; }
-        { command = "exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
-        { command = "exec hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
+        { command = "${pkgs.wl-clipboard}/bin/wl-paste -p -t test --watch clipman store -P -- histpath=\"/tmp/clipman-primary.json\""; }
+        { command = "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
+        { command = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
         # { command = "${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY DBUS_SESSION_BUS_ADDRESS SWAYSOCK XDG_SESSION_TYPE XDG_SESSION_DESKTOP XDG_CURRENT_DESKTOP"; } #workaround
       ];
     };
