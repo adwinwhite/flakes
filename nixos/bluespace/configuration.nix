@@ -63,6 +63,8 @@
       enable = true;
       dns = "dnsmasq";
     };
+    proxy.default = "http://127.0.0.1:10809";
+    proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   };
 
   # enable NAT
@@ -197,6 +199,8 @@
     frp
     v2ray
     qv2ray
+    bind
+    lsof
   ];
  
   programs = {
@@ -316,6 +320,7 @@
 
   environment.etc = {
     frp.source = /home/adwin/.config/frp;
+    "v2ray/config.json".text = builtins.readFile ./v2ray.json;
   };
 
   systemd.services.frpc = {
@@ -330,6 +335,7 @@
     wantedBy = [ "multi-user.target" ];
     after = ["network.target"];
   };
+
   systemd.services.netadapter = {
     enable = true;
     description = "rtl8188gu adapter usb mode switch";
@@ -341,6 +347,16 @@
     };
     wantedBy = [ "multi-user.target" ];
     after = ["network.target"];
+  };
+
+  systemd.services.v2ray = {
+    description = "a platform for building proxies to bypass network restrictions";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      DynamicUser = true;
+      ExecStart = "${pkgs.v2ray}/bin/v2ray run";
+    };
   };
 
 

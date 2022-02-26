@@ -1,11 +1,11 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    nmap
+    # nmap
     # mach-nix
     wezterm    
     bind         # dnsutils like dig
-    appimage-run
+    # appimage-run
     cmake
     gnumake
     gh

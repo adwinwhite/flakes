@@ -184,11 +184,12 @@
 
   # Enable the X11 windowing system.
   services = {
-    logind = {
-        extraConfig = ''
-          HandleLidSwitch=ignore
-        '';
-    };
+    logind.lidSwitch = "ignore";
+    # logind = {
+        # extraConfig = ''
+          # HandleLidSwitch=ignore
+        # '';
+    # };
     xserver = {
       enable = true;
       layout = "us";
@@ -197,7 +198,16 @@
         sddm.enable = true;
       };
     };
+
+    tlp = {
+      enable = true;
+      extraConfig = ''
+        CPU_SCALING_GOVERNOR_ON_AC=performance
+        CPU_SCALING_GOVERNOR_ON_BAT=powersave
+      '';
+    };
   };
+
   xdg = {
     portal = {
       enable = true;
