@@ -288,6 +288,7 @@
           "Ctrl+F9"  = "workspace number 9";
           "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm; swaymsg fullscreen enable"'';
           "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
+          "${mod}+3" = ''exec "swaymsg [class=\"VSCodium\" workspace=\"__focused__\"] focus || swaymsg exec vscodium; swaymsg fullscreen enable"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
           "Print" = "exec flameshot gui";

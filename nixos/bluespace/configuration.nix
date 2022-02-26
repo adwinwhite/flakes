@@ -14,8 +14,8 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.extraModulePackages = [ 
-    (pkgs.callPackage ./pkgs/rtl8188gu { kernel = pkgs.linux; })
-    (pkgs.callPackage ./pkgs/rtl8821cu { kernel = pkgs.linux; })
+    (pkgs.callPackage ../../pkgs/rtl8188gu { kernel = pkgs.linux; })
+    (pkgs.callPackage ../../pkgs/rtl8821cu { kernel = pkgs.linux; })
   ];
 
   # Enable flakes and gc
