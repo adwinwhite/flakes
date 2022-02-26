@@ -27,19 +27,26 @@
       keep-outputs = true
       keep-derivations = true
     '';
-    autoOptimiseStore = true;
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 15";
     };
-    allowedUsers = [ "root" "adwin" "liugc" ];
-    binaryCaches = [ 
-      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
-      "https://mirrors.ustc.edu.cn/nix-channels/store" 
-      "https://cache.nixos.org/" 
-      # "https://nixpkgs-wayland.cachix.org"
-    ];
+  };
+  nix = {
+    settings = {
+      substituters = pkgs.lib.mkBefore [
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
+        "https://mirrors.ustc.edu.cn/nix-channels/store" 
+        "https://nix-community.cachix.org"
+        "https://nixpkgs-wayland.cachix.org"
+        "https://berberman.cachix.org"
+      ];
+      builders-use-substitutes = true;
+      auto-optimise-store = true;
+      trusted-users = [ "root" "adwin" "liugc" ];
+      trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds=" ];
+    };
   };
 
   # Set your time zone.
