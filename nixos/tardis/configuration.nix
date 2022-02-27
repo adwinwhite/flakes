@@ -234,7 +234,7 @@
   # Enable sound.
   # sound.enable = true;
   # hardware.pulseaudio.enable = true;
-
+  sound.mediaKeys.enable = true;
   # rtkit is optional but recommended
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;

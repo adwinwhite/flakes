@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    ffmpeg
+    mpv
     # nmap
     # mach-nix
     wezterm    

@@ -362,7 +362,7 @@
     after = [ "network.target" ];
     serviceConfig = {
       DynamicUser = true;
-      ExecStart = "${pkgs.v2ray}/bin/v2ray run";
+      ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/config.json";
     };
   };
 
