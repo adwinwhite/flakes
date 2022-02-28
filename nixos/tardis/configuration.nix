@@ -238,11 +238,21 @@
   # rtkit is optional but recommended
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  pipewire = {
+      enable = true;
+      pulse.enable = true;
+      jack.enable = true;
+      wireplumber.enable = true;
+      media-session.enable = false;
+    };
   services.pipewire = {
     enable = true;
+    pulse.enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
-    pulse.enable = true;
+    jack.enable = true;
+    wireplumber.enable = true;
+    media-session.enable = false;
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
 
@@ -330,6 +340,8 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" "nss-lookup.target" ];
   };
+
+  systemd.services.NetworkManager-wait-online.enable = false;
   
   # systemd.services.frpc = {
     # enable = true;
