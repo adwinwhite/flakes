@@ -91,7 +91,7 @@
     swayidle = {
       enable = true;
       timeouts = [
-        { timeout = 5; command = ''if pgrep -x swaylock; then swaymsg "output * dpms off"; fi''; resumeCommand = ''swaymsg "output * dpms on"''; }
+        { timeout = 1; command = ''if pgrep -x swaylock; then swaymsg "output * dpms off"; fi''; resumeCommand = ''swaymsg "output * dpms on"''; }
       ];
       events = [
         { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
@@ -116,7 +116,7 @@
             }
             {
               criteria = "Dell Inc. DELL U2719DS G67VLS2";
-              scale = 1.0;
+              scale = 1.5;
               status = "enable";
               mode = "2560x1440@59.951Hz";
               position = "0,0";
@@ -273,6 +273,7 @@
         in
         lib.mkOptionDefault {
           "${mod}+Shift+q" = "exit";
+          "${mod}+Shift+r" = "exec systemctl --user restart kanshi.service";
           "${mod}+Return" = "exec ${cfg.terminal}";
           "${mod}+m" = "exec ${cfg.menu} -S drun";
           "${mod}+b" = "exec ${pkgs.chromium}/bin/chromium";
