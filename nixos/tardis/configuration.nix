@@ -238,13 +238,6 @@
   # rtkit is optional but recommended
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  pipewire = {
-      enable = true;
-      pulse.enable = true;
-      jack.enable = true;
-      wireplumber.enable = true;
-      media-session.enable = false;
-    };
   services.pipewire = {
     enable = true;
     pulse.enable = true;
@@ -294,6 +287,12 @@
     v2t
     # (pkgs.callPackage ./pkgs/cgproxy {})
   ];
+
+
+  environment.sessionVariables = {
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+  };
  
   programs = {
     sway.enable = true;
