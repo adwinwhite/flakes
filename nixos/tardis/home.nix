@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    firefox-wayland
+    wob          # bar for lightness and volumn
     ffmpeg
     mpv
     # nmap
@@ -23,12 +25,12 @@
     wl-clipboard
     clipman
     # i3status-rust
-    mako
+    mako           # notification daemon
     tree
     ripgrep
     ripgrep-all
     ht-rust        # xh: curl in rust
-    chromium 
+    # chromium
     file
     trash-cli
     usbutils
@@ -76,6 +78,9 @@
       "nvim/parser/go.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-go}/parser";
       "nvim/parser/markdown.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-markdown}/parser";
       "nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
+      "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
+      "chromium-flags.conf".text = "--ozone-platform-hint=auto\nenable-webrtc-pipewire-capturer=enabled";
+
     };
   };
 
@@ -138,11 +143,53 @@
         };
         Install.WantedBy = [ "sway-session.target" ];
       };
+
+      # wob = {
+        # Unit = {
+          # Description = "A lightweight overlay volume/backlight/progress/anything bar for Wayland";
+          # Documentation = [ "man:wob(1)" ];
+          # PartOf = [ "graphical-session.target" ];
+          # After = [ "graphical-session.target" ];
+          # ConditionEnvironment = [ "WAYLAND_DISPLAY" ];
+        # };
+        # Service = {
+          # StandardInput = "socket";
+          # ExecStart = "${pkgs.wob}/bin/wob";
+        # };
+        # Install.WantedBy = [ "graphical-session.target" ];
+      # };
     };
+
+    # sockets = {
+      # wob = {
+        # Socket = {
+          # ListenFIFO = "%t/wob.sock";
+          # SocketMode = "0600";
+        # };
+        # Install.WantedBy = [ "sockets.target" ];
+      # };
+    # };
   };
 
-
   programs = {
+    # firefox = {
+      # enable = true;
+      # package = pkgs.firefox-wayland;
+      # # package = pkgs.wrapFirefox pkgs.firefox-unwrapped {
+        # # forceWayland = true;
+        # # extraPolicies = {
+          # # # PasswordManagerEnabled = false;
+          # # # DisableFirefoxAccounts = true;
+          # # # DisablePocket = true;
+          # # EnableTrackingProtection = {
+            # # Value = true;
+            # # Locked = true;
+            # # Cryptomining = true;
+            # # Fingerprinting = true;
+          # # };
+        # # };
+      # # };
+    # };
     vscode = {
       enable = true;
       package = pkgs.vscodium;    # You can skip this if you want to use the unfree version
@@ -258,6 +305,7 @@
       export QT_QPA_PLATFORM=wayland
       export XDG_CURRENT_DESKTOP=sway
       export XDG_SESSION_DESKTOP=sway
+      export WOBSOCK=$XDG_RUNTIME_DIR/wob.sock
     '';
     config = {
       gaps = {
@@ -277,7 +325,7 @@
           "${mod}+Return" = "exec ${cfg.terminal}";
           "${mod}+m" = "exec ${cfg.menu} -S drun";
           "${mod}+b" = "exec ${pkgs.chromium}/bin/chromium";
-          "${mod}+t" = "exec ${pkgs.tdesktop}/bin/telegram-desktop";
+          "${mod}+t" = "layout tabbed";
           "${mod}+g" = "splith";
           "${mod}+h" = "focus left";
           "Ctrl+F1"  = "workspace number 1";
@@ -290,12 +338,19 @@
           "Ctrl+F8"  = "workspace number 8";
           "Ctrl+F9"  = "workspace number 9";
           "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm; swaymsg fullscreen enable"'';
-          "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
-          "${mod}+3" = ''exec "swaymsg [class=\"VSCodium\" workspace=\"__focused__\"] focus || swaymsg exec vscodium; swaymsg fullscreen enable"'';
+          # "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
+          # "${mod}+2" = ''exec "swaymsg [app_id=\"chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
+          "${mod}+2" = ''exec "swaymsg [app_id=\"firefox\" workspace=\"__focused__\"] focus || swaymsg exec firefox; swaymsg fullscreen enable"'';
+          "${mod}+3" = ''exec "swaymsg [class=\"VSCodium\" workspace=\"__focused__\"] focus || swaymsg exec codium; swaymsg fullscreen enable"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
           "Print" = "exec flameshot gui";
           "Shift+Print" = "exec flameshot full";
+          "XF86AudioRaiseVolume" = "exec amixer sset Master 5%+ | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioLowerVolume" = "exec amixer sset Master 5%- | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioMute" = "exec amixer sset Master toggle | sed -En '/\[on\]/ s/.*\[([0-9]+)%\].*/\1/ p; /\[off\]/ s/.*/0/p' | head -1 > $WOBSOCK";
+          "XF86MonBrightnessUp" = "exec light -A 5 && light -G | cut -d'.' -f1 > $WOBSOCK";
+          "XF86MonBrightnessDown" = "exec light -U 5 && light -G | cut -d'.' -f1 > $WOBSOCK";
         };
         colors = {
           focused = {
@@ -359,6 +414,7 @@
         { command = "${pkgs.wl-clipboard}/bin/wl-paste -p -t test --watch clipman store -P -- histpath=\"/tmp/clipman-primary.json\""; }
         { command = "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
         { command = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
+        { command = "mkfifo $WOBSOCK && tail -f $WOBSOCK | wob"; }
         # { command = "${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY DBUS_SESSION_BUS_ADDRESS SWAYSOCK XDG_SESSION_TYPE XDG_SESSION_DESKTOP XDG_CURRENT_DESKTOP"; } #workaround
       ];
     };
