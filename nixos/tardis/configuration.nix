@@ -196,7 +196,6 @@
       media-session.enable = false;
     };
 
-    blueman.enable = true;
 
     logind.lidSwitch = "ignore";
     # logind = {
