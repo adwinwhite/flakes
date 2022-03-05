@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    alsa-utils
+    blueberry
     firefox-wayland
     wob          # bar for lightness and volumn
     ffmpeg
@@ -172,6 +174,10 @@
   };
 
   programs = {
+    nix-index ={
+      enable = true;
+      enableFishIntegration = true;
+    };
     # firefox = {
       # enable = true;
       # package = pkgs.firefox-wayland;
@@ -346,9 +352,9 @@
           "${mod}+Shift+0" = "exec systemctl suspend";
           "Print" = "exec flameshot gui";
           "Shift+Print" = "exec flameshot full";
-          "XF86AudioRaiseVolume" = "exec amixer sset Master 5%+ | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK";
-          "XF86AudioLowerVolume" = "exec amixer sset Master 5%- | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK";
-          "XF86AudioMute" = "exec amixer sset Master toggle | sed -En '/\[on\]/ s/.*\[([0-9]+)%\].*/\1/ p; /\[off\]/ s/.*/0/p' | head -1 > $WOBSOCK";
+          "XF86AudioRaiseVolume" = "exec amixer sset Master 5%+ | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioLowerVolume" = "exec amixer sset Master 5%- | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioMute" = "exec amixer sset Master toggle | sed -En '/\\[on\\]/ s/.*\\[([0-9]+)%\\].*/\\1/ p; /\\[off\\]/ s/.*/0/p' | head -1 > $WOBSOCK";
           "XF86MonBrightnessUp" = "exec light -A 5 && light -G | cut -d'.' -f1 > $WOBSOCK";
           "XF86MonBrightnessDown" = "exec light -U 5 && light -G | cut -d'.' -f1 > $WOBSOCK";
         };
