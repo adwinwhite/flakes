@@ -184,20 +184,34 @@
 
   # Enable the X11 windowing system.
   services = {
+    openssh.enable = true;
+
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      jack.enable = true;
+      wireplumber.enable = true;
+      media-session.enable = false;
+    };
+
+    blueman.enable = true;
+
     logind.lidSwitch = "ignore";
     # logind = {
         # extraConfig = ''
           # HandleLidSwitch=ignore
         # '';
     # };
-    xserver = {
-      enable = true;
-      layout = "us";
-      displayManager = {
-        defaultSession = "sway";
-        sddm.enable = true;
-      };
-    };
+    # xserver = {
+      # enable = true;
+      # layout = "us";
+      # displayManager = {
+        # defaultSession = "sway";
+        # sddm.enable = true;
+      # };
+    # };
 
     tlp = {
       enable = true;
@@ -218,44 +232,12 @@
   };
 
 
-  # Enable the Plasma 5 Desktop Environment.
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.displayManager.sddm.defaultSession = "sway";
-  # services.xserver.desktopManager.plasma5.enable = true;
-  
-
-  # Configure keymap in X11
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = true;
-  sound.mediaKeys.enable = true;
+  hardware.bluetooth.enable = true;
+  # sound.mediaKeys.enable = true;
   # rtkit is optional but recommended
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    jack.enable = true;
-    wireplumber.enable = true;
-    media-session.enable = false;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
 
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -310,7 +292,6 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
 
   # environment.etc = {
     # frp.source = /home/adwin/.config/frp;
