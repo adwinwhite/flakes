@@ -23,9 +23,11 @@
     
     filetype plugin indent on
     let g:tex_flavor = "latex"
+
     " Airline
     let g:airline_powerline_fonts = 1
     let g:airline#extensions#tabline#enabled = 1
+
     " Color scheme
     let g:onedark_hide_endofbuffer = 1
     let g:onedark_terminal_italics = 1
@@ -38,13 +40,16 @@
       set termguicolors
     endif
     " Fold
-    set foldmethod=syntax
+    " set foldmethod=syntax
     set foldlevel=2
     set foldnestmax=2
     " set foldclose=all
     " hi Folded ctermbg=242
-    " set foldmethod=expr
-    " set foldexpr=nvim_treesitter#foldexpr()
+    set foldmethod=expr
+    set foldexpr=nvim_treesitter#foldexpr()
+
+    " Filetype-based configuration
+    autocmd FileType python setlocal tabstop=4 shiftwidth=4 expandtab
     
     
     " Custom mappings
@@ -171,6 +176,16 @@
             return {
               exe = "jq",
               stdin = true
+            }
+          end
+        },
+        python = {
+          -- Configuration for psf/black
+          function()
+            return {
+              exe = "black", -- this should be available on your $PATH
+              args = { '-' },
+              stdin = true,
             }
           end
         },
