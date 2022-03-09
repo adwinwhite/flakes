@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    black
     alsa-utils
     blueberry
     firefox-wayland
