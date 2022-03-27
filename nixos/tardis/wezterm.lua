@@ -41,6 +41,7 @@ table.insert(mykeys, {
 })
 
 return {
+  check_for_updates = false,
   enable_wayland = true,
   enable_scroll_bar = false,
   color_scheme = "Afterglow",

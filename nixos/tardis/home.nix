@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    firejail
     black
     alsa-utils
     blueberry
@@ -43,12 +44,12 @@
     rnix-lsp
     ccls
     rust-analyzer
-    clang
+    # clang
     gopls
     delve           # go debugger
     tealdeer        # tldr: brief command help
     graphviz
-    rust-bin.stable.latest.default
+    # rust-bin.stable.latest.default
     poetry
     v2t
     fortran-language-server
