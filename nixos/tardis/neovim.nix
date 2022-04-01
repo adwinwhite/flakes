@@ -135,7 +135,7 @@
     vim.api.nvim_set_keymap(
       "n",
       "<C-t>",
-      ":Telescope file_browser",
+      ":Telescope file_browser<cr>",
       { noremap = true }
     )
     require('formatter').setup({
