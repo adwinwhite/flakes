@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:adwinwhite/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
@@ -36,11 +36,13 @@
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     berberman = {
       url = "github:berberman/flakes";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
     
   };
@@ -95,6 +97,7 @@
             inputs.v2t.overlay
             inputs.rust-overlay.overlay
             inputs.berberman.overlay
+            (import ./overlays/sway/overlay.nix)
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;

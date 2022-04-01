@@ -19,11 +19,17 @@
     inputMethod = {
       enabled = "fcitx5";
       fcitx5.addons = with pkgs; [
-        # fcitx5-rime
         fcitx5-chinese-addons
-        # fcitx5-pinyin-zhwiki
+        fcitx5-pinyin-zhwiki
+        fcitx5-pinyin-moegirl
       ];
     };
+  };
+
+  environment.sessionVariables = {
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
   };
 
   virtualisation.virtualbox.host.enable = true;
@@ -262,7 +268,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wireguard
+    # wireguard
     wireguard-tools
     v2ray
     v2t
@@ -270,11 +276,6 @@
   ];
 
 
-  environment.sessionVariables = {
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-  };
- 
   programs = {
     sway.enable = true;
   };

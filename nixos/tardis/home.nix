@@ -332,10 +332,11 @@
           "${mod}+Shift+r" = "exec systemctl --user restart kanshi.service";
           "${mod}+Return" = "exec ${cfg.terminal}";
           "${mod}+m" = "exec ${cfg.menu} -S drun";
-          "${mod}+b" = "exec ${pkgs.chromium}/bin/chromium";
+          # "${mod}+b" = "exec ${pkgs.chromium}/bin/chromium";
           "${mod}+t" = "layout tabbed";
           "${mod}+g" = "splith";
           "${mod}+h" = "focus left";
+          "Alt+F4"   = "kill";
           "Ctrl+F1"  = "workspace number 1";
           "Ctrl+F2"  = "workspace number 2";
           "Ctrl+F3"  = "workspace number 3";
