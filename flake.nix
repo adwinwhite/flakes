@@ -48,6 +48,23 @@
   };
   outputs = inputs@{ self, nixpkgs, ... }: {
     nix.registry.nixpkgs.flake = nixpkgs;
+    nixosConfigurations.natsel = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [ 
+        ./nixos/natsel/configuration.nix
+        inputs.sops-nix.nixosModules.sops
+        inputs.home-manager.nixosModules.home-manager
+        {
+          nixpkgs.overlays = [
+            inputs.neovim.overlay
+            inputs.rust-overlay.overlay
+          ];
+          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+          nix.registry.p.flake = self;
+        }
+      ];
+      specialArgs = { inherit nixpkgs inputs; };
+    };
     nixosConfigurations.bluespace = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [ 

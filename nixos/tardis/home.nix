@@ -1,8 +1,11 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    firejail
-    black
+    xdg_utils    # to use xdg-open
+    zathura
+    texlab       # latex lsp
+    firejail     # sandbox untrusted executable
+    black        # code formatter for python
     alsa-utils
     blueberry
     firefox-wayland
@@ -16,16 +19,16 @@
     # appimage-run
     cmake
     gnumake
-    gh
+    gh           # github cli
     unzip
     zip
     light        # brightness control
-    helix
+    helix        # modal terminal editor in rust
     socat
     htop
     lsof
     wlroots
-    wofi
+    wofi           # application launcher
     wl-clipboard
     clipman
     # i3status-rust
@@ -40,12 +43,12 @@
     usbutils
     pciutils
     nix-prefetch-github
-    nodePackages.pyright
+    nodePackages.pyright # python lsp
     rnix-lsp
-    ccls
+    ccls            # c/c++ lsp
     rust-analyzer
     # clang
-    gopls
+    gopls           # go lsp
     delve           # go debugger
     tealdeer        # tldr: brief command help
     graphviz
@@ -176,6 +179,10 @@
   };
 
   programs = {
+    texlive = {
+      enable = true;
+      extraPackages = tpkgs: { inherit (tpkgs) scheme-full collection-langchinese ; };
+    };
     nix-index ={
       enable = true;
       enableFishIntegration = true;
@@ -355,8 +362,8 @@
           "${mod}+Shift+0" = "exec systemctl suspend";
           "Print" = "exec flameshot gui";
           "Shift+Print" = "exec flameshot full";
-          "XF86AudioRaiseVolume" = "exec amixer sset Master 5%+ | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
-          "XF86AudioLowerVolume" = "exec amixer sset Master 5%- | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioRaiseVolume" = "exec amixer sset Master 1%+ | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
+          "XF86AudioLowerVolume" = "exec amixer sset Master 1%- | sed -En 's/.*\\[([0-9]+)%\\].*/\\1/p' | head -1 > $WOBSOCK";
           "XF86AudioMute" = "exec amixer sset Master toggle | sed -En '/\\[on\\]/ s/.*\\[([0-9]+)%\\].*/\\1/ p; /\\[off\\]/ s/.*/0/p' | head -1 > $WOBSOCK";
           "XF86MonBrightnessUp" = "exec light -A 5 && light -G | cut -d'.' -f1 > $WOBSOCK";
           "XF86MonBrightnessDown" = "exec light -U 5 && light -G | cut -d'.' -f1 > $WOBSOCK";

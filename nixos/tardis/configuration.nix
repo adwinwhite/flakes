@@ -126,14 +126,6 @@
     proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   };
 
-  # enable NAT
-  # networking.nat.enable = true;
-  # networking.nat.externalInterface = "wlp0s20u11";
-  # networking.nat.internalInterfaces = [ "wg0" ];
-  # networking.firewall = {
-    # allowedUDPPorts = [ 51820 ];
-  # };
-
   networking.wireguard.interfaces = {
     # "wg0" is the network interface name. You can name the interface arbitrarily.
     wg0 = {
