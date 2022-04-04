@@ -43,16 +43,16 @@
     };
   };
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    age = {
-      # keyFile = "/var/lib/sops.key";
-      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    };
-    secrets = {
-      wireguard_private = {};
-    };
-  };
+  # sops = {
+    # defaultSopsFile = ./secrets.yaml;
+    # age = {
+      # # keyFile = "/var/lib/sops.key";
+      # sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    # };
+    # secrets = {
+      # wireguard_private = {};
+    # };
+  # };
 
   time.timeZone = "Asia/Shanghai";
 
@@ -100,7 +100,8 @@
         # Note: The private key can also be included inline via the privateKey option,
         # but this makes the private key world-readable; thus, using privateKeyFile is
         # recommended.
-        privateKeyFile = config.sops.secrets.wireguard_private.path;
+        # privateKeyFile = config.sops.secrets.wireguard_private.path;
+        privateKeyFile = "/home/adwin/.config/privatekey";
 
         peers = [
           # List of allowed peers.
@@ -174,13 +175,13 @@
   services.openssh.enable = true;
 
   environment.etc = {
-    frp.source = ./frps.ini;
+    "frp/frps.ini".source = ./frps.ini;
     "v2ray/config.json".text = builtins.readFile ./v2ray.json;
   };
 
-  systemd.services.frpc = {
+  systemd.services.frps = {
     enable = true;
-    description = "Frp client to expose ssh";
+    description = "Frp server to expose ssh";
     unitConfig = {
       Type = "simple";
     };
