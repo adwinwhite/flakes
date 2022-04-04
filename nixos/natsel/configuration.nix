@@ -43,17 +43,28 @@
     };
   };
 
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age = {
+      # keyFile = "/var/lib/sops.key";
+      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    };
+    secrets = {
+      wireguard_private = {};
+    };
+  };
+
   time.timeZone = "Asia/Shanghai";
 
-  networking = {
+  networking = rec {
     hostName = "natsel";
     firewall.enable = false;
     useDHCP = false;
-    # nat = {
-      # enable = true;
-      # internalInterfaces = ["wg0"];
-      # externalInterface = "wlp2s0";
-    # };
+    nat = {
+      enable = true;
+      internalInterfaces = ["wg0"];
+      externalInterface = "ens5";
+    };
     networkmanager = {
       enable = true;
       dns = "dnsmasq";
@@ -61,60 +72,63 @@
     };
     # proxy.default = "http://127.0.0.1:10809";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+    wireguard.interfaces = {
+      # "wg0" is the network interface name. You can name the interface arbitrarily.
+      wg0 = {
+        # Determines the IP address and subnet of the server's end of the tunnel interface.
+        ips = [ "10.100.0.5/24" ];
+
+        # The port that WireGuard listens to. Must be accessible by the client.
+        listenPort = 11454;
+
+        # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
+        # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
+        postSetup = ''
+          ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # This undoes the above command
+        postShutdown = ''
+          ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # Path to the private key file.
+        #
+        # Note: The private key can also be included inline via the privateKey option,
+        # but this makes the private key world-readable; thus, using privateKeyFile is
+        # recommended.
+        privateKeyFile = config.sops.secrets.wireguard_private.path;
+
+        peers = [
+          # List of allowed peers.
+          { # Feel free to give a meaning full name
+            # Public key of the peer (not a file path).
+            publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
+            # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+            allowedIPs = [ "10.100.0.1/32" ];
+            endpoint = "47.100.1.192:11454";
+            persistentKeepalive = 15;
+          }
+          {
+            publicKey = "z6PC2Yg6fJezEOnyv14hVLRanhP0DNSBUzdYfLdZ+V0=";
+            allowedIPs = [ "10.100.0.2/32" ];
+          }
+          {
+            publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
+            allowedIPs = [ "10.100.0.3/32" ];
+          }
+          {
+            publicKey = "EQUXNOSDvMjV42cF+WXZYM+6+rMAkswgponGvSQMzgI=";
+            allowedIPs = [ "10.100.0.4/32" ];
+          }
+        ];
+      };
+    };
   };
 
-  # networking.wireguard.interfaces = {
-    # # "wg0" is the network interface name. You can name the interface arbitrarily.
-    # wg0 = {
-      # # Determines the IP address and subnet of the server's end of the tunnel interface.
-      # ips = [ "10.100.0.5/24" ];
-
-      # # The port that WireGuard listens to. Must be accessible by the client.
-      # listenPort = 11454;
-
-      # # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-      # # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-      # postSetup = ''
-        # ${pkgs.iptables}/bin/iptables -A FORWARD -o ${networking.nat.externalInterface} -j ACCEPT
-        # ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-      # '';
-
-      # # This undoes the above command
-      # postShutdown = ''
-        # ${pkgs.iptables}/bin/iptables -D FORWARD -o ${networking.nat.externalInterface} -j ACCEPT
-        # ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
-      # '';
-
-      # # Path to the private key file.
-      # #
-      # # Note: The private key can also be included inline via the privateKey option,
-      # # but this makes the private key world-readable; thus, using privateKeyFile is
-      # # recommended.
-      # privateKeyFile = "/home/adwin/.wireguard/prikey";
-
-      # peers = [
-        # # List of allowed peers.
-        # { # Feel free to give a meaning full name
-          # # Public key of the peer (not a file path).
-          # publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
-          # # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          # allowedIPs = [ "10.100.0.1/32" ];
-        # }
-        # {
-          # publicKey = "z6PC2Yg6fJezEOnyv14hVLRanhP0DNSBUzdYfLdZ+V0=";
-          # allowedIPs = [ "10.100.0.2/32" ];
-        # }
-        # {
-          # publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
-          # allowedIPs = [ "10.100.0.3/32" ];
-        # }
-        # {
-          # publicKey = "EQUXNOSDvMjV42cF+WXZYM+6+rMAkswgponGvSQMzgI=";
-          # allowedIPs = [ "10.100.0.4/32" ];
-        # }
-      # ];
-    # };
-  # };
 
   i18n.defaultLocale = "en_US.UTF-8";
 
