@@ -161,7 +161,7 @@
           # Public key of the peer (not a file path).
           publicKey = "6uNLTaYV8Y3H5O9ZZsxH6Xxf+6KzG6n8NYN538df1zI=";
           # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          allowedIPs = [ "10.100.0.5/32" ];
+          allowedIPs = [ "10.100.0.0/24" ];
           endpoint = "175.24.187.39:11454";
           persistentKeepalive = 15;
         }
@@ -169,7 +169,7 @@
           # Public key of the peer (not a file path).
           publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
           # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          allowedIPs = [ "10.100.0.1/32" "10.100.0.2/32" "10.100.0.3/32" "10.100.0.4/32" ];
+          allowedIPs = [ "10.100.0.1/32" ];
           endpoint = "47.100.1.192:11454";
           persistentKeepalive = 15;
         }
