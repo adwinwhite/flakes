@@ -190,6 +190,7 @@
 
   # Enable the X11 windowing system.
   services = {
+    fail2ban.enable = true;
     openssh.enable = true;
 
     pipewire = {
