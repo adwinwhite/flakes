@@ -110,7 +110,7 @@
   # networking.firewall.enable = false;
   networking = {
     hostName = "tardis";
-    firewall.enable = false;
+    firewall.enable = true;
     useDHCP = false;
     nat = {
       enable = true;
@@ -221,10 +221,10 @@
 
     tlp = {
       enable = true;
-      extraConfig = ''
-        CPU_SCALING_GOVERNOR_ON_AC=performance
-        CPU_SCALING_GOVERNOR_ON_BAT=powersave
-      '';
+      settings = {
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      };
     };
   };
 

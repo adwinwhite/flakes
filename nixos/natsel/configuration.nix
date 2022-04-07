@@ -58,7 +58,7 @@
 
   networking = rec {
     hostName = "natsel";
-    firewall.enable = false;
+    firewall.enable = true;
     useDHCP = false;
     nat = {
       enable = true;

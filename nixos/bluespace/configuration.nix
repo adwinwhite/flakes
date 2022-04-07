@@ -63,7 +63,7 @@
   # networking.firewall.enable = false;
   networking = {
     hostName = "bluespace";
-    firewall.enable = false;
+    firewall.enable = true;
     useDHCP = false;
     interfaces.enp0s3.useDHCP = true;
     networkmanager = {
