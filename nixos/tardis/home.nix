@@ -87,7 +87,7 @@
       "nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
       "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
       "chromium-flags.conf".text = "--ozone-platform-hint=auto\nenable-webrtc-pipewire-capturer=enabled";
-
+      "zathura/zathurarc".text = "set selection-clipboard clipboard";
     };
   };
 
