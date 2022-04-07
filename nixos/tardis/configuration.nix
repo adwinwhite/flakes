@@ -165,14 +165,6 @@
           endpoint = "175.24.187.39:11454";
           persistentKeepalive = 15;
         }
-        { # Feel free to give a meaning full name
-          # Public key of the peer (not a file path).
-          publicKey = "hvUQpR5dg//+leGepXJ7an5+GR3znpolBNEPNxDmUgQ=";
-          # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          allowedIPs = [ "10.100.0.1/32" ];
-          endpoint = "47.100.1.192:11454";
-          persistentKeepalive = 15;
-        }
       ];
     };
   };
@@ -292,11 +284,6 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-
-  # environment.etc = {
-    # frp.source = /home/adwin/.config/frp;
-  # };
   environment.etc = {
     "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
     "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
