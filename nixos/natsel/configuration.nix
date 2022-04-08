@@ -58,7 +58,16 @@
 
   networking = rec {
     hostName = "natsel";
-    firewall.enable = true;
+    # to use fail2ban I have to enable firewall though I dont' really need it
+    firewall = {
+      enable = true;
+      allowedTCPPortRanges = [
+        { from = 1; to = 65535; }
+      ];
+      allowedUDPPortRanges = [
+        { from = 1; to = 65535; }
+      ];
+    };
     useDHCP = false;
     nat = {
       enable = true;
