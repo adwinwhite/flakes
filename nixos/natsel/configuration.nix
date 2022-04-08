@@ -106,7 +106,7 @@
         peers = [
           # List of allowed peers.
           {
-            publicKey = "z6PC2Yg6fJezEOnyv14hVLRanhP0DNSBUzdYfLdZ+V0=";
+            publicKey = "9ihTi1vqN0ei8FSYw88AcuxyV+JraiUE7/Wf/XLiuDI=";
             allowedIPs = [ "10.100.0.2/32" ];
           }
           {
