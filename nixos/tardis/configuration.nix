@@ -13,6 +13,7 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.resumeDevice = "/dev/nvme0n1p2";
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -108,7 +109,7 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-  networking = {
+  networking = rec {
     hostName = "tardis";
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
@@ -133,48 +134,54 @@
     };
     proxy.default = "http://127.0.0.1:10809";
     proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  };
 
-  networking.wireguard.interfaces = {
-    # "wg0" is the network interface name. You can name the interface arbitrarily.
-    wg0 = {
-      # Determines the IP address and subnet of the server's end of the tunnel interface.
-      ips = [ "10.100.0.2/24" ];
+    wireguard.interfaces = {
+      # "wg0" is the network interface name. You can name the interface arbitrarily.
+      wg0 = {
+        # Determines the IP address and subnet of the server's end of the tunnel interface.
+        ips = [ "10.100.0.2/24" ];
 
-      # The port that WireGuard listens to. Must be accessible by the client.
-      # listenPort = 51820;
+        # The port that WireGuard listens to. Must be accessible by the client.
+        # listenPort = 51820;
 
-      # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-      # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-      postSetup = ''
-        ${pkgs.iptables}/bin/iptables -A FORWARD -o wlp2s0 -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-      '';
+        # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
+        # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
+        postSetup = ''
+          ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+        '';
 
-      # This undoes the above command
-      postShutdown = ''
-        ${pkgs.iptables}/bin/iptables -D FORWARD -o wlp2s0 -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
-      '';
+        # This undoes the above command
+        postShutdown = ''
+          ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
+        '';
 
-      # Path to the private key file.
-      #
-      # Note: The private key can also be included inline via the privateKey option,
-      # but this makes the private key world-readable; thus, using privateKeyFile is
-      # recommended.
-      privateKeyFile = config.sops.secrets.wireguard_private.path;
+        # Path to the private key file.
+        #
+        # Note: The private key can also be included inline via the privateKey option,
+        # but this makes the private key world-readable; thus, using privateKeyFile is
+        # recommended.
+        privateKeyFile = config.sops.secrets.wireguard_private.path;
 
-      peers = [
-        # List of allowed peers.
-        { # Feel free to give a meaning full name
-          # Public key of the peer (not a file path).
-          publicKey = "6uNLTaYV8Y3H5O9ZZsxH6Xxf+6KzG6n8NYN538df1zI=";
-          # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-          allowedIPs = [ "10.100.0.0/24" ];
-          endpoint = "175.24.187.39:11454";
-          persistentKeepalive = 15;
-        }
-      ];
+        peers = [
+          # List of allowed peers.
+          { # Feel free to give a meaning full name
+            # Public key of the peer (not a file path).
+            publicKey = "6uNLTaYV8Y3H5O9ZZsxH6Xxf+6KzG6n8NYN538df1zI=";
+            # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+            allowedIPs = [ "10.100.0.0/24" ];
+            endpoint = "175.24.187.39:11454";
+            persistentKeepalive = 15;
+          }
+          {
+            publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
+            allowedIPs = [ "10.100.0.3/32" ];
+            endpoint = "192.168.123.131:11454";
+            persistentKeepalive = 15;
+          }
+        ];
+      };
     };
   };
 
