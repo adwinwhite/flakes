@@ -128,6 +128,10 @@
             endpoint = "175.24.187.39:11454";
             persistentKeepalive = 15;
           }
+          {
+            publicKey = "9ihTi1vqN0ei8FSYw88AcuxyV+JraiUE7/Wf/XLiuDI=";
+            allowedIPs = [ "10.100.0.2/32" ];
+          }
         ];
       };
     };
