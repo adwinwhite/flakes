@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    feh
     xdg_utils    # to use xdg-open
     zathura
     texlab       # latex lsp
