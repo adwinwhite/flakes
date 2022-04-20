@@ -1,7 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    drill
+    black
     socat
     htop
     lsof
