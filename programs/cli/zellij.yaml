@@ -1,0 +1,45 @@
+---
+# Configuration for zellij.
+
+# In order to troubleshoot your configuration try using the following command:
+# `zellij setup --check`
+# It should show current config locations and features that are enabled.
+
+keybinds:
+    unbind: true
+    normal:
+        - action: [SwitchToMode: Session,]
+          key: [Ctrl: ';',]
+    session:
+        - action: [SwitchToMode: Normal,]
+          key: [Ctrl: ';', Char: "\n", Char: ' ', Esc]
+        - action: [Quit,]
+          key: [Ctrl: 'q',]
+        - action: [Detach,]
+          key: [Char: 'd',]
+plugins:
+    - path: tab-bar
+      tag: tab-bar
+    - path: status-bar
+      tag: status-bar
+    - path: strider
+      tag: strider
+
+
+# Provide a command to execute when copying text. The text will be piped to
+# the stdin of the program to perform the copy. This can be used with
+# terminal emulators which do not support the OSC 52 ANSI control sequence
+# that will be used by default if this option is not set.
+# Examples:
+#copy_command: "xclip -selection clipboard" # x11
+copy_command: "wl-copy"                    # wayland
+#copy_command: "pbcopy"                     # osx
+
+# Choose the destination for copied text
+# Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
+# Does not apply when using copy_command.
+# Options:
+#   - system (default)
+#   - primary
+# copy_clipboard: primary
+

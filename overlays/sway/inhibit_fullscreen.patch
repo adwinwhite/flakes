@@ -1,0 +1,195 @@
+From 113a213b8d2ddafe8252fdc13272ed1501a82504 Mon Sep 17 00:00:00 2001
+From: Kenny Levinsen <kl@kl.wtf>
+Date: Sat, 15 Jun 2019 20:02:17 +0200
+Subject: [PATCH] Add inhibit_fullscreen command
+
+inhibit_fullscreen allows a container to service but ignore fullscreen
+requests from clients. This allows clients to change to fullscreen mode
+without changing dimensions of its container.
+---
+ include/sway/commands.h            |  1 +
+ include/sway/tree/container.h      |  3 ++
+ sway/commands.c                    |  1 +
+ sway/commands/inhibit_fullscreen.c | 45 ++++++++++++++++++++++++++++++
+ sway/meson.build                   |  1 +
+ sway/sway.5.scd                    |  6 ++++
+ sway/tree/container.c              | 18 ++++++++++--
+ 7 files changed, 72 insertions(+), 3 deletions(-)
+ create mode 100644 sway/commands/inhibit_fullscreen.c
+
+diff --git a/include/sway/commands.h b/include/sway/commands.h
+index 2746ef28f1..42f65e0633 100644
+--- a/include/sway/commands.h
++++ b/include/sway/commands.h
+@@ -142,6 +142,7 @@ sway_cmd cmd_fullscreen;
+ sway_cmd cmd_gaps;
+ sway_cmd cmd_hide_edge_borders;
+ sway_cmd cmd_include;
++sway_cmd cmd_inhibit_fullscreen;
+ sway_cmd cmd_inhibit_idle;
+ sway_cmd cmd_input;
+ sway_cmd cmd_seat;
+diff --git a/include/sway/tree/container.h b/include/sway/tree/container.h
+index 0576115084..ce5ccc5f09 100644
+--- a/include/sway/tree/container.h
++++ b/include/sway/tree/container.h
+@@ -45,6 +45,9 @@ struct sway_container_state {
+ 
+ 	enum sway_fullscreen_mode fullscreen_mode;
+ 
++	bool inhibit_fullscreen;
++	bool is_fullscreen;
++
+ 	struct sway_workspace *workspace; // NULL when hidden in the scratchpad
+ 	struct sway_container *parent;    // NULL if container in root of workspace
+ 	list_t *children;                 // struct sway_container
+diff --git a/sway/commands.c b/sway/commands.c
+index 5a1fd32ef9..adcb52a58e 100644
+--- a/sway/commands.c
++++ b/sway/commands.c
+@@ -115,6 +115,7 @@ static const struct cmd_handler command_handlers[] = {
+ 	{ "exit", cmd_exit },
+ 	{ "floating", cmd_floating },
+ 	{ "fullscreen", cmd_fullscreen },
++	{ "inhibit_fullscreen", cmd_inhibit_fullscreen },
+ 	{ "inhibit_idle", cmd_inhibit_idle },
+ 	{ "kill", cmd_kill },
+ 	{ "layout", cmd_layout },
+diff --git a/sway/commands/inhibit_fullscreen.c b/sway/commands/inhibit_fullscreen.c
+new file mode 100644
+index 0000000000..737a923e47
+--- /dev/null
++++ b/sway/commands/inhibit_fullscreen.c
+@@ -0,0 +1,45 @@
++#include <strings.h>
++#include "log.h"
++#include "sway/commands.h"
++#include "sway/config.h"
++#include "sway/tree/arrange.h"
++#include "sway/tree/container.h"
++#include "sway/tree/view.h"
++#include "sway/tree/workspace.h"
++#include "util.h"
++
++// inhibit_fullscreen [toggle|enable|disable]
++struct cmd_results *cmd_inhibit_fullscreen(int argc, char **argv) {
++	struct cmd_results *error = NULL;
++	if ((error = checkarg(argc, "inhibit_fullscreen", EXPECTED_EQUAL_TO, 1))) {
++		return error;
++	}
++	if (!root->outputs->length) {
++		return cmd_results_new(CMD_FAILURE,
++				"Can't run this command while there's no outputs connected.");
++	}
++	struct sway_node *node = config->handler_context.node;
++	struct sway_container *container = config->handler_context.container;
++	struct sway_workspace *workspace = config->handler_context.workspace;
++	if (node->type == N_WORKSPACE && workspace->tiling->length == 0) {
++		return cmd_results_new(CMD_FAILURE,
++				"Can't fullscreen an empty workspace");
++	}
++
++	// If in the scratchpad, operate on the highest container
++	if (container && !container->pending.workspace) {
++		while (container->pending.parent) {
++			container = container->pending.parent;
++		}
++	}
++
++	bool enable = false;
++	if (strcasecmp(argv[0], "toggle") == 0) {
++		enable = !container->pending.inhibit_fullscreen;
++	} else {
++		enable = strcasecmp(argv[0], "enable") == 0;
++	}
++
++	container->pending.inhibit_fullscreen = enable;
++	return cmd_results_new(CMD_SUCCESS, NULL);
++}
+diff --git a/sway/meson.build b/sway/meson.build
+index 8eab31a221..ef49951776 100644
+--- a/sway/meson.build
++++ b/sway/meson.build
+@@ -66,6 +66,7 @@ sway_sources = files(
+ 	'commands/fullscreen.c',
+ 	'commands/gaps.c',
+ 	'commands/hide_edge_borders.c',
++	'commands/inhibit_fullscreen.c',
+ 	'commands/inhibit_idle.c',
+ 	'commands/kill.c',
+ 	'commands/mark.c',
+diff --git a/sway/sway.5.scd b/sway/sway.5.scd
+index 641d09253b..297f45f199 100644
+--- a/sway/sway.5.scd
++++ b/sway/sway.5.scd
+@@ -161,6 +161,12 @@ set|plus|minus|toggle <amount>
+ 	_right_, _bottom_, and _left_ or per direction with _horizontal_ and
+ 	_vertical_.
+ 
++*inhibit_fullscreen* toggle|enable|disable
++	Set/unset fullscreen inhibitor for for the container. If enabled, client
++	requests to fullscreen the container will be ignored. This can be used to
++	have clients transition to their fullscreen interface, while still
++	constraining them to their container.
++
+ *inhibit_idle* focus|fullscreen|open|none|visible
+ 	Set/unset an idle inhibitor for the view. _focus_ will inhibit idle when
+ 	the view is focused by any seat. _fullscreen_ will inhibit idle when the
+diff --git a/sway/tree/container.c b/sway/tree/container.c
+index 79e04ec012..1d892551b0 100644
+--- a/sway/tree/container.c
++++ b/sway/tree/container.c
+@@ -1157,8 +1157,12 @@ static void container_fullscreen_workspace(struct sway_container *con) {
+ 				"Expected a non-fullscreen container")) {
+ 		return;
+ 	}
+-	set_fullscreen(con, true);
++	//set_fullscreen(con, true);
++	if (con->pending.inhibit_fullscreen) {
++		set_fullscreen(con, true);
++	}
+ 	con->pending.fullscreen_mode = FULLSCREEN_WORKSPACE;
++	con->pending.is_fullscreen = true;
+ 
+ 	con->saved_x = con->pending.x;
+ 	con->saved_y = con->pending.y;
+@@ -1191,7 +1195,10 @@ static void container_fullscreen_global(struct sway_container *con) {
+ 				"Expected a non-fullscreen container")) {
+ 		return;
+ 	}
+-	set_fullscreen(con, true);
++	//set_fullscreen(con, true);
++	if (con->pending.inhibit_fullscreen) {
++		set_fullscreen(con, true);
++	}
+ 
+ 	root->fullscreen_global = con;
+ 	con->saved_x = con->pending.x;
+@@ -1208,6 +1215,7 @@ static void container_fullscreen_global(struct sway_container *con) {
+ 	}
+ 
+ 	con->pending.fullscreen_mode = FULLSCREEN_GLOBAL;
++	con->pending.is_fullscreen = true;
+ 	container_end_mouse_operation(con);
+ 	ipc_event_window(con, "fullscreen_mode");
+ }
+@@ -1217,7 +1225,10 @@ void container_fullscreen_disable(struct sway_container *con) {
+ 				"Expected a fullscreen container")) {
+ 		return;
+ 	}
+-	set_fullscreen(con, false);
++	//set_fullscreen(con, false);
++	if (con->pending.inhibit_fullscreen) {
++		set_fullscreen(con, false);
++	}
+ 
+ 	if (container_is_floating(con)) {
+ 		con->pending.x = con->saved_x;
+@@ -1249,6 +1260,7 @@ void container_fullscreen_disable(struct sway_container *con) {
+ 	}
+ 
+ 	con->pending.fullscreen_mode = FULLSCREEN_NONE;
++	con->pending.is_fullscreen = false;
+ 	container_end_mouse_operation(con);
+ 	ipc_event_window(con, "fullscreen_mode");
+ 

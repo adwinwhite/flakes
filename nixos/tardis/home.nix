@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    bat
+    sshfs
     feh
     xdg_utils    # to use xdg-open
     zathura
@@ -38,7 +40,7 @@
     ripgrep
     ripgrep-all
     ht-rust        # xh: curl in rust
-    # chromium
+    chromium
     file
     trash-cli
     usbutils
@@ -73,19 +75,20 @@
   xdg = {
     enable = true;
     configFile = {
+      # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
       "gebaar/gebaard.toml".text = builtins.readFile ./gebaard.toml;
       "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
-      "nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-c}/parser";
-      "nvim/parser/cpp.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-cpp}/parser";
-      "nvim/parser/lua.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-lua}/parser";
-      "nvim/parser/rust.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-rust}/parser";
-      "nvim/parser/python.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-python}/parser";
-      "nvim/parser/nix.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-nix}/parser";
-      "nvim/parser/json.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-json}/parser";
-      "nvim/parser/latex.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-latex}/parser";
-      "nvim/parser/go.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-go}/parser";
-      "nvim/parser/markdown.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-markdown}/parser";
-      "nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
+      # "nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-c}/parser";
+      # "nvim/parser/cpp.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-cpp}/parser";
+      # "nvim/parser/lua.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-lua}/parser";
+      # "nvim/parser/rust.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-rust}/parser";
+      # "nvim/parser/python.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-python}/parser";
+      # "nvim/parser/nix.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-nix}/parser";
+      # "nvim/parser/json.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-json}/parser";
+      # "nvim/parser/latex.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-latex}/parser";
+      # "nvim/parser/go.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-go}/parser";
+      # "nvim/parser/markdown.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-markdown}/parser";
+      # "nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
       "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
       "chromium-flags.conf".text = "--ozone-platform-hint=auto\nenable-webrtc-pipewire-capturer=enabled";
       "zathura/zathurarc".text = "set selection-clipboard clipboard";
@@ -339,9 +342,10 @@
         lib.mkOptionDefault {
           "${mod}+Shift+q" = "exit";
           "${mod}+Shift+r" = "exec systemctl --user restart kanshi.service";
+          "${mod}+Shift+f" = "inhibit_fullscreen toggle";
           "${mod}+Return" = "exec ${cfg.terminal}";
           "${mod}+m" = "exec ${cfg.menu} -S drun";
-          # "${mod}+b" = "exec ${pkgs.chromium}/bin/chromium";
+          "${mod}+b" = "exec ${pkgs.firefox-wayland}/bin/firefox";
           "${mod}+t" = "layout tabbed";
           "${mod}+g" = "splith";
           "${mod}+h" = "focus left";
@@ -357,8 +361,8 @@
           "Ctrl+F9"  = "workspace number 9";
           "${mod}+1" = ''exec "swaymsg [app_id=\"org.wezfurlong.wezterm\" workspace=\"__focused__\"] focus || swaymsg exec wezterm; swaymsg fullscreen enable"'';
           # "${mod}+2" = ''exec "swaymsg [class=\"Chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
-          # "${mod}+2" = ''exec "swaymsg [app_id=\"chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
-          "${mod}+2" = ''exec "swaymsg [app_id=\"firefox\" workspace=\"__focused__\"] focus || swaymsg exec firefox; swaymsg fullscreen enable"'';
+          "${mod}+2" = ''exec "swaymsg [app_id=\"chromium-browser\" workspace=\"__focused__\"] focus || swaymsg exec chromium; swaymsg fullscreen enable"'';
+          # "${mod}+2" = ''exec "swaymsg [app_id=\"firefox\" workspace=\"__focused__\"] focus || swaymsg exec firefox; swaymsg fullscreen enable"'';
           "${mod}+3" = ''exec "swaymsg [class=\"VSCodium\" workspace=\"__focused__\"] focus || swaymsg exec codium; swaymsg fullscreen enable"'';
           "${mod}+0" = "exec swaylock";
           "${mod}+Shift+0" = "exec systemctl suspend";
