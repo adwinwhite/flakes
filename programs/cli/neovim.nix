@@ -12,7 +12,7 @@
     set showcmd
     set ignorecase
     set smartcase
-    set autoindent
+    " set autoindent
     set incsearch
     set nowrap
     set scrolloff=8
@@ -115,6 +115,8 @@
     let g:NERDTrimTrailingWhitespace = 1
     " Telescope
     nnoremap <C-f> :lua require'telescope.builtin'.live_grep()<cr>
+    nnoremap <C-b> :lua require'telescope.builtin'.buffers()<cr>
+    nnoremap <C-p> :lua require'telescope.builtin'.builtin()<cr>
     nnoremap <C-d> :lua require'telescope.builtin'.lsp_definitions()<cr>
     " Formatter
     nnoremap <silent> <leader><Space>f :Format<CR>
@@ -160,11 +162,17 @@
         };
       }
     }
-    -- require'nvim-treesitter.configs'.setup {
-    --   highlight = {
-    --     enable = true,             
-    --   },
-    -- }
+    require'nvim-treesitter.configs'.setup {
+      highlight = {
+        enable = true,
+      },
+      incremental_selection = {
+        enable = true,
+      },
+      indent = {
+        enable = true,
+      }
+    }
     local actions = require('telescope.actions')
     require('telescope').setup{
       defaults = {
@@ -254,6 +262,8 @@
         space_char_blankline = " ",
         show_current_context = true,
     }
+    require('which-key').setup {
+    }
     EOF
   '';
   plugins = with pkgs.vimPlugins; [
@@ -262,6 +272,18 @@
     vim-airline-themes
     nvim-lspconfig
     # nvim-treesitter
+    (nvim-treesitter.withPlugins (
+        plugins: with plugins; [
+          tree-sitter-c
+          tree-sitter-cpp
+          tree-sitter-python
+          tree-sitter-rust
+          tree-sitter-go
+          tree-sitter-nix
+          tree-sitter-lua
+          tree-sitter-json
+        ]
+      ))
     completion-nvim
     telescope-nvim
     telescope-file-browser-nvim
@@ -274,5 +296,6 @@
     indent-blankline-nvim
     vim-sleuth
     vimtex
+    which-key-nvim
   ];
 }
