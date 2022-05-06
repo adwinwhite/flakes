@@ -90,7 +90,7 @@
       # "nvim/parser/markdown.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-markdown}/parser";
       # "nvim/parser/julia.so".source = "${pkgs.tree-sitter.builtGrammars.tree-sitter-julia}/parser";
       "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
-      "chromium-flags.conf".text = "--ozone-platform-hint=auto\nenable-webrtc-pipewire-capturer=enabled";
+      "chromium-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland\n--enable-webrtc-pipewire-capturer=enabled\n--gtk-version=4";
       "zathura/zathurarc".text = "set selection-clipboard clipboard";
     };
   };
@@ -170,7 +170,7 @@
         # };
         # Install.WantedBy = [ "graphical-session.target" ];
       # };
-    };
+    # };
 
     # sockets = {
       # wob = {
@@ -180,7 +180,7 @@
         # };
         # Install.WantedBy = [ "sockets.target" ];
       # };
-    # };
+    };
   };
 
   programs = {
