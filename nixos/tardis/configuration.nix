@@ -185,18 +185,7 @@
     };
   };
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  # };
-
-  # Enable the X11 windowing system.
   services = {
     fail2ban.enable = true;
     openssh.enable = true;
@@ -213,19 +202,14 @@
 
 
     logind.lidSwitch = "ignore";
-    # logind = {
-        # extraConfig = ''
-          # HandleLidSwitch=ignore
-        # '';
-    # };
-    # xserver = {
-      # enable = true;
-      # layout = "us";
-      # displayManager = {
-        # defaultSession = "sway";
-        # sddm.enable = true;
-      # };
-    # };
+
+    # To use Plasma5
+    xserver = {
+      enable = true;
+      layout = "us";
+      displayManager.sddm.enable = true;
+      desktopManager.plasma5.enable = true;
+    };
 
     tlp = {
       enable = true;
@@ -270,7 +254,7 @@
   home-manager = {
    useGlobalPkgs = true;
    useUserPackages = true;
-   users.adwin = import ./home.nix;
+   users.adwin = import ./home-x11.nix;
   };
    
 
@@ -288,17 +272,6 @@
   programs = {
     sway.enable = true;
   };
-
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   environment.etc = {
     "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
@@ -327,31 +300,7 @@
 
   systemd.services.NetworkManager-wait-online.enable = false;
   
-  # systemd.services.frpc = {
-    # enable = true;
-    # description = "Frp client to expose ssh";
-    # unitConfig = {
-      # Type = "simple";
-    # };
-    # serviceConfig = {
-      # ExecStart = "${pkgs.frp}/bin/frpc -c /etc/frp/frpc.ini";
-    # };
-    # wantedBy = [ "multi-user.target" ];
-    # after = ["network.target"];
-  # };
 
-  # systemd.services.netadapter = {
-    # enable = true;
-    # description = "rtl8188gu adapter usb mode switch";
-    # unitConfig = {
-      # Type = "oneshot";
-    # };
-    # serviceConfig = {
-      # ExecStart = "${pkgs.usb-modeswitch}/bin/usb_modeswitch -KW -v 0bda -p 1a2b && ${pkgs.usb-modeswitch}/bin/usb_modeswitch -KW -v 0bda -p 1a2b";
-    # };
-    # wantedBy = [ "multi-user.target" ];
-    # after = ["network.target"];
-  # };
 
 
   # This value determines the NixOS release from which the default
