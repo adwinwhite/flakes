@@ -265,37 +265,56 @@
     wireguard-tools
     v2ray
     v2t
-    # (pkgs.callPackage ./pkgs/cgproxy {})
+    cgproxy
+    pavucontrol
   ];
 
 
-  programs = {
-    sway.enable = true;
-  };
+  # programs = {
+    # sway.enable = true;
+  # };
 
   environment.etc = {
-    "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
+    # "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
+    "v2ray/conf.d".source = "/home/adwin/.config/v2t/conf.d";
     "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
   };
 
 
-  systemd.services.v2ray = {
-    enable = false;
-    description = "V2Ray Service";
-    serviceConfig = {
-      Type = "exec";
-      DynamicUser = "yes";
-      Slice = "noproxy.slice";
-      MemoryMax = "1G";
-      CPUQuota = "200%";
-      AmbientCapabilities = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
-      NoNewPrivileges = "true";
-      Restart = "on-failure";
-      RestartPreventExitStatus = "23";
-      ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/06_outbounds.json -confdir /etc/v2ray/conf.d";
+  systemd.services = {
+    cgproxy = {
+      enable = false;
+      after = [
+        "network.target"
+        "network-online.target"
+      ];
+      description = "cgproxy service wrapped";
+      wantedBy = [
+        "multi-user.target"
+      ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.cgproxy}/bin/cgproxyd --execsnoop";
+      };
     };
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" "nss-lookup.target" ];
+    v2ray = {
+      enable = false;
+      description = "V2Ray Service";
+      serviceConfig = {
+        Slice = "noproxy.slice";
+        User = "nobody";
+        MemoryMax = "1G";
+        CPUQuota = "200%";
+        AmbientCapabilities = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
+        CapabilityBoundingSet = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
+        NoNewPrivileges = "true";
+        Restart = "on-failure";
+        RestartPreventExitStatus = "23";
+        ExecStart = "${pkgs.v2ray}/bin/v2ray -confdir /etc/v2ray/conf.d";
+      };
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" "nss-lookup.target" ];
+    };
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;

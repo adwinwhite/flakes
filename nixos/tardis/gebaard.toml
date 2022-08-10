@@ -1,12 +1,16 @@
 [swipe.commands.three]
 left_up = ""
 right_up = ""
-up = ""
+up = "xdotool key Super_L+w"
 left_down = ""
 right_down = ""
-down = ""
-left = "wtype -M ctrl -M shift -P tab -p tab -m shift -m ctrl"
-right = "wtype -M ctrl -P tab -p tab -m ctrl"
+down = "xdotool key ctrl+F12"
+# for x11
+left = "xdotool key ctrl+shift+Tab"
+right = "xdotool key ctrl+Tab"
+# for wayland
+# left = "wtype -M ctrl -M shift -P tab -p tab -m shift -m ctrl"
+# right = "wtype -M ctrl -P tab -p tab -m ctrl"
 
 [swipe.commands.four]
 left_up = ""
@@ -15,8 +19,8 @@ up = ""
 left_down = ""
 right_down = ""
 down = ""
-left = ""
-right = ""
+left = "xdotool key alt+shift+Tab"
+right = "xdotool key alt+Tab"
 
 [pinch.commands]
 in = ""

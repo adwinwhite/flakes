@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib }:
+{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib, util-linux, makeWrapper }:
 
 stdenv.mkDerivation {
   pname = "cgproxy";
@@ -19,6 +19,7 @@ stdenv.mkDerivation {
     libbpf
     libelf
     zlib
+    makeWrapper
   ];
 
   nativeBuildInputs = [
