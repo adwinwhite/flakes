@@ -115,6 +115,7 @@
             inputs.rust-overlay.overlay
             inputs.berberman.overlay
             (import ./overlays/sway/overlay.nix)
+            (import ./overlays/cgproxy/overlay.nix)
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;

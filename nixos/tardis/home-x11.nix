@@ -1,6 +1,9 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    xdotool         # simulate keyboard and mouse input
+    gebaar-libinput # touchpad gestures 
+    firefox
     bat
     sshfs
     feh
@@ -80,6 +83,19 @@
         General = {
           savePathFixed = true;
         };
+      };
+    };
+  };
+
+  systemd.user = {
+    services = {
+      gebaar = {
+        Service = {
+          Type = "simple";
+          ExecStart = "${pkgs.gebaar-libinput}/bin/gebaard";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "graphical.target" ];
       };
     };
   };
