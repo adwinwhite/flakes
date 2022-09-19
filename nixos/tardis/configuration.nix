@@ -112,15 +112,21 @@
   networking = rec {
     hostName = "tardis";
     # to use fail2ban I have to enable firewall though I dont' really need it
-    firewall = {
-      enable = true;
-      allowedTCPPortRanges = [
-        { from = 1; to = 65535; }
-      ];
-      allowedUDPPortRanges = [
-        { from = 1; to = 65535; }
-      ];
-    };
+    firewall.enable = false;
+    # firewall = {
+      # enable = true;
+      # allowedTCPPortRanges = [
+        # { from = 1; to = 65535; }
+      # ];
+      # allowedUDPPortRanges = [
+        # { from = 1; to = 65535; }
+      # ];
+    # };
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+      "223.5.5.5"
+    ];
     useDHCP = false;
     nat = {
       enable = true;
@@ -129,11 +135,17 @@
     };
     networkmanager = {
       enable = true;
-      dns = "dnsmasq";
+      dns = "none";
+      # insertNameservers = [
+        # "1.1.1.1"
+        # "8.8.8.8"
+        # "223.5.5.5"
+      # ];
+      # dns = "dnsmasq";
       unmanaged = [ "interface-name:ve-*" ];
     };
-    proxy.default = "http://127.0.0.1:10809";
-    proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+    # proxy.default = "http://127.0.0.1:10809";
+    # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     wireguard.interfaces = {
       # "wg0" is the network interface name. You can name the interface arbitrarily.
@@ -185,9 +197,9 @@
     };
   };
 
-
   services = {
-    fail2ban.enable = true;
+    resolved.enable = false;
+    fail2ban.enable = false;
     openssh.enable = true;
 
     pipewire = {
@@ -278,12 +290,13 @@
     # "v2ray/conf.d".source = "${pkgs.v2t}/conf.d";
     "v2ray/conf.d".source = "/home/adwin/.config/v2t/conf.d";
     "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
+    # "cgproxy/config.json".text = builtins.readFile ./../../programs/cli/cgproxy.json;
   };
 
 
   systemd.services = {
     cgproxy = {
-      enable = false;
+      enable = true;
       after = [
         "network.target"
         "network-online.target"
@@ -298,19 +311,96 @@
       };
     };
     v2ray = {
-      enable = false;
+      enable = true;
       description = "V2Ray Service";
+      # environment = {
+        # V2RAY_LOCATION_CONFDIR = "/etc/v2ray/conf.d";
+      # };
       serviceConfig = {
+        Type = "simple";
         Slice = "noproxy.slice";
-        User = "nobody";
         MemoryMax = "1G";
         CPUQuota = "200%";
         AmbientCapabilities = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
         CapabilityBoundingSet = "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
-        NoNewPrivileges = "true";
+        # NoNewPrivileges = "true";
         Restart = "on-failure";
         RestartPreventExitStatus = "23";
-        ExecStart = "${pkgs.v2ray}/bin/v2ray -confdir /etc/v2ray/conf.d";
+        # ExecStart = "${pkgs.v2ray}/bin/v2ray -confdir /etc/v2ray/conf.d";
+        # ExecStart = "${pkgs.v2ray}/bin/v2ray -confdir /home/adwin/.config/v2t/conf.d/";
+        ExecStart =
+          let
+            script = pkgs.writeShellScriptBin "v2ray-start" ''
+              #!${pkgs.bash}
+              DIRECTORY=/home/adwin/.config/v2t/conf.d/
+              if [ -e "$DIRECTORY" ]; then
+                echo "path $DIRECTORY exists"
+              else
+                echo "path $DIRECTORY does not exists"
+              fi
+              if [ -d "$DIRECTORY" ]; then
+                echo "directory $DIRECTORY does exist."
+              else
+                echo "directory $DIRECTORY does not exist."
+              fi
+              if [ -f "$DIRECTORY" ]; then
+                echo "regular file $DIRECTORY does exist."
+              else 
+                echo "regular file $DIRECTORY does not exist."
+              fi
+              if [ -L "$DIRECTORY" ]; then
+                echo "symlink $DIRECTORY does exist."
+              else 
+                echo "symlink $DIRECTORY does not exists."
+              fi
+              if [ -d "${pkgs.v2ray}" ]; then
+                echo "directory ${pkgs.v2ray} does exist."
+              else
+                echo "directory ${pkgs.v2ray} does not exist."
+              fi
+              if [ -d "/etc" ]; then
+                echo "directory /etc does exist."
+              else
+                echo "directory /etc does not exist."
+              fi
+              if [ -d "/etc/v2ray" ]; then
+                echo "directory /etc/v2ray does exist."
+              else
+                echo "directory /etc/v2ray does not exist."
+              fi
+              HOME_DIR=/home/adwin
+              if [ -d "$HOME_DIR" ]; then
+                echo "directory $HOME_DIR does exist."
+              else
+                echo "directory $HOME_DIR does not exist."
+              fi
+              HOME_DIR=/home/adwin/Code
+              if [ -d "$HOME_DIR" ]; then
+                echo "directory $HOME_DIR does exist."
+              else
+                echo "directory $HOME_DIR does not exist."
+              fi
+              HOME_DIR=/home/adwin/Code/python
+              if [ -d "$HOME_DIR" ]; then
+                echo "directory $HOME_DIR does exist."
+              else
+                echo "directory $HOME_DIR does not exist."
+              fi
+              HOME_DIR=/home/adwin/Code/python/v2ray-tools
+              if [ -d "$HOME_DIR" ]; then
+                echo "directory $HOME_DIR does exist."
+              else
+                echo "directory $HOME_DIR does not exist."
+              fi
+              HOME_DIR=/home/adwin/Code/python/v2ray-tools/conf.d
+              if [ -d "$HOME_DIR" ]; then
+                echo "directory $HOME_DIR does exist."
+              else
+                echo "directory $HOME_DIR does not exist."
+              fi
+              ${pkgs.v2ray}/bin/v2ray -confdir $DIRECTORY
+            '';
+          in "${script}/bin/v2ray-start";
       };
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" "nss-lookup.target" ];

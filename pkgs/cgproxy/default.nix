@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib, util-linux, makeWrapper }:
+{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib, util-linux, makeWrapper, procps, iproute2, iptables }:
 
 stdenv.mkDerivation {
   pname = "cgproxy";
@@ -38,6 +38,18 @@ stdenv.mkDerivation {
 
   buildPhase = ''
     make
+  '';
+
+  postFixup = ''
+    wrapProgram $out/bin/cgproxy --prefix PATH : ${lib.makeBinPath [
+      util-linux
+      procps
+      iproute2
+      iptables
+    ]}
+    echo '${builtins.readFile ./../../programs/cli/cgproxy.json}' > $out/etc/cgproxy/config.json  
+    sed -i '252i ip6tables -w 60 -t mangle -A TPROXY_OUT -m mark --mark 0xff -j RETURN' $out/share/cgproxy/scripts/cgroup-tproxy.sh
+    sed -i '208i iptables -w 60 -t mangle -A TPROXY_OUT -m mark --mark 0xff -j RETURN' $out/share/cgproxy/scripts/cgroup-tproxy.sh
   '';
 
   meta = with lib; {

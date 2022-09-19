@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    xclip           # x11 clipboard cli program
+    xournalpp
     xdotool         # simulate keyboard and mouse input
     gebaar-libinput # touchpad gestures 
     firefox
@@ -45,6 +47,7 @@
     rnix-lsp
     ccls            # c/c++ lsp
     # clang
+    rust-analyzer
     gopls           # go lsp
     delve           # go debugger
     tealdeer        # tldr: brief command help
