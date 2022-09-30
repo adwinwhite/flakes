@@ -289,7 +289,7 @@
         };
       };
     };
-    neovim = import ../../programs/cli/neovim.nix { 
+    neovim = import ../../programs/cli/neovim/neovim.nix { 
       inherit pkgs;
     };  
     # i3status-rust = {
