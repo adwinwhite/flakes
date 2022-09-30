@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    stylua
     xclip           # x11 clipboard cli program
     xournalpp
     xdotool         # simulate keyboard and mouse input
@@ -9,7 +10,7 @@
     bat
     sshfs
     feh
-    xdg_utils    # to use xdg-open
+    xdg-utils    # to use xdg-open
     zathura
     texlab       # latex lsp
     firejail     # sandbox untrusted executable
@@ -36,7 +37,7 @@
     tree
     ripgrep
     ripgrep-all
-    ht-rust        # xh: curl in rust
+    xh        # xh: curl in rust
     chromium
     file
     trash-cli
@@ -47,12 +48,11 @@
     rnix-lsp
     ccls            # c/c++ lsp
     # clang
-    rust-analyzer
+    # rust-analyzer # use rustup's one to sync rustc and RA.
     gopls           # go lsp
     delve           # go debugger
     tealdeer        # tldr: brief command help
     graphviz
-    # rust-bin.stable.latest.default
     v2t
     fortran-language-server
     exa
@@ -115,7 +115,9 @@
     broot = {
       enable = true;
       enableFishIntegration = true;
-      modal = true;
+      settings = {
+        modal = true;
+      };
     };
     direnv = {
       enable = true;
@@ -160,7 +162,7 @@
         }
       ];
     };
-    neovim = import ../../programs/cli/neovim.nix { 
+    neovim = import ../../programs/cli/neovim/neovim.nix { 
       inherit pkgs;
     };  
   };
@@ -169,4 +171,6 @@
     GOOGLE_DEFAULT_CLIENT_ID = "77185425430.apps.googleusercontent.com";
     GOOGLE_DEFAULT_CLIENT_SECRET = "OTJgUOQcT7lO7GsGZq2G4IlT";
   };
+
+  home.stateVersion = "22.05";
 }

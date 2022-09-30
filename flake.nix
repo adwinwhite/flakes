@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:adwinwhite/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
@@ -57,7 +57,7 @@
         {
           nixpkgs.overlays = [
             inputs.neovim.overlay
-            inputs.rust-overlay.overlay
+            inputs.rust-overlay.overlays.default
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;
@@ -75,7 +75,7 @@
             inputs.neovim.overlay
             inputs.nixpkgs-wayland.overlay
             inputs.v2t.overlay
-            inputs.rust-overlay.overlay
+            inputs.rust-overlay.overlays.default
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;
@@ -93,7 +93,7 @@
             inputs.neovim.overlay
             inputs.nixpkgs-wayland.overlay
             inputs.v2t.overlay
-            inputs.rust-overlay.overlay
+            inputs.rust-overlay.overlays.default
           ];
           nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           nix.registry.p.flake = self;
@@ -112,7 +112,7 @@
             inputs.neovim.overlay
             inputs.nixpkgs-wayland.overlay
             inputs.v2t.overlay
-            inputs.rust-overlay.overlay
+            inputs.rust-overlay.overlays.default
             inputs.berberman.overlay
             (import ./overlays/sway/overlay.nix)
             (import ./overlays/cgproxy/overlay.nix)
