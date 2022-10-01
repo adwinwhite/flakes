@@ -40,7 +40,7 @@
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
-      # (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; })
     ];
     fontconfig = {
       enable = true;
@@ -122,11 +122,11 @@
         # { from = 1; to = 65535; }
       # ];
     # };
-    nameservers = [
-      "1.1.1.1"
-      "8.8.8.8"
-      "223.5.5.5"
-    ];
+    # nameservers = [
+      # "1.1.1.1"
+      # "8.8.8.8"
+      # "223.5.5.5"
+    # ];
     useDHCP = false;
     nat = {
       enable = true;
@@ -198,6 +198,15 @@
   };
 
   services = {
+    smartdns = {
+      enable = true;
+      settings = {
+        bind = "[::]:53";
+        cache-size = 4096;
+        speed-check-mode = "none";
+        server = "8.8.8.8:53";
+      };
+    };
     resolved.enable = false;
     fail2ban.enable = false;
     openssh.enable = true;

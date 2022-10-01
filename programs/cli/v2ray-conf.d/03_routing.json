@@ -29,7 +29,8 @@
       {
         "type": "field",
         "domain": [
-          "geosite:cn"
+          "geosite:cn",
+          "domain:tsinghua.edu.cn"
         ],
         "domainMatcher": "mph",
         "outboundTag": "direct"

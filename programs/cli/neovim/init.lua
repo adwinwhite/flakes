@@ -128,7 +128,7 @@ nvim_lsp.fortls.setup({})
 nvim_lsp.pyright.setup({})
 nvim_lsp.rnix.setup({})
 nvim_lsp.gopls.setup({})
-nvim_lsp.rust_analyzer.setup({})
+-- nvim_lsp.rust_analyzer.setup({})
 nvim_lsp.texlab.setup({
 	settings = {
 		texlab = {
@@ -202,7 +202,7 @@ require("formatter").setup({
 					exe = "clang-format",
 					args = { "--assume-filename", vim.api.nvim_buf_get_name(0), "--sort-includes=0" },
 					stdin = true,
-					cwd = vim.fn.expand("%:p:h"),  -- Run clang-format in cwd of the file.
+					cwd = vim.fn.expand("%:p:h"), -- Run clang-format in cwd of the file.
 				}
 			end,
 		},
@@ -212,7 +212,7 @@ require("formatter").setup({
 					exe = "clang-format",
 					args = { "--assume-filename", vim.api.nvim_buf_get_name(0) },
 					stdin = true,
-					cwd = vim.fn.expand("%:p:h"),  -- Run clang-format in cwd of the file.
+					cwd = vim.fn.expand("%:p:h"), -- Run clang-format in cwd of the file.
 				}
 			end,
 		},
@@ -279,34 +279,42 @@ require("indent_blankline").setup({
 	show_current_context = true,
 })
 require("which-key").setup({})
--- require('rust-tools').setup({
--- tools = {
--- runnables = {
--- use_telescope = true
--- },
--- inlay_hints = {
--- auto = true,
--- },
--- },
 
--- -- all the opts to send to nvim-lspconfig
--- -- these override the defaults set by rust-tools.nvim
--- -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
--- server = {
--- -- on_attach is a callback called when the language server attachs to the buffer
--- -- on_attach = on_attach,
--- settings = {
--- -- to enable rust-analyzer settings visit:
--- -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
--- ["rust-analyzer"] = {
--- -- enable clippy on save
--- checkOnSave = {
--- command = "clippy"
--- },
--- }
--- }
--- },
--- })
+local rt = require("rust-tools")
+rt.setup({
+	tools = {
+		runnables = {
+			use_telescope = true,
+		},
+		inlay_hints = {
+			auto = true,
+		},
+	},
+
+	-- all the opts to send to nvim-lspconfig
+	-- these override the defaults set by rust-tools.nvim
+	-- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
+	server = {
+		on_attach = function(_, bufnr)
+			-- Hover actions
+			vim.keymap.set("n", "<Leader>rh", rt.hover_actions.hover_actions, { buffer = bufnr })
+			-- Code action groups
+			vim.keymap.set("n", "<Leader>rc", rt.code_action_group.code_action_group, { buffer = bufnr })
+		end,
+		-- on_attach is a callback called when the language server attachs to the buffer
+		-- on_attach = on_attach,
+		settings = {
+			-- to enable rust-analyzer settings visit:
+			-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+			["rust-analyzer"] = {
+				-- enable clippy on save
+				checkOnSave = {
+					command = "clippy",
+				},
+			},
+		},
+	},
+})
 
 require("onedark").load()
 
