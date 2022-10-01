@@ -38,6 +38,6 @@
     vim-sleuth
     vimtex
     which-key-nvim
-    # rust-tools-nvim
+    rust-tools-nvim
   ];
 }
