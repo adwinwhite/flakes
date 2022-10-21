@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    logseq
+    bottom
     stylua
     xclip           # x11 clipboard cli program
     xournalpp
