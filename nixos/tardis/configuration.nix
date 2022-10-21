@@ -61,10 +61,42 @@
     };
     secrets = {
       wireguard_private = {};
+      google_api_key = {
+        mode = "0440";
+        owner = config.users.users.adwin.name;
+        group = config.users.users.adwin.group;
+      };
+      google_default_client_id = {
+        mode = "0440";
+        owner = config.users.users.adwin.name;
+        group = config.users.users.adwin.group;
+      };
+      google_default_client_secret = {
+        mode = "0440";
+        owner = config.users.users.adwin.name;
+        group = config.users.users.adwin.group;
+      };
       "v2ray_subscriptions/v2spacex" = {};
       "v2ray_subscriptions/tomlink" = {};
     };
   };
+  nixpkgs.overlays = [ (self: super: {
+    chromium = let
+      wrapped = super.writeShellScriptBin "chromium" ''
+        export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
+        export GOOGLE_DEFAULT_CLIENT_ID=`cat ${config.sops.secrets.google_default_client_id.path}`
+        export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${config.sops.secrets.google_default_client_secret.path}`
+        exec ${super.chromium}/bin/chromium 
+      '';
+      in
+      pkgs.symlinkJoin {
+        name = "chromium";
+        paths = [
+          wrapped
+          super.chromium
+        ];
+      };
+  }) ];
 
   # Enable flakes and gc
   nixpkgs.config.allowUnfree = true;
@@ -198,6 +230,23 @@
   };
 
   services = {
+    syncthing = {
+      enable = true;
+      user = "adwin";
+      dataDir = "/home/adwin/Sync";
+      configDir = "/home/adwin/Sync/.config/syncthing";
+      overrideDevices = true;     # overrides any devices added or deleted through the WebUI
+      overrideFolders = true;     # overrides any folders added or deleted through the WebUI
+      devices = {
+        "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
+      };
+      folders = {
+        "Logseq" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
+          devices = [ "MI10" ];      # Which devices to share the folder with
+        };
+      };
+    };
     smartdns = {
       enable = true;
       settings = {
@@ -326,6 +375,7 @@
         # V2RAY_LOCATION_CONFDIR = "/etc/v2ray/conf.d";
       # };
       serviceConfig = {
+        User = "root";
         Type = "simple";
         Slice = "noproxy.slice";
         MemoryMax = "1G";
@@ -341,7 +391,7 @@
           let
             script = pkgs.writeShellScriptBin "v2ray-start" ''
               #!${pkgs.bash}
-              DIRECTORY=/home/adwin/.config/v2t/conf.d/
+              DIRECTORY=/etc/v2ray/conf.d
               if [ -e "$DIRECTORY" ]; then
                 echo "path $DIRECTORY exists"
               else
@@ -407,7 +457,8 @@
               else
                 echo "directory $HOME_DIR does not exist."
               fi
-              ${pkgs.v2ray}/bin/v2ray -confdir $DIRECTORY
+              echo "$(ls $DIRECTORY)"
+              ${pkgs.v2ray}/bin/v2ray run -confdir $DIRECTORY
             '';
           in "${script}/bin/v2ray-start";
       };

@@ -23,6 +23,7 @@
           tree-sitter-nix
           tree-sitter-lua
           tree-sitter-json
+          tree-sitter-scheme
         ]
       ))
     completion-nvim

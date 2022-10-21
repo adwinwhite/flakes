@@ -124,6 +124,7 @@ vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions()<
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
 
 local nvim_lsp = require("lspconfig")
+nvim_lsp.racket_langserver.setup({})
 nvim_lsp.fortls.setup({})
 nvim_lsp.pyright.setup({})
 nvim_lsp.rnix.setup({})
@@ -263,6 +264,17 @@ require("formatter").setup({
 						-- util.escape_path(util.get_current_buffer_file_path()),
 						"--",
 						"-",
+					},
+					stdin = true,
+				}
+			end,
+		},
+		racket = {
+			function()
+				return {
+					exe = "raco",
+					args = {
+						"fmt",
 					},
 					stdin = true,
 				}
