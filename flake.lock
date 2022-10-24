@@ -406,11 +406,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1664688797,
-        "narHash": "sha256-xdcEQEJZvRdAfZTgX4ifL1pm1wwcy24zC5m7zCAsnOI=",
+        "lastModified": 1666604225,
+        "narHash": "sha256-OTElWH8n4wVQJGUYAOYIHoagTDq5fFqGdMkrA93OaV0=",
         "owner": "adwingray",
         "repo": "v2ray-tools",
-        "rev": "afa1e859a50c5207296f9ba8f2a8e610f6eefd8b",
+        "rev": "4c8e7c366e2cf1896dc64927795a9b2b9db9dfca",
         "type": "github"
       },
       "original": {
