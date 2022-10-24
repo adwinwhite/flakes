@@ -81,6 +81,26 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
+    py3 = let
+      python-with-my-packages = super.python3.withPackages (p: with p; [
+        pandas
+        requests
+        numpy
+        matplotlib
+        scipy
+        # other python packages you want
+      ]);
+      in
+      super.runCommand "py3" {} ''
+        mkdir $out
+        # Link every top-level folder from pkgs.hello to our new target
+        ln -s ${python-with-my-packages}/* $out
+        # Except the bin folder
+        rm $out/bin
+        mkdir $out/bin
+        # We create the bin folder ourselves and link every binary in it
+        ln -s ${python-with-my-packages}/bin/python $out/bin/py3
+      '';
     chromium = let
       wrapped = super.writeShellScriptBin "chromium" ''
         export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
@@ -119,7 +139,7 @@
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
         "https://mirrors.ustc.edu.cn/nix-channels/store" 
         "https://nix-community.cachix.org"
-        "https://nixpkgs-wayland.cachix.org"
+        # "https://nixpkgs-wayland.cachix.org"
         "https://berberman.cachix.org"
       ];
       builders-use-substitutes = true;
