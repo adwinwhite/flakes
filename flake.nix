@@ -48,80 +48,105 @@
   };
   outputs = inputs@{ self, nixpkgs, ... }: {
     nix.registry.nixpkgs.flake = nixpkgs;
-    nixosConfigurations.natsel = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [ 
-        ./nixos/natsel/configuration.nix
-        inputs.sops-nix.nixosModules.sops
-        inputs.home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [
-            inputs.neovim.overlay
-            inputs.rust-overlay.overlays.default
-          ];
-          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          nix.registry.p.flake = self;
-        }
-      ];
-      specialArgs = { inherit nixpkgs inputs; };
+    templates = {
+      rust = {
+        path = ./templates/rust;
+        description = "A simple Rust project";
+        welcomeText = ''
+          # Simple Rust Template
+        '';
+      };
+      racket = {
+        path = ./templates/racket;
+        description = "A simple Racket project";
+        welcomeText = ''
+          # Simple Racket Template
+        '';
+      };
+      cpp = {
+        path = ./templates/cpp;
+        description = "A simple C++ project";
+        welcomeText = ''
+          # Simple C++ Template
+        '';
+      };
     };
-    nixosConfigurations.bluespace = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [ 
-        ./nixos/bluespace/configuration.nix
-        inputs.home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [
-            inputs.neovim.overlay
-            inputs.nixpkgs-wayland.overlay
-            inputs.v2t.overlay
-            inputs.rust-overlay.overlays.default
-          ];
-          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          nix.registry.p.flake = self;
-        }
-      ];
-      specialArgs = { inherit nixpkgs inputs; };
-    };
-    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [ 
-        ./nixos/vm/configuration.nix
-        inputs.home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [
-            inputs.neovim.overlay
-            inputs.nixpkgs-wayland.overlay
-            inputs.v2t.overlay
-            inputs.rust-overlay.overlays.default
-          ];
-          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          nix.registry.p.flake = self;
-        }
-      ];
-      specialArgs = { inherit nixpkgs inputs; };
-    };
-    nixosConfigurations.tardis = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [ 
-        ./nixos/tardis/configuration.nix
-        inputs.sops-nix.nixosModules.sops
-        inputs.home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [
-            inputs.neovim.overlay
-            inputs.nixpkgs-wayland.overlay
-            inputs.v2t.overlay
-            inputs.rust-overlay.overlays.default
-            inputs.berberman.overlay
-            (import ./overlays/sway/overlay.nix)
-            (import ./overlays/cgproxy/overlay.nix)
-          ];
-          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          nix.registry.p.flake = self;
-        }
-      ];
-      specialArgs = { inherit nixpkgs inputs; };
+    nixosConfigurations = {
+      natsel = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/natsel/configuration.nix
+          inputs.sops-nix.nixosModules.sops
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [
+              inputs.neovim.overlay
+              inputs.rust-overlay.overlays.default
+            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.p.flake = self;
+          }
+        ];
+        specialArgs = { inherit nixpkgs inputs; };
+      };
+      bluespace = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/bluespace/configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [
+              inputs.neovim.overlay
+              inputs.nixpkgs-wayland.overlay
+              inputs.v2t.overlay
+              inputs.rust-overlay.overlays.default
+            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.p.flake = self;
+          }
+        ];
+        specialArgs = { inherit nixpkgs inputs; };
+      };
+      vm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/vm/configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [
+              inputs.neovim.overlay
+              inputs.nixpkgs-wayland.overlay
+              inputs.v2t.overlay
+              inputs.rust-overlay.overlays.default
+            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.p.flake = self;
+          }
+        ];
+        specialArgs = { inherit nixpkgs inputs; };
+      };
+      tardis = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/tardis/configuration.nix
+          inputs.sops-nix.nixosModules.sops
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [
+              inputs.neovim.overlay
+              inputs.nixpkgs-wayland.overlay
+              inputs.v2t.overlay
+              inputs.rust-overlay.overlays.default
+              inputs.berberman.overlay
+              (import ./overlays/sway/overlay.nix)
+              (import ./overlays/cgproxy/overlay.nix)
+            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.p.flake = self;
+          }
+        ];
+        specialArgs = { inherit nixpkgs inputs; };
+      };
     };
   };
 }
