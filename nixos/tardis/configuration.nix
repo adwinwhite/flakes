@@ -137,10 +137,10 @@
     settings = {
       substituters = pkgs.lib.mkBefore [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
-        "https://mirrors.ustc.edu.cn/nix-channels/store" 
+        # "https://mirrors.ustc.edu.cn/nix-channels/store"
         "https://nix-community.cachix.org"
         # "https://nixpkgs-wayland.cachix.org"
-        "https://berberman.cachix.org"
+        # "https://berberman.cachix.org"
       ];
       builders-use-substitutes = true;
       auto-optimise-store = true;
@@ -287,7 +287,10 @@
     };
 
 
-    logind.lidSwitch = "ignore";
+    logind = {
+      lidSwitch = "lock";
+      lidSwitchDocked = "ignore";
+    };
 
     # To use Plasma5
     xserver = {
