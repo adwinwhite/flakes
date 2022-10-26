@@ -67,47 +67,110 @@ vim.keymap.set("n", "<Leader>en", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
 
--- Completion-nvim
--- Use completion-nvim in every buffer
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*",
-	command = "lua require'completion'.on_attach()",
+-- Completion by nvim-cmp
+set.completeopt = "menu,menuone,noselect"
+local has_words_before = function()
+	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local luasnip = require("luasnip")
+local cmp = require("cmp")
+cmp.setup({
+	enabled = function()
+		-- disable completion in comments
+		local context = require("cmp.config.context")
+		-- keep command mode completion enabled when cursor is in a comment
+		if vim.api.nvim_get_mode().mode == "c" then
+			return true
+		else
+			return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+		end
+	end,
+	snippet = {
+		-- REQUIRED - you must specify a snippet engine
+		expand = function(args)
+			-- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+			require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
+			-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+			-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+		end,
+	},
+	window = {
+		-- completion = cmp.config.window.bordered(),
+		-- documentation = cmp.config.window.bordered(),
+	},
+	-- Cycle through completions with tab
+	mapping = {
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_next_item()
+			elseif luasnip.expand_or_jumpable() then
+				luasnip.expand_or_jump()
+			elseif has_words_before() then
+				cmp.complete()
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
+
+		["<S-Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_prev_item()
+			elseif luasnip.jumpable(-1) then
+				luasnip.jump(-1)
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
+	},
+	sources = cmp.config.sources({
+		{ name = "nvim_lsp" },
+		-- { name = "vsnip" }, -- For vsnip users.
+		{ name = "luasnip" }, -- For luasnip users.
+		-- { name = 'ultisnips' }, -- For ultisnips users.
+		-- { name = 'snippy' }, -- For snippy users.
+	}, {
+		{ name = "buffer" },
+	}),
 })
--- Cycle through completions with tab
-vim.cmd([[
-	inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-	inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-]])
-set.completeopt = "menuone,noinsert,noselect"
+
+
+-- Set configuration for specific filetype.
+-- cmp.setup.filetype("gitcommit", {
+-- sources = cmp.config.sources({
+-- { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
+-- }, {
+-- { name = "buffer" },
+-- }),
+-- })
+
+-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline({ "/", "?" }, {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
+	},
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
+		{ name = "cmdline" },
+	}),
+})
+
+-- Set up lspconfig.
+-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+-- require("lspconfig")["<YOUR_LSP_SERVER>"].setup({
+-- capabilities = capabilities,
+-- })
 set.shortmess:append("c")
-g.completion_enable_snippet = "vim-vsnip"
-g.completion_chain_complete_list = {
-	TelescopePrompt = {},
-	default = {
-		{
-			complete_items = { "lsp", "path" },
-		},
-		{
-			mode = "<c-p>",
-		},
-		{
-			mode = "<c-n>",
-		},
-	},
-	latex = {
-		{
-			complete_items = { "lsp", "path", "snippet" },
-		},
-		{
-			mode = "<c-p>",
-		},
-		{
-			mode = "<c-n>",
-		},
-	},
-}
-g.completion_auto_change_source = 1
-g.completion_matching_ignore_case = 1
+
 -- Nerd commenter
 -- Use compact syntax for prettified multi-line comments
 g.NERDCompactSexyComs = 1
