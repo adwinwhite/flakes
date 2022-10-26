@@ -26,12 +26,16 @@
           tree-sitter-scheme
         ]
       ))
-    completion-nvim
+    nvim-cmp
+    cmp-nvim-lsp
+    cmp-cmdline
+    cmp-cmdline-history
+    cmp-buffer
+    friendly-snippets
+    luasnip
+    cmp_luasnip
     telescope-nvim
     telescope-file-browser-nvim
-    completion-buffers
-    vim-vsnip
-    friendly-snippets
     vim-nix
     nerdcommenter
     formatter-nvim
