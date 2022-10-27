@@ -106,7 +106,7 @@
         export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
         export GOOGLE_DEFAULT_CLIENT_ID=`cat ${config.sops.secrets.google_default_client_id.path}`
         export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${config.sops.secrets.google_default_client_secret.path}`
-        exec ${super.chromium}/bin/chromium 
+        exec ${super.chromium}/bin/chromium "''$@"
       '';
       in
       pkgs.symlinkJoin {
@@ -244,7 +244,7 @@
   services = {
     v2ray = {
       enable = true;
-      configFile = "/etc/v2ray/config.json";
+      configFile = "/etc/v2ray/v2ray.json";
     };
     syncthing = {
       enable = true;
