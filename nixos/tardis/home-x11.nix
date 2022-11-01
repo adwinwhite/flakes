@@ -109,6 +109,28 @@
   };
 
   programs = {
+    ssh = {
+      enable = true;
+      serverAliveInterval = 240;
+      matchBlocks = {
+        "github.com" = {
+          hostname = "github.com";
+          user = "git";
+          identityFile = "~/.ssh/id_rsa";
+          extraOptions = {
+            AddKeysToAgent = "yes";
+          };
+        };
+        "github.com-adwingray" = {
+          hostname = "github.com";
+          user = "git";
+          identityFile = "~/.ssh/adwinking_rsa";
+          extraOptions = {
+            AddKeysToAgent = "yes";
+          };
+        };
+      };
+    };
     texlive = {
       enable = true;
       extraPackages = tpkgs: { inherit (tpkgs) scheme-full collection-langchinese ; };

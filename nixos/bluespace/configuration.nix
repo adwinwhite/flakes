@@ -168,10 +168,57 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    headscale = {
+      enable = true;
+      address = "0.0.0.0";
+      port = 8085;
+      dns = {
+        magicDns = false;
+      };
+      serverUrl = "https://headscale.adwin.win";
+      logLevel = "warn";
+      settings = {
+        logtail.enabled = false;
+      };
+    };
+
+    traefik = {
+      enable = true;
+      staticConfigOptions = builtins.toJson (import ./traefik-static.toml);
+      dynamicConfigOptions = builtins.toJson (import ./traefik-dynamic.toml);
+    };
+
     fail2ban.enable = true;
     openssh = {
       enable = true;
       passwordAuthentication = false;
+      extraConfig = ''
+        ClientAliveInterval 240
+        ClientAliveCountMax 120
+      '';
+    };
+    syncthing = {
+      enable = true;
+      user = "adwin";
+      dataDir = "/home/adwin/Sync";
+      configDir = "/home/adwin/Sync/.config/syncthing";
+      overrideDevices = true;     # overrides any devices added or deleted through the WebUI
+      overrideFolders = true;     # overrides any folders added or deleted through the WebUI
+      devices = {
+        "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
+        "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
+        "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
+      };
+      folders = {
+        "Logseq" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
+          devices = [ "MI10" "natsel" "Tardis" ];      # Which devices to share the folder with
+        };
+        "flakes" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/flakes";    # Which folder to add to Syncthing
+          devices = [ "MI10" "natsel" "Tardis" ];      # Which devices to share the folder with
+        };
+      };
     };
   };
 

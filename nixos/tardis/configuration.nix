@@ -145,7 +145,11 @@
       builders-use-substitutes = true;
       auto-optimise-store = true;
       trusted-users = [ "root" "adwin" ];
-      trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds=" ];
+      trusted-public-keys = [ 
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
+        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" 
+        "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds=" 
+      ];
     };
   };
 
@@ -255,11 +259,17 @@
       overrideFolders = true;     # overrides any folders added or deleted through the WebUI
       devices = {
         "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
+        "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
+        "bluespace" = { id = "2OOOY2Y-CIGAZR7-WRODB57-KCBQE7J-6BK6Z4Y-S44HSEF-SIPWY6U-VM3RKAG"; };
       };
       folders = {
         "Logseq" = {        # Name of folder in Syncthing, also the folder ID
           path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
-          devices = [ "MI10" ];      # Which devices to share the folder with
+          devices = [ "MI10" "natsel" "bluespace" ];      # Which devices to share the folder with
+        };
+        "flakes" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/flakes";    # Which folder to add to Syncthing
+          devices = [ "MI10" "natsel" "bluespace" ];      # Which devices to share the folder with
         };
       };
     };
@@ -274,7 +284,13 @@
     };
     resolved.enable = false;
     fail2ban.enable = false;
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      extraConfig = ''
+        ClientAliveInterval 60
+        ClientAliveCountMax 120
+      '';
+    };
 
     pipewire = {
       enable = true;
@@ -296,17 +312,10 @@
     xserver = {
       enable = true;
       layout = "us";
+      xautolock.time = 60;
       displayManager.sddm.enable = true;
       desktopManager.plasma5.enable = true;
     };
-
-    # tlp = {
-      # enable = true;
-      # settings = {
-        # CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        # CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      # };
-    # };
   };
 
   xdg = {
@@ -359,9 +368,6 @@
   ];
 
 
-  # programs = {
-    # sway.enable = true;
-  # };
 
   environment.etc = {
     "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";

@@ -175,12 +175,39 @@
   # Enable the OpenSSH daemon.
   services = {
     fail2ban.enable = true;
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      passwordAuthentication = false;
+    };
+    syncthing = {
+      enable = true;
+      user = "adwin";
+      dataDir = "/home/adwin/Sync";
+      configDir = "/home/adwin/.config/syncthing";
+      overrideDevices = true;     # overrides any devices added or deleted through the WebUI
+      overrideFolders = true;     # overrides any folders added or deleted through the WebUI
+      devices = {
+        "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
+        "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
+        "bluespace" = { id = "2OOOY2Y-CIGAZR7-WRODB57-KCBQE7J-6BK6Z4Y-S44HSEF-SIPWY6U-VM3RKAG"; };
+      };
+      folders = {
+        "Logseq" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
+          devices = [ "MI10" "Tardis" "bluespace" ];      # Which devices to share the folder with
+        };
+        "flakes" = {        # Name of folder in Syncthing, also the folder ID
+          path = "/home/adwin/flakes";    # Which folder to add to Syncthing
+          devices = [ "MI10" "Tardis" "bluespace" ];      # Which devices to share the folder with
+        };
+      };
+    };
+
   };
 
   environment.etc = {
     "frp/frps.ini".source = ./frps.ini;
-    "v2ray/config.json".text = builtins.readFile ./v2ray.json;
+    # "v2ray/config.json".text = builtins.readFile ./v2ray.json;
   };
 
   systemd.services.frps = {
@@ -196,15 +223,15 @@
     after = ["network.target"];
   };
 
-  systemd.services.v2ray = {
-    description = "a platform for building proxies to bypass network restrictions";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      DynamicUser = true;
-      ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/config.json";
-    };
-  };
+  # systemd.services.v2ray = {
+    # description = "a platform for building proxies to bypass network restrictions";
+    # wantedBy = [ "multi-user.target" ];
+    # after = [ "network.target" ];
+    # serviceConfig = {
+      # DynamicUser = true;
+      # ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/config.json";
+    # };
+  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
 
