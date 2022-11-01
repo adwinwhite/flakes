@@ -61,7 +61,8 @@
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 80 443 ];
+      checkReversePath = "loose";
     };
 
     # useDHCP = false;
@@ -168,12 +169,15 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    tailscale.enable = true;
     headscale = {
       enable = true;
       address = "0.0.0.0";
       port = 8085;
       dns = {
-        magicDns = false;
+        magicDns = true;
+        baseDomain = "hs.adwin.win";
+        domains = [];
       };
       serverUrl = "https://headscale.adwin.win";
       logLevel = "warn";
@@ -184,8 +188,43 @@
 
     traefik = {
       enable = true;
-      staticConfigOptions = builtins.toJson (import ./traefik-static.toml);
-      dynamicConfigOptions = builtins.toJson (import ./traefik-dynamic.toml);
+      staticConfigOptions = {
+        experimental.http3 = true;
+        entryPoints = {
+          web = {
+            address = ":80";
+            http.redirections.entryPoint = {
+              to = "websecure";
+              scheme = "https";
+              permanent = false;
+            };
+          };
+          websecure = {
+            address = ":443";
+            http.tls.certResolver = "le";
+            http3 = { };
+          };
+        };
+        certificatesResolvers.le.acme = {
+          email = "adwinw01@gmail.com";
+          storage = config.services.traefik.dataDir + "/acme.json";
+          keyType = "EC256";
+          tlsChallenge = { };
+        };
+      };
+      dynamicConfigOptions = {
+        http = {
+          routers = {
+            headscale = {
+              rule = "Host(`headscale.adwin.win`)"; 
+              service = "headscale";
+            };
+          };
+          services = {
+            headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
+          };
+        };
+      };
     };
 
     fail2ban.enable = true;
@@ -204,6 +243,7 @@
       configDir = "/home/adwin/Sync/.config/syncthing";
       overrideDevices = true;     # overrides any devices added or deleted through the WebUI
       overrideFolders = true;     # overrides any folders added or deleted through the WebUI
+      openDefaultPorts = true;
       devices = {
         "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
         "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };

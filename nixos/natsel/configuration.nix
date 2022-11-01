@@ -56,18 +56,15 @@
 
   time.timeZone = "Asia/Shanghai";
 
-  networking = rec {
+  networking = {
     hostName = "natsel";
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
       enable = true;
-      allowedTCPPortRanges = [
-        { from = 1; to = 65535; }
-      ];
-      allowedUDPPortRanges = [
-        { from = 1; to = 65535; }
-      ];
+      allowedTCPPorts = [ 22 80 443 11454 ];
+      checkReversePath = "loose";
     };
+
     useDHCP = false;
     nat = {
       enable = true;
@@ -81,54 +78,6 @@
     };
     # proxy.default = "http://127.0.0.1:10809";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-    wireguard.interfaces = {
-      # "wg0" is the network interface name. You can name the interface arbitrarily.
-      wg0 = {
-        # Determines the IP address and subnet of the server's end of the tunnel interface.
-        ips = [ "10.100.0.5/24" ];
-
-        # The port that WireGuard listens to. Must be accessible by the client.
-        listenPort = 11454;
-
-        # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-        # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-        postSetup = ''
-          ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
-          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-        '';
-
-        # This undoes the above command
-        postShutdown = ''
-          ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
-          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
-        '';
-
-        # Path to the private key file.
-        #
-        # Note: The private key can also be included inline via the privateKey option,
-        # but this makes the private key world-readable; thus, using privateKeyFile is
-        # recommended.
-        # privateKeyFile = config.sops.secrets.wireguard_private.path;
-        privateKeyFile = "/home/adwin/.config/privatekey";
-
-        peers = [
-          # List of allowed peers.
-          {
-            publicKey = "9ihTi1vqN0ei8FSYw88AcuxyV+JraiUE7/Wf/XLiuDI=";
-            allowedIPs = [ "10.100.0.2/32" ];
-          }
-          {
-            publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
-            allowedIPs = [ "10.100.0.3/32" ];
-          }
-          {
-            publicKey = "EQUXNOSDvMjV42cF+WXZYM+6+rMAkswgponGvSQMzgI=";
-            allowedIPs = [ "10.100.0.4/32" ];
-          }
-        ];
-      };
-    };
   };
 
 
@@ -155,7 +104,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wireguard-tools
-    frp
     v2ray
     bind
     lsof
@@ -174,6 +122,7 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    tailscale.enable = true;
     fail2ban.enable = true;
     openssh = {
       enable = true;
@@ -186,6 +135,7 @@
       configDir = "/home/adwin/.config/syncthing";
       overrideDevices = true;     # overrides any devices added or deleted through the WebUI
       overrideFolders = true;     # overrides any folders added or deleted through the WebUI
+      openDefaultPorts = true;
       devices = {
         "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
         "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
@@ -204,34 +154,6 @@
     };
 
   };
-
-  environment.etc = {
-    "frp/frps.ini".source = ./frps.ini;
-    # "v2ray/config.json".text = builtins.readFile ./v2ray.json;
-  };
-
-  systemd.services.frps = {
-    enable = true;
-    description = "Frp server to expose ssh";
-    unitConfig = {
-      Type = "simple";
-    };
-    serviceConfig = {
-      ExecStart = "${pkgs.frp}/bin/frps -c /etc/frp/frps.ini";
-    };
-    wantedBy = [ "multi-user.target" ];
-    after = ["network.target"];
-  };
-
-  # systemd.services.v2ray = {
-    # description = "a platform for building proxies to bypass network restrictions";
-    # wantedBy = [ "multi-user.target" ];
-    # after = [ "network.target" ];
-    # serviceConfig = {
-      # DynamicUser = true;
-      # ExecStart = "${pkgs.v2ray}/bin/v2ray -c /etc/v2ray/config.json";
-    # };
-  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
 
