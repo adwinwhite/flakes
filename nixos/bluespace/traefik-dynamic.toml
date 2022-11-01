@@ -1,0 +1,5 @@
+[http.routers]
+  [http.routers.headscale]
+  rule = "Host(`headscale.adwin.win`)"
+  [http.routers.blog.tls]
+    certResolver = "myresolver"
