@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    headscale
+    tailscale
     nil
     fzf
     py3
