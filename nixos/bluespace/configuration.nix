@@ -62,6 +62,7 @@
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22 80 443 ];
+      allowedUDPPorts = [ 41641 3478 ];
       checkReversePath = "loose";
     };
 
@@ -135,6 +136,7 @@
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCXwWJH+vsxzntGdP0Cn4piSp1Tocg98YIrvzQIaHbL9wW/1Jj5w9bOYtFP5XbWQSQjbHqH04ISB6boV08Pb41Fs3iCwVXMdUa6qkRh9z0UmXq74Vp58AJ3ONQFOQM/IYkbMFVWE1TjbrXlA/dpPhXKBdCj2ZA7gParqXEfk6KAVNKnFED02YvqoVotOzcfH9nlsMzMRVpfm6he0aP04RZE/Bs/UXzuQXZEwnOBYpuDSLW+CQcoxGhEKgTxgDnfdLNqYyp6rVHWy0+b46fbx1JVU02xMH8YplrIC/b/ysBVboCPf79gZPnw7jQNf+EX9sAm2bNuje1DSSGqivpLe199 adwin@Tardis" 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVot4JY8t81DTWEe3St37AAY1htXmHsQb7K0NVtz5pU adwinw01@gmail.com"
     ];
   };
 
@@ -150,7 +152,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wireguard-tools
-    frp
     bind
     lsof
   ];
@@ -175,14 +176,21 @@
       address = "0.0.0.0";
       port = 8085;
       dns = {
-        magicDns = true;
+        magicDns = false;
         baseDomain = "hs.adwin.win";
         domains = [];
+        nameservers = [
+          "1.1.1.1"
+          "8.8.8.8"
+          "223.5.5.5"
+          "114.114.114.114"
+        ];
       };
       serverUrl = "https://headscale.adwin.win";
       logLevel = "warn";
       settings = {
         logtail.enabled = false;
+        dns_config.override_local_dns = false;
       };
     };
 
@@ -216,7 +224,7 @@
         http = {
           routers = {
             headscale = {
-              rule = "Host(`headscale.adwin.win`)"; 
+              rule = "Host(`headscale.adwin.win`)";
               service = "headscale";
             };
           };

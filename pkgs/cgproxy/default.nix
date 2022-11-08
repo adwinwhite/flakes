@@ -12,6 +12,8 @@ stdenv.mkDerivation {
     fetchSubmodules = true;
   };
 
+  patches = [ ./env_config_file.patch ];
+
   postPatch = "patchShebangs *.sh";
 
   buildInputs = [ 
@@ -50,9 +52,6 @@ stdenv.mkDerivation {
       which
       v2ray
     ]}
-    echo '${builtins.readFile ./../../programs/cli/cgproxy.json}' > $out/etc/cgproxy/config.json  
-    sed -i '252i ip6tables -w 60 -t mangle -A TPROXY_OUT -m mark --mark 0xff -j RETURN' $out/share/cgproxy/scripts/cgroup-tproxy.sh
-    sed -i '208i iptables -w 60 -t mangle -A TPROXY_OUT -m mark --mark 0xff -j RETURN' $out/share/cgproxy/scripts/cgroup-tproxy.sh
   '';
 
   meta = with lib; {

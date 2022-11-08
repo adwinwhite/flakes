@@ -1,6 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    headscale
+    bat
     rage
     htop
     lsof

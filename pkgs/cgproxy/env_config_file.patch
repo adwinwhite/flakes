@@ -1,0 +1,20 @@
+diff --git a/src/cgproxyd.hpp b/src/cgproxyd.hpp
+index 58e8a74..45a1676 100644
+--- a/src/cgproxyd.hpp
++++ b/src/cgproxyd.hpp
+@@ -309,8 +309,13 @@ public:
+ 
+     assignStaticInstance();
+ 
+-    if (config.loadFromFile(DEFAULT_CONFIG_FILE)!=SUCCESS) {
+-      error("load config file failed");
++    if (const char* env_p = std::getenv("CGPROXY_CONFIG_FILE_PATH")) {
++      if (config.loadFromFile(string(env_p))!=SUCCESS) {
++        error("load environemntal config file failed");
++        return -1;
++      }
++    } else if (config.loadFromFile(DEFAULT_CONFIG_FILE)!=SUCCESS) {
++      error("load default config file failed");
+       return -1;
+     }
+     applyConfig();
