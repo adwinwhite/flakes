@@ -1,8 +1,9 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    tailscale
     headscale
+    killall
+    tailscale
     # black
     socat
     htop

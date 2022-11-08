@@ -32,10 +32,11 @@
   nix = {
     settings = {
       substituters = pkgs.lib.mkBefore [
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
-        "https://mirrors.ustc.edu.cn/nix-channels/store" 
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=38" 
+        "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39" 
         "https://nix-community.cachix.org"
       ];
+      substitute = true;
       builders-use-substitutes = true;
       auto-optimise-store = true;
       trusted-users = [ "root" "adwin" ];
@@ -56,12 +57,23 @@
 
   time.timeZone = "Asia/Shanghai";
 
-  networking = {
+  networking = rec {
     hostName = "natsel";
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 11454 ];
+      allowedTCPPortRanges = [
+        {
+          from = 1;
+          to = 65535;
+        }
+      ];
+      allowedUDPPortRanges = [
+        {
+          from = 1;
+          to = 65535;
+        }
+      ];
       checkReversePath = "loose";
     };
 
@@ -78,6 +90,52 @@
     };
     # proxy.default = "http://127.0.0.1:10809";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+    wireguard.interfaces = {
+      # "wg0" is the network interface name. You can name the interface arbitrarily.
+      wg0 = {
+        # Determines the IP address and subnet of the server's end of the tunnel interface.
+        ips = [ "10.100.0.5/24" ];
+
+        # The port that WireGuard listens to. Must be accessible by the client.
+        listenPort = 11454;
+
+        # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
+        # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
+        postSetup = ''
+          ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # This undoes the above command
+        postShutdown = ''
+          ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # Path to the private key file.
+        #
+        # Note: The private key can also be included inline via the privateKey option,
+        # but this makes the private key world-readable; thus, using privateKeyFile is
+        # recommended.
+        # privateKeyFile = config.sops.secrets.wireguard_private.path;
+        privateKeyFile = "/home/adwin/.config/privatekey";
+        peers = [
+          # List of allowed peers.
+          {
+            publicKey = "9ihTi1vqN0ei8FSYw88AcuxyV+JraiUE7/Wf/XLiuDI=";
+            allowedIPs = [ "10.100.0.2/32" ];
+          }
+          {
+            publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
+            allowedIPs = [ "10.100.0.3/32" ];
+          }
+          {
+            publicKey = "EQUXNOSDvMjV42cF+WXZYM+6+rMAkswgponGvSQMzgI=";
+            allowedIPs = [ "10.100.0.4/32" ];
+          }
+        ];
+      };
+    };
   };
 
 
@@ -122,8 +180,66 @@
 
   # Enable the OpenSSH daemon.
   services = {
+
+    nginx = {
+      enable = true;
+      virtualHosts = {
+        "www.adwin.icu" = {
+          root = "/var/www/blog";
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 8081;
+            }
+          ];
+        };
+      };
+    };
+    traefik = {
+      enable = true;
+      staticConfigOptions = {
+        experimental.http3 = true;
+        entryPoints = {
+          web = {
+            address = ":80";
+            http.redirections.entryPoint = {
+              to = "websecure";
+              scheme = "https";
+              permanent = false;
+            };
+          };
+          websecure = {
+            address = ":443";
+            http.tls.certResolver = "le";
+            http3 = { };
+          };
+        };
+        certificatesResolvers.le.acme = {
+          email = "adwinw01@gmail.com";
+          storage = config.services.traefik.dataDir + "/acme.json";
+          keyType = "EC256";
+          tlsChallenge = { };
+        };
+      };
+      dynamicConfigOptions = {
+        http = {
+          routers = {
+            blog = {
+              rule = "Host(`www.adwin.icu`) && Path(`/`)";
+              service = "blog";
+            };
+          };
+          services = {
+            blog.loadBalancer.servers = [{ url = "http://localhost:8081"; }];
+          };
+        };
+      };
+    };
+
     tailscale.enable = true;
+
     fail2ban.enable = true;
+
     openssh = {
       enable = true;
       passwordAuthentication = false;

@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/cgproxy.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -81,6 +82,13 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
+    v2ray = super.symlinkJoin {
+      name = "v2ray";
+      paths = [ super.v2ray ];
+      postBuild = ''
+        sed -i '7i LimitNOFILE=102400' $out/lib/systemd/system/v2ray.service
+      '';
+    };
     py3 = let
       python-with-my-packages = super.python3.withPackages (p: with p; [
         pandas
@@ -136,7 +144,7 @@
   nix = {
     settings = {
       substituters = pkgs.lib.mkBefore [
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39" 
         # "https://mirrors.ustc.edu.cn/nix-channels/store"
         "https://nix-community.cachix.org"
         # "https://nixpkgs-wayland.cachix.org"
@@ -147,8 +155,8 @@
       trusted-users = [ "root" "adwin" ];
       trusted-public-keys = [ 
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=" 
-        "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds=" 
+        # "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+        # "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds="
       ];
     };
   };
@@ -165,7 +173,7 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-  networking = {
+  networking = rec {
     hostName = "tardis";
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall.enable = false;
@@ -180,6 +188,57 @@
       dns = "none";
       unmanaged = [ "interface-name:ve-*" ];
     };
+    nameservers = [
+      "127.0.0.1"
+    ];
+    wireguard.interfaces = {
+      # "wg0" is the network interface name. You can name the interface arbitrarily.
+      wg0 = {
+        # Determines the IP address and subnet of the server's end of the tunnel interface.
+        ips = [ "10.100.0.2/24" ];
+
+        # The port that WireGuard listens to. Must be accessible by the client.
+        # listenPort = 51820;
+
+        # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
+        # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
+        postSetup = ''
+          ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # This undoes the above command
+        postShutdown = ''
+          ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
+        '';
+
+        # Path to the private key file.
+        #
+        # Note: The private key can also be included inline via the privateKey option,
+        # but this makes the private key world-readable; thus, using privateKeyFile is
+        # recommended.
+        privateKeyFile = config.sops.secrets.wireguard_private.path;
+
+        peers = [
+          # List of allowed peers.
+          { # Feel free to give a meaning full name
+            # Public key of the peer (not a file path).
+            publicKey = "6uNLTaYV8Y3H5O9ZZsxH6Xxf+6KzG6n8NYN538df1zI=";
+            # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+            allowedIPs = [ "10.100.0.0/24" ];
+            endpoint = "175.24.187.39:11454";
+            persistentKeepalive = 15;
+          }
+          {
+            publicKey = "wgSlNdIqrMxlzNfZiNYWmHdbhqtvqlKJf2uI+srKYhk=";
+            allowedIPs = [ "10.100.0.3/32" ];
+            endpoint = "192.168.123.131:11454";
+            persistentKeepalive = 15;
+          }
+        ];
+      };
+    };
   };
 
   services = {
@@ -187,6 +246,12 @@
     v2ray = {
       enable = true;
       configFile = "/etc/v2ray/v2ray.json";
+    };
+    cgproxy = {
+      enable = true;
+      settings = {
+        enable_gateway = true;
+      };
     };
     syncthing = {
       enable = true;
@@ -313,23 +378,23 @@
   };
 
 
-  systemd.services = {
-    cgproxy = {
-      enable = true;
-      after = [
-        "network.target"
-        "network-online.target"
-      ];
-      description = "cgproxy service wrapped";
-      wantedBy = [
-        "multi-user.target"
-      ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.cgproxy}/bin/cgproxyd --execsnoop";
-      };
-    };
-  };
+  # systemd.services = {
+    # cgproxy = {
+      # enable = true;
+      # after = [
+        # "network.target"
+        # "network-online.target"
+      # ];
+      # description = "cgproxy service wrapped";
+      # wantedBy = [
+        # "multi-user.target"
+      # ];
+      # serviceConfig = {
+        # Type = "simple";
+        # ExecStart = "${pkgs.cgproxy}/bin/cgproxyd --execsnoop";
+      # };
+    # };
+  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
   
