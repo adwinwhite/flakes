@@ -1,6 +1,10 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    mailutils
+    bat
+    gh
+    tmux
     headscale
     killall
     tailscale
@@ -11,11 +15,10 @@
     tree
     ripgrep-all
     ripgrep
+    fd
     xh
     file
     trash-cli
-    usbutils
-    pciutils
     nix-prefetch-github
     # nodePackages.pyright
     # nil
@@ -78,6 +81,83 @@
       inherit pkgs;
     };  
   };
+
+  systemd.user = {
+    services = {
+      "status_email_user@" = {
+        Unit = {
+          Description = "status email for %i to user";
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = let systemd-email = pkgs.writeShellApplication {
+            name = "systemd-email";
+
+            runtimeInputs = with pkgs; [ mailutils  ];
+
+            text = ''
+              mail -s "Service $2 failed" -r bluespace@adwin.win "$1" <<ERRMAIL
+              Hi Adwin, 
+              There is something wrong with your logseq backup service. 
+              Would you like to have a check?
+
+              This is the log:
+
+              $(systemctl --user status --full "$2")
+
+              Best regards,
+              Bluespace
+              ERRMAIL
+            '';
+          }; in
+              "${systemd-email}/bin/systemd-email i@adwin.win %i";
+        };
+      };
+      logseq-backup = {
+        Unit = {
+          Description = "Backup logseq notes to github";
+          OnFailure = "status_email_user@%n.service";
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = let git-backup = pkgs.writeShellApplication {
+            name = "git-backup";
+
+            runtimeInputs = with pkgs; [ git openssh ];
+
+            text = ''
+              cd "$1"
+              git add ./* 
+              if output=$(git status --porcelain) && [ -z "$output" ]; then
+                # Working directory clean
+                :
+              else 
+                # Uncommitted changes
+                git commit -m "backup" && git push
+              fi
+              '';
+            }; in
+              "${git-backup}/bin/git-backup /home/adwin/Documents/TheNotes";
+        };
+      };
+    };
+
+    timers = {
+      logseq-backup = {
+        Unit = {
+          Description = "Backup logseq notes to github";
+        };
+        Timer = {
+          OnCalendar = "*-*-* 20:00:00 UTC";
+          Persistent = true;
+        };
+        Install = {
+          WantedBy= [ "timers.target" ];
+        };
+      };
+    };
+  };
+
 
   home.stateVersion = "22.05";
 }

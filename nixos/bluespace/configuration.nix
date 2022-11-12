@@ -44,6 +44,15 @@
     };
   };
 
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = {
+      "mail_hashed_passwords/i" = {};
+      "mail_hashed_passwords/bluespace" = {};
+    };
+  };
+
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
@@ -154,6 +163,8 @@
     wireguard-tools
     bind
     lsof
+    traefik-certs-dumper
+    watchexec
   ];
  
 
@@ -167,6 +178,43 @@
   # };
 
   # List services that you want to enable:
+
+
+  mailserver = {
+    enable = true;
+    fqdn = "mail.adwin.win";
+    domains = [ "adwin.win" ];
+
+    loginAccounts = {
+      "i@adwin.win" = {
+        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/i";
+        aliases = [ "adwin@adwin.win" ];
+        quota = "2G";
+      };
+      "bluespace@adwin.win" = {
+        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/bluespace";
+        quota = "2G";
+      };
+    };
+
+    indexDir = "/var/lib/dovecot/indices";
+    fullTextSearch.enable = false;
+    # forwards = {
+      # "i@adwin.win" = "adwinw01@gmail.com";
+    # };
+    useFsLayout = true;
+    hierarchySeparator = "/";
+
+    certificateScheme = 1;
+    certificateFile = "/root/acme/certs/mail.adwin.win.crt";
+    keyFile = "/root/acme/private/mail.adwin.win.key";
+
+    # Enable IMAP and POP3
+    enableImap = true;
+    enablePop3 = true;
+    enableImapSsl = true;
+    enablePop3Ssl = true;
+  };
 
   # Enable the OpenSSH daemon.
   services = {
@@ -194,6 +242,20 @@
       };
     };
 
+    nginx = {
+      enable = true;
+      virtualHosts = {
+        "mail.adwin.win" = {
+          root = "/var/www/mail";
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 8099;
+            }
+          ];
+        };
+      };
+    };
     traefik = {
       enable = true;
       staticConfigOptions = {
@@ -227,9 +289,14 @@
               rule = "Host(`headscale.adwin.win`)";
               service = "headscale";
             };
+            mail = {
+              rule = "Host(`mail.adwin.win`)";
+              service = "mail";
+            };
           };
           services = {
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
+            mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
           };
         };
       };
@@ -270,24 +337,24 @@
     };
   };
 
-  environment.etc = {
-    # frp.source = /home/adwin/.config/frp;
+
+  systemd.services = {
+    traefik-certs-dumper = {
+      enable = true;
+      after = [
+        "network.target"
+        "network-online.target"
+      ];
+      description = "cgproxy service wrapped";
+      wantedBy = [
+        "multi-user.target"
+      ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme'";
+      };
+    };
   };
-
-  # systemd.services.frpc = {
-    # enable = true;
-    # description = "Frp client to expose ssh";
-    # unitConfig = {
-      # Type = "simple";
-    # };
-    # serviceConfig = {
-      # ExecStart = "${pkgs.frp}/bin/frpc -c /etc/frp/frpc.ini";
-    # };
-    # wantedBy = [ "multi-user.target" ];
-    # after = ["network.target"];
-  # };
-
-
 
   systemd.services.NetworkManager-wait-online.enable = false;
 

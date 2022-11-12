@@ -3,6 +3,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
+    mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-22.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -88,7 +93,9 @@
         system = "x86_64-linux";
         modules = [ 
           ./nixos/bluespace/configuration.nix
+          inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
+          inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
               inputs.neovim.overlay
