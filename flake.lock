@@ -21,6 +21,22 @@
         "type": "github"
       }
     },
+    "blobs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1604995301,
+        "narHash": "sha256-wcLzgLec6SGJA8fx1OEN1yV/Py5b+U5iyYpksUY/yLw=",
+        "owner": "simple-nixos-mailserver",
+        "repo": "blobs",
+        "rev": "2cccdf1ca48316f2cfd1c9a0017e8de5a7156265",
+        "type": "gitlab"
+      },
+      "original": {
+        "owner": "simple-nixos-mailserver",
+        "repo": "blobs",
+        "type": "gitlab"
+      }
+    },
     "cachix": {
       "locked": {
         "lastModified": 1659446231,
@@ -185,6 +201,30 @@
         "type": "github"
       }
     },
+    "mailserver": {
+      "inputs": {
+        "blobs": "blobs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-22_05": "nixpkgs-22_05",
+        "utils": "utils_2"
+      },
+      "locked": {
+        "lastModified": 1655930346,
+        "narHash": "sha256-ht56HHOzEhjeIgAv5ZNFjSVX/in1YlUs0HG9c1EUXTM=",
+        "owner": "simple-nixos-mailserver",
+        "repo": "nixos-mailserver",
+        "rev": "f535d8123c4761b2ed8138f3d202ea710a334a1d",
+        "type": "gitlab"
+      },
+      "original": {
+        "owner": "simple-nixos-mailserver",
+        "ref": "nixos-22.05",
+        "repo": "nixos-mailserver",
+        "type": "gitlab"
+      }
+    },
     "neovim": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -248,6 +288,21 @@
       }
     },
     "nixpkgs-22_05": {
+      "locked": {
+        "lastModified": 1654936503,
+        "narHash": "sha256-soKzdhI4jTHv/rSbh89RdlcJmrPgH8oMb/PLqiqIYVQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "dab6df51387c3878cdea09f43589a15729cae9f4",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-22.05",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs-22_05_2": {
       "locked": {
         "lastModified": 1664201777,
         "narHash": "sha256-cUW9DqELUNi1jNMwVSbfq4yl5YGyOfeu+UHUUImbby0=",
@@ -329,6 +384,7 @@
         "berberman": "berberman",
         "flake-utils": "flake-utils_2",
         "home-manager": "home-manager",
+        "mailserver": "mailserver",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
         "nixpkgs-wayland": "nixpkgs-wayland",
@@ -365,7 +421,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "nixpkgs-22_05": "nixpkgs-22_05"
+        "nixpkgs-22_05": "nixpkgs-22_05_2"
       },
       "locked": {
         "lastModified": 1664204020,
@@ -388,6 +444,21 @@
         "owner": "numtide",
         "repo": "flake-utils",
         "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "utils_2": {
+      "locked": {
+        "lastModified": 1605370193,
+        "narHash": "sha256-YyMTf3URDL/otKdKgtoMChu4vfVL3vCMkRqpGifhUn0=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5021eac20303a61fafe17224c087f5519baed54d",
         "type": "github"
       },
       "original": {
