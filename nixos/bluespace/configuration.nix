@@ -50,6 +50,7 @@
     secrets = {
       "mail_hashed_passwords/i" = {};
       "mail_hashed_passwords/bluespace" = {};
+      "mail_hashed_passwords/1" = {};
     };
   };
 
@@ -193,6 +194,10 @@
       };
       "bluespace@adwin.win" = {
         hashedPasswordFile = "/run/secrets/mail_hashed_passwords/bluespace";
+        quota = "2G";
+      };
+      "1@adwin.win" = {
+        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/1";
         quota = "2G";
       };
     };
