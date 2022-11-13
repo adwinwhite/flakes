@@ -187,7 +187,9 @@ vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions()<
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
 
 local nvim_lsp = require("lspconfig")
-nvim_lsp.racket_langserver.setup({})
+nvim_lsp.racket_langserver.setup({
+	autostart = false,
+})
 nvim_lsp.fortls.setup({})
 nvim_lsp.pyright.setup({})
 nvim_lsp.nil_ls.setup({})

@@ -48,6 +48,7 @@ in
         };
         description = lib.mdDoc ''
           The configuration.
+          `program_noproxy` and `program_proxy` must be provided in `environment.systemPackages`.
           See <https://github.com/springzfx/cgproxy#configuration>.
         '';
       };

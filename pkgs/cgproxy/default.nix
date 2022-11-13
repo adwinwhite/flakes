@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib, util-linux, makeWrapper, procps, iproute2, iptables, coreutils-full, v2ray, which }:
+{ lib, stdenv, fetchFromGitHub, clang, libbpf, nlohmann_json, cmake, libelf, zlib, util-linux, makeWrapper, procps, iproute2, iptables, coreutils-full, which }:
 
 stdenv.mkDerivation {
   pname = "cgproxy";
@@ -43,14 +43,16 @@ stdenv.mkDerivation {
   '';
 
   postFixup = ''
-    wrapProgram $out/bin/cgproxy --prefix PATH : ${lib.makeBinPath [
-      util-linux
-      procps
-      coreutils-full
-      iproute2
-      iptables
-      which
-      v2ray
+    wrapProgram $out/bin/cgproxy --prefix PATH : ${lib.concatStringsSep ":"  [
+      "/run/current-system/sw/bin"
+      (lib.makeBinPath [
+        util-linux
+        procps
+        coreutils-full
+        iproute2
+        iptables
+        which
+      ])
     ]}
   '';
 
