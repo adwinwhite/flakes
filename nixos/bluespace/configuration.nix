@@ -51,6 +51,17 @@
       "mail_hashed_passwords/i" = {};
       "mail_hashed_passwords/bluespace" = {};
       "mail_hashed_passwords/1" = {};
+      "aggv2sub_token" = {};
+      "traefik_dashboard_password" = {};
+      "v2ray_subscriptions/v2spacex" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "v2ray_subscriptions/tomlink" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "v2ray_subscriptions/feiniaoyun" = {
+        sopsFile = ../secrets.yaml;
+      };
     };
   };
 
@@ -71,68 +82,11 @@
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedTCPPorts = [ 22 80 443 8056 ];
       allowedUDPPorts = [ 41641 3478 ];
       checkReversePath = "loose";
     };
-
-    # useDHCP = false;
-    # interfaces.enp0s3.useDHCP = true;
-
-    # nat = {
-      # enable = true;
-      # externalInterface = "wlp0s20u11";
-      # internalInterfaces = [ "wg0" ];
-    # };
-
-    # wireguard.interfaces = {
-      # # "wg0" is the network interface name. You can name the interface arbitrarily.
-      # wg0 = {
-        # # Determines the IP address and subnet of the server's end of the tunnel interface.
-        # ips = [ "10.100.0.3/24" ];
-
-        # # The port that WireGuard listens to. Must be accessible by the client.
-        # listenPort = 11454;
-
-        # # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-        # # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-        # postSetup = ''
-          # ${pkgs.iptables}/bin/iptables -A FORWARD -o ${nat.externalInterface} -j ACCEPT
-          # ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-        # '';
-
-        # # This undoes the above command
-        # postShutdown = ''
-          # ${pkgs.iptables}/bin/iptables -D FORWARD -o ${nat.externalInterface} -j ACCEPT
-          # ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
-        # '';
-
-        # # Path to the private key file.
-        # #
-        # # Note: The private key can also be included inline via the privateKey option,
-        # # but this makes the private key world-readable; thus, using privateKeyFile is
-        # # recommended.
-        # privateKeyFile = "/home/adwin/.wireguard/prikey";
-
-        # peers = [
-          # # List of allowed peers.
-          # { # Feel free to give a meaning full name
-            # # Public key of the peer (not a file path).
-            # publicKey = "6uNLTaYV8Y3H5O9ZZsxH6Xxf+6KzG6n8NYN538df1zI=";
-            # # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-            # allowedIPs = [ "10.100.0.0/24" ];
-            # endpoint = "175.24.187.39:11454";
-            # persistentKeepalive = 15;
-          # }
-          # {
-            # publicKey = "9ihTi1vqN0ei8FSYw88AcuxyV+JraiUE7/Wf/XLiuDI=";
-            # allowedIPs = [ "10.100.0.2/32" ];
-          # }
-        # ];
-      # };
-    # };
   };
-
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -167,19 +121,6 @@
     traefik-certs-dumper
     watchexec
   ];
- 
-
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
 
   mailserver = {
     enable = true;
@@ -265,6 +206,13 @@
       enable = true;
       staticConfigOptions = {
         experimental.http3 = true;
+        log = {
+          level = "INFO";
+        };
+        accessLog = {};
+        api = {
+          dashboard = true;
+        };
         entryPoints = {
           web = {
             address = ":80";
@@ -298,10 +246,33 @@
               rule = "Host(`mail.adwin.win`)";
               service = "mail";
             };
+            aggv2sub = {
+              rule = "Host(`icecream.adwin.win`) && Path(`/aggv2sub`) && Query(`token=${builtins.readFile /run/secrets/aggv2sub_token}`)";
+              service = "aggv2sub";
+              middlewares = [ "rewriteToRoot" ];
+            };
+            dashboard = {
+              rule = "Host(`icecream.adwin.win`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
+              service = "api@internal";
+              middlewares = [ "auth" ];
+            };
           };
           services = {
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
+            aggv2sub.loadBalancer.servers = [ { url = "http://localhost:8056"; }];
+          };
+          middlewares = {
+            rewriteToRoot = {
+              replacePath = {
+                path = "/";
+              };
+            };
+            auth = {
+              basicAuth = {
+                users = [ "adwin:${builtins.readFile /run/secrets/traefik_dashboard_password}" ];
+              };
+            };
           };
         };
       };
@@ -350,13 +321,28 @@
         "network.target"
         "network-online.target"
       ];
-      description = "cgproxy service wrapped";
+      description = "Dump traefik certs to files automatically";
       wantedBy = [
         "multi-user.target"
       ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme'";
+      };
+    };
+    aggv2sub = {
+      enable = true;
+      after = [
+        "network.target"
+        "network-online.target"
+      ];
+      description = "Aggregate all my subscriptions";
+      wantedBy = [
+        "multi-user.target"
+      ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.aggv2sub}/bin/aggv2sub";
       };
     };
   };
