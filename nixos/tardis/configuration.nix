@@ -77,8 +77,18 @@
         owner = config.users.users.adwin.name;
         group = config.users.users.adwin.group;
       };
-      "v2ray_subscriptions/v2spacex" = {};
-      "v2ray_subscriptions/tomlink" = {};
+      "v2ray_subscriptions/v2spacex" = {
+        sopsFile = ../secrets.yaml;
+        owner = "adwin";
+      };
+      "v2ray_subscriptions/tomlink" = {
+        sopsFile = ../secrets.yaml;
+        owner = "adwin";
+      };
+      "v2ray_subscriptions/feiniaoyun" = {
+        sopsFile = ../secrets.yaml;
+        owner = "adwin";
+      };
     };
   };
   nixpkgs.overlays = [ (self: super: {

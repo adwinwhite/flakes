@@ -225,7 +225,7 @@
         http = {
           routers = {
             blog = {
-              rule = "Host(`www.adwin.icu`) && Path(`/`)";
+              rule = "Host(`www.adwin.icu`)";
               service = "blog";
             };
           };

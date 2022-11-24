@@ -29,6 +29,12 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    aggv2sub = {
+      url = "github:adwingray/aggv2sub";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -99,8 +105,7 @@
           {
             nixpkgs.overlays = [
               inputs.neovim.overlay
-              inputs.nixpkgs-wayland.overlay
-              inputs.v2t.overlay
+              inputs.aggv2sub.overlay
               inputs.rust-overlay.overlays.default
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
@@ -136,7 +141,7 @@
           {
             nixpkgs.overlays = [
               inputs.neovim.overlay
-              inputs.nixpkgs-wayland.overlay
+              # inputs.nixpkgs-wayland.overlay
               inputs.v2t.overlay
               inputs.rust-overlay.overlays.default
               inputs.berberman.overlay
