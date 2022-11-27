@@ -31,7 +31,7 @@ set.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- Filetype-based configuration
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "python",
+	pattern = "proto",
 	command = "setlocal tabstop=4 shiftwidth=4 expandtab",
 })
 
@@ -133,6 +133,7 @@ cmp.setup({
 	}, {
 		{ name = "buffer" },
 	}),
+	preselect = cmp.PreselectMode.None,
 })
 
 

@@ -22,9 +22,18 @@
           tree-sitter-go
           tree-sitter-nix
           tree-sitter-lua
-          tree-sitter-json
           tree-sitter-scheme
-        ]
+          tree-sitter-bash
+          tree-sitter-vue
+          tree-sitter-json
+          tree-sitter-toml
+          tree-sitter-yaml
+          tree-sitter-html
+          tree-sitter-css
+        ] ++ (if builtins.hasAttr "tree-sitter-proto" pkgs 
+            then [ plugins.tree-sitter-markdown pkgs.tree-sitter-proto ]
+            else [ plugins.tree-sitter-markdown ]
+          )
       ))
     nvim-cmp
     cmp-nvim-lsp

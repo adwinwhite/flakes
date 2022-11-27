@@ -26,7 +26,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 15";
+      options = "--delete-older-than 15d";
     };
   };
   nix = {
@@ -199,6 +199,13 @@
       enable = true;
       staticConfigOptions = {
         experimental.http3 = true;
+        log = {
+          level = "DEBUG";
+        };
+        accessLog = {};
+        api = {
+          dashboard = true;
+        };
         entryPoints = {
           web = {
             address = ":80";
@@ -228,9 +235,32 @@
               rule = "Host(`www.adwin.icu`)";
               service = "blog";
             };
+            artplace-ws = {
+              rule = "Host(`www.adwin.icu`) && (Path(`/ws`) || Path(`/echo`) || PathPrefix(`/artplace`))";
+              service = "artplace-ws";
+              middlewares = [ "sslheader" ];
+            };
+            dashboard = {
+              rule = "Host(`www.adwin.icu`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
+              service = "api@internal";
+              middlewares = [ "auth" ];
+            };
           };
           services = {
             blog.loadBalancer.servers = [{ url = "http://localhost:8081"; }];
+            artplace-ws.loadBalancer.servers = [{ url = "http://10.100.0.2:8080"; }];
+          };
+          middlewares = {
+            sslheader = {
+              headers = {
+                customRequestHeaders.X-Forwarded-Proto = "https";
+              };
+            };
+            auth = {
+              basicAuth = {
+                users = [ "adwin:$2b$05$L9UmPVXiO5GnhXwYTcnF9.kiqAcqnyFUKT5eWCl5ZHKdAWDSsOq7a" ];
+              };
+            };
           };
         };
       };
