@@ -147,6 +147,7 @@
               inputs.berberman.overlay
               (import ./overlays/sway/overlay.nix)
               (import ./overlays/cgproxy/overlay.nix)
+              (import ./overlays/tree-sitter/gen-overlay.nix nixpkgs)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
