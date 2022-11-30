@@ -136,7 +136,6 @@ cmp.setup({
 	preselect = cmp.PreselectMode.None,
 })
 
-
 -- Set configuration for specific filetype.
 -- cmp.setup.filetype("gitcommit", {
 -- sources = cmp.config.sources({
@@ -188,6 +187,7 @@ vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions()<
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
 
 local nvim_lsp = require("lspconfig")
+nvim_lsp.volar.setup({})
 nvim_lsp.racket_langserver.setup({
 	autostart = false,
 })
