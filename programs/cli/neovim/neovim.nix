@@ -24,7 +24,9 @@
           tree-sitter-lua
           tree-sitter-scheme
           tree-sitter-bash
-          tree-sitter-vue
+          # tree-sitter-vue
+          tree-sitter-javascript
+          tree-sitter-typescript
           tree-sitter-json
           tree-sitter-toml
           tree-sitter-yaml

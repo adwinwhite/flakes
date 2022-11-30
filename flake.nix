@@ -76,6 +76,20 @@
           # Simple C++ Template
         '';
       };
+      python = {
+        path = ./templates/python;
+        description = "A simple Python project";
+        welcomeText = ''
+          # Simple Python Template
+        '';
+      };
+      coq = {
+        path = ./templates/coq;
+        description = "A simple Coq project";
+        welcomeText = ''
+          # Simple Coq Template
+        '';
+      };
     };
     nixosConfigurations = {
       natsel = nixpkgs.lib.nixosSystem {
