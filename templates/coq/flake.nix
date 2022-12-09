@@ -1,7 +1,8 @@
 {
-  description = "A Racket project devShell";
+  description = "A Coq project devShell";
 
   inputs = {
+    # using pinned nixpkgs, change it if needed.
     nixpkgs.url      = "nixpkgs/nixos-unstable";
     flake-utils.url  = "github:numtide/flake-utils";
   };
@@ -17,7 +18,7 @@
       {
         devShell = mkShell {
           buildInputs = [
-            racket
+            coq
           ];
 
           # shellHook = ''
