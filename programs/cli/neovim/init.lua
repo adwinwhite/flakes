@@ -346,6 +346,17 @@ require("formatter").setup({
 				}
 			end,
 		},
+		scheme = {
+			function()
+				return {
+					exe = "raco",
+					args = {
+						"fmt",
+					},
+					stdin = true,
+				}
+			end,
+		},
 	},
 })
 vim.opt.listchars = {

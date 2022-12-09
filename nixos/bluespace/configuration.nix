@@ -141,6 +141,10 @@
         hashedPasswordFile = "/run/secrets/mail_hashed_passwords/1";
         quota = "2G";
       };
+      "yjyzlib@adwin.win" = {
+        hashedPassword = "$2b$05$bq6w.Gsi3.T2603ZfLw/8usws6C/bvs48hIK5JpgmWCG25acVneFm";
+        quota = "512M";
+      };
     };
 
     indexDir = "/var/lib/dovecot/indices";

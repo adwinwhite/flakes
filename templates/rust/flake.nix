@@ -2,7 +2,8 @@
   description = "A Rust project devShell";
 
   inputs = {
-    nixpkgs.url      = "github:nixos/nixpkgs/nixos-unstable";
+    # using pinned nixpkgs; change it if needed. 
+    nixpkgs.url      = "nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url  = "github:numtide/flake-utils";
   };
@@ -22,7 +23,7 @@
             (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {
               extensions = [ "rust-src" "rust-analyzer" ];
             }))           
-            lldb
+            # lldb
           ];
 
           # shellHook = ''
