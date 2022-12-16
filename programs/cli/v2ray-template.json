@@ -1,0 +1,176 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "fakedns": [
+    {
+      "ipPool": "198.18.0.0/15",
+      "poolSize": 65535
+    },
+    {
+      "ipPool": "fc00::/18",
+      "poolSize": 65535
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "domain": [
+          "geosite:google",
+          "geosite:github",
+          "geosite:cloudflare",
+          "geosite:telegram",
+          "domain:v2fly.org"
+        ],
+        "outboundTag": "proxy"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5",
+          "114.114.114.114"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "port": 53,
+        "outboundTag": "dns-out"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:cn",
+          "domain:tsinghua.edu.cn"
+        ],
+        "domainMatcher": "mph",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "type": "field",
+        "port": 123,
+        "network": "udp",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private",
+          "geoip:cn"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    }
+  ],
+  "dns": {
+    "disableFallback": true,
+    "hosts": {
+      "geosite:category-ads": "127.0.0.1"
+    },
+    "servers": [
+      "https://cloudflare-dns.com/dns-query",
+      "https://dns.google/dns-query",
+      {
+        "address": "https://223.5.5.5/dns-query",
+        "domains": [
+          "geosite:cn",
+          "domain:server_domain"
+        ]
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "tag": "transparent4",
+      "listen": "127.0.0.1",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      }
+    },
+    {
+      "tag": "transparent6",
+      "listen": "::1",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      }
+    }
+  ]
+}

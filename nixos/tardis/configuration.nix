@@ -92,6 +92,15 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
+    filetype-nvim = super.vimUtils.buildVimPluginFrom2Nix {
+      name = "filetype-nvim";
+      src = super.fetchFromGitHub {
+        owner = "nathom";
+        repo = "filetype-nvim";
+        rev = "b522628a45a17d58fc0073ffd64f9dc9530a8027";
+        hash = "sha256-B+VvgQj8akiKe+MX/dV2/mdaaqF8s2INW3phdPJ5TFA=";
+      };
+    };
     v2ray = super.symlinkJoin {
       name = "v2ray";
       paths = [ super.v2ray ];
@@ -252,7 +261,7 @@
   };
 
   services = {
-    tailscale.enable = true;
+    tailscale.enable = false;
     v2ray = {
       enable = true;
       configFile = "/etc/v2ray/v2ray.json";

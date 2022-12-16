@@ -1,4 +1,7 @@
 local set = vim.opt
+set.tabstop = 4
+set.shiftwidth = 4
+set.expandtab = true
 set.wildmode = "longest,list,full"
 set.backspace = "indent,eol,start"
 set.number = true
@@ -30,10 +33,10 @@ set.foldmethod = "expr"
 set.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- Filetype-based configuration
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "proto",
-	command = "setlocal tabstop=4 shiftwidth=4 expandtab",
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+	-- pattern = "proto",
+	-- command = "setlocal tabstop=4 shiftwidth=4 expandtab",
+-- })
 
 -- Vimtex
 g.vimtex_view_method = "zathura"
@@ -421,5 +424,12 @@ require("lualine").setup({
 	},
 	tabline = {
 		lualine_a = { "buffers" },
+	},
+})
+require("filetype").setup({
+	overrides = {
+		extensions = {
+			kk = "koka",
+		},
 	},
 })

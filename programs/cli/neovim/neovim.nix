@@ -9,6 +9,7 @@
       ''
     ];
   plugins = with pkgs.vimPlugins; [
+    pkgs.filetype-nvim
     onedark-nvim
     lualine-nvim
     nvim-lspconfig
