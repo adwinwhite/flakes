@@ -159,7 +159,7 @@
       userEmail = "adwinw01@gmail.com";
       aliases = {
         co = "checkout";
-        tree = "log --graph --abbrev-commit --decorate --format=format:'%C(bold red)%h%C(reset) - %C(white)%s%C(reset) %C(dim white)- %an%C(reset) %C(bold cyan)- (%ar)%C(reset)' --all";
+        tree = "log --all --graph --format=format:'%C(dim yellow)%h%C(reset) -%C(auto)%d%Creset %C(white)%s%C(reset)%C(dim white) - %an%C(reset) %C(bold cyan)- (%ar)%C(reset)'";
       };
       extraConfig = {
         core = {
