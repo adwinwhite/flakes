@@ -92,6 +92,15 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
+    gebaar-libinput = super.gebaar-libinput.overrideAttrs (finalAttrs: previousAttrs: {
+      src = super.fetchFromGitHub {
+        owner = "9ary"; 
+        repo = "gebaar-libinput-fork"; 
+        rev = "098a1ef00af563b25267807bdc1feb5b09d81184"; 
+        sha256 = "+zBSy84wZoPtFkRfKgBODf34AlEKAuOv6QVXfxSNJVU=";
+        fetchSubmodules = false;  
+      };
+    });
     filetype-nvim = super.vimUtils.buildVimPluginFrom2Nix {
       name = "filetype-nvim";
       src = super.fetchFromGitHub {
