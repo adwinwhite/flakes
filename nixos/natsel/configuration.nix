@@ -13,6 +13,12 @@
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
   # boot.loader.efi.canTouchEfiVariables = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+    };
+  };
 
   # Enable flakes and gc
   nixpkgs.config.allowUnfree = true;
@@ -180,6 +186,16 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    # redis.servers = {
+      # "niltalk" = {
+        # enable = true;
+        # bind = "0.0.0.0";
+        # port = 6379;
+        # settings = {
+          # protected-mode = "no";
+        # };
+      # };
+    # };
 
     nginx = {
       enable = true;
@@ -258,7 +274,7 @@
             };
             auth = {
               basicAuth = {
-                users = [ "adwin:$2b$05$L9UmPVXiO5GnhXwYTcnF9.kiqAcqnyFUKT5eWCl5ZHKdAWDSsOq7a" ];
+                users = [ "adwin:$2b$05$7s4dj0Irk65RhBflO1djFOnCZjftfDwGAXH3hb50SJZl3UO/eekU6" ];
               };
             };
           };
@@ -266,7 +282,7 @@
       };
     };
 
-    tailscale.enable = true;
+    tailscale.enable = false;
 
     fail2ban.enable = true;
 
@@ -310,7 +326,7 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.11"; # Did you read the comment?
+  system.stateVersion = "22.11"; # Did you read the comment?
 
 }
 

@@ -9,8 +9,6 @@
       ''
     ];
   plugins = with pkgs.vimPlugins; [
-    pkgs.filetype-nvim
-    onedark-nvim
     lualine-nvim
     nvim-lspconfig
     # nvim-treesitter
@@ -56,5 +54,8 @@
     vimtex
     which-key-nvim
     rust-tools-nvim
-  ];
+  ] ++ (if builtins.hasAttr "filetype-nvim" pkgs 
+            then [ pkgs.filetype-nvim pkgs.vimPlugins.onedark-nvim ]
+            else [ pkgs.vimPlugins.onedark-nvim ]
+          );
 }

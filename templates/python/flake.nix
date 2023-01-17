@@ -1,7 +1,7 @@
 {
   description = "A poetry based Python development environment";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.poetry2nix = {
     url = "github:nix-community/poetry2nix";

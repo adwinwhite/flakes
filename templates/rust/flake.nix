@@ -2,8 +2,7 @@
   description = "A Rust project devShell";
 
   inputs = {
-    # using pinned nixpkgs; change it if needed. 
-    nixpkgs.url      = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url  = "github:numtide/flake-utils";
   };

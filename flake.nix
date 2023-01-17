@@ -139,6 +139,7 @@
               inputs.nixpkgs-wayland.overlay
               inputs.v2t.overlay
               inputs.rust-overlay.overlays.default
+              (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
@@ -159,6 +160,7 @@
               inputs.v2t.overlay
               inputs.rust-overlay.overlays.default
               inputs.berberman.overlay
+              (import ./overlays/misc.nix)
               (import ./overlays/sway/overlay.nix)
               (import ./overlays/cgproxy/overlay.nix)
               (import ./overlays/tree-sitter/gen-overlay.nix nixpkgs)

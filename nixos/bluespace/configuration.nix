@@ -13,6 +13,13 @@
   boot.cleanTmpDir = true;
   zramSwap.enable = true;
 
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+    };
+  };
+
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCXwWJH+vsxzntGdP0Cn4piSp1Tocg98YIrvzQIaHbL9wW/1Jj5w9bOYtFP5XbWQSQjbHqH04ISB6boV08Pb41Fs3iCwVXMdUa6qkRh9z0UmXq74Vp58AJ3ONQFOQM/IYkbMFVWE1TjbrXlA/dpPhXKBdCj2ZA7gParqXEfk6KAVNKnFED02YvqoVotOzcfH9nlsMzMRVpfm6he0aP04RZE/Bs/UXzuQXZEwnOBYpuDSLW+CQcoxGhEKgTxgDnfdLNqYyp6rVHWy0+b46fbx1JVU02xMH8YplrIC/b/ysBVboCPf79gZPnw7jQNf+EX9sAm2bNuje1DSSGqivpLe199 adwin@Tardis" 
   ];
@@ -168,7 +175,17 @@
 
   # Enable the OpenSSH daemon.
   services = {
-    tailscale.enable = true;
+    # redis.servers = {
+      # "niltalk" = {
+        # enable = true;
+        # bind = "0.0.0.0";
+        # port = 6379;
+        # settings = {
+          # protected-mode = "no";
+        # };
+      # };
+    # };
+    tailscale.enable = false;
     headscale = {
       enable = true;
       address = "0.0.0.0";
@@ -242,6 +259,10 @@
       dynamicConfigOptions = {
         http = {
           routers = {
+            chat = {
+              rule = "Host(`chat.adwin.win`)";
+              service = "chat";
+            };
             headscale = {
               rule = "Host(`headscale.adwin.win`)";
               service = "headscale";
@@ -262,6 +283,7 @@
             };
           };
           services = {
+            chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
             aggv2sub.loadBalancer.servers = [ { url = "http://localhost:8056"; }];
@@ -319,6 +341,22 @@
 
 
   systemd.services = {
+    actix-chat = {
+      enable = true;
+      after = [
+        "network.target"
+        "network-online.target"
+      ];
+      description = "simple web chat example with actix";
+      wantedBy = [
+        "multi-user.target"
+      ];
+      serviceConfig = {
+        Type = "simple";
+        WorkingDirectory= "/home/adwin/examples/websockets/chat";
+        ExecStart = "/home/adwin/examples/target/release/websocket-chat-server";
+      };
+    };
     traefik-certs-dumper = {
       enable = true;
       after = [
