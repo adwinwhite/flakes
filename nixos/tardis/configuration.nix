@@ -101,22 +101,6 @@
         fetchSubmodules = false;  
       };
     });
-    filetype-nvim = super.vimUtils.buildVimPluginFrom2Nix {
-      name = "filetype-nvim";
-      src = super.fetchFromGitHub {
-        owner = "nathom";
-        repo = "filetype-nvim";
-        rev = "b522628a45a17d58fc0073ffd64f9dc9530a8027";
-        hash = "sha256-B+VvgQj8akiKe+MX/dV2/mdaaqF8s2INW3phdPJ5TFA=";
-      };
-    };
-    v2ray = super.symlinkJoin {
-      name = "v2ray";
-      paths = [ super.v2ray ];
-      postBuild = ''
-        sed -i '7i LimitNOFILE=102400' $out/lib/systemd/system/v2ray.service
-      '';
-    };
     py3 = let
       python-with-my-packages = super.python3.withPackages (p: with p; [
         pandas
