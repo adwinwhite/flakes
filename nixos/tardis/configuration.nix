@@ -270,6 +270,7 @@
       user = "adwin";
       dataDir = "/home/adwin/Sync";
       configDir = "/home/adwin/Sync/.config/syncthing";
+      extraFlags = [ "--allow-newer-config" ];
       overrideDevices = true;     # overrides any devices added or deleted through the WebUI
       overrideFolders = true;     # overrides any folders added or deleted through the WebUI
       devices = {
