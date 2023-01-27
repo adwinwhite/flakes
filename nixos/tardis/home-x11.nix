@@ -80,6 +80,7 @@
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
       "gebaar/gebaard.toml".text = builtins.readFile ./gebaard.toml;
       "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
+      "git/gitignore_global".text = builtins.readFile ./gitignore_global;
       # "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
       # No use since wrapped chromium does not read flags.conf.
       # "chromium-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland\n--enable-webrtc-pipewire-capturer=enabled\n--gtk-version=4";
@@ -164,6 +165,7 @@
       extraConfig = {
         core = {
           editor = "nvim";
+          excludeFile = "/home/adwin/.config/git/gitignore_global";
         };
         init = {
           defaultBranch = "main";
