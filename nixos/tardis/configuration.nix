@@ -16,6 +16,18 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.resumeDevice = "/dev/nvme0n1p2";
 
+  # systemd.targets.machines.enable = true;
+  systemd.nspawn."archlinux" = {
+    enable = true;
+    execConfig = {
+      Boot = true;
+    };
+  };
+  # systemd.services."systemd-nspawn@archlinux" = {
+    # enable = true;
+    # wantedBy = [ "machines.target" ];
+  # };
+
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {

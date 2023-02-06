@@ -105,6 +105,7 @@
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
+            nix.registry.pkgs.flake = nixpkgs;
           }
         ];
         specialArgs = { inherit nixpkgs inputs; };
@@ -124,6 +125,7 @@
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
+            nix.registry.pkgs.flake = nixpkgs;
           }
         ];
         specialArgs = { inherit nixpkgs inputs; };
@@ -143,6 +145,7 @@
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
+            nix.registry.pkgs.flake = nixpkgs;
           }
         ];
         specialArgs = { inherit nixpkgs inputs; };
@@ -167,6 +170,7 @@
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
+            nix.registry.pkgs.flake = nixpkgs;
           }
         ];
         specialArgs = { inherit nixpkgs inputs; };
