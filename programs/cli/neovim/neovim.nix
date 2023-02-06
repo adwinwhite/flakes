@@ -1,4 +1,16 @@
-{ pkgs } : {
+{ pkgs } : let html5-vim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+                pname = "html5.vim";
+                version = "2020-08-22";
+                src = pkgs.fetchFromGitHub {
+                  owner = "othree";
+                  repo = "html5.vim";
+                  rev = "7c9f6f38ce4f9d35db7eeedb764035b6b63922c6";
+                  sha256 = "1hgbvdpmn3yffk5ahz7hz36a7f5zjc1k3pan5ybgncmdq9f4rzq6";
+                };
+                meta.homepage = "https://github.com/othree/html5.vim/";
+              };
+  in
+  {
   enable = true;
   package = pkgs.neovim-nightly;
   vimAlias = true;
@@ -9,6 +21,9 @@
       ''
     ];
   plugins = with pkgs.vimPlugins; [
+    html5-vim
+    vim-javascript
+    vim-svelte
     lualine-nvim
     nvim-lspconfig
     # nvim-treesitter

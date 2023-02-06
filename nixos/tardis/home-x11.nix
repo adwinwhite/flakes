@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    poetry
     traceroute
     headscale
     tailscale
