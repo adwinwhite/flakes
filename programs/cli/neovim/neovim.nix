@@ -68,9 +68,7 @@
     vim-sleuth
     vimtex
     which-key-nvim
+    onedark-nvim
     pkgs.rust-tools-nvim
-  ] ++ (if builtins.hasAttr "filetype-nvim" pkgs 
-            then [ pkgs.filetype-nvim pkgs.vimPlugins.onedark-nvim ]
-            else [ pkgs.vimPlugins.onedark-nvim ]
-          );
+  ];
 }

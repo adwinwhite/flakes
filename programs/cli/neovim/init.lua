@@ -426,10 +426,3 @@ require("lualine").setup({
 		lualine_a = { "buffers" },
 	},
 })
-require("filetype").setup({
-	overrides = {
-		extensions = {
-			kk = "koka",
-		},
-	},
-})
