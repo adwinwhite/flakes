@@ -52,8 +52,18 @@
     };
     
   };
-  outputs = inputs@{ self, nixpkgs, ... }: {
-    nix.registry.nixpkgs.flake = nixpkgs;
+  outputs = inputs@{ self, nixpkgs, flake-utils, ... }: 
+    flake-utils.lib.eachSystem [ "aarch64-linux" "x86_64-linux" ] (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nix.registry.nixpkgs.flake = nixpkgs;
+      devShells.default = pkgs.mkShell {
+        buildInputs = [];
+      };
+    }
+    )
+  // {
     templates = {
       rust = {
         path = ./templates/rust;
@@ -90,6 +100,13 @@
           # Simple Coq Template
         '';
       };
+      node = {
+        path = ./templates/node;
+        description = "A simple NodeJS project";
+        welcomeText = ''
+          # Simple NodeJS Template
+        '';
+      };
     };
     nixosConfigurations = {
       natsel = nixpkgs.lib.nixosSystem {
@@ -122,6 +139,7 @@
               inputs.neovim.overlay
               inputs.aggv2sub.overlay
               inputs.rust-overlay.overlays.default
+              (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;

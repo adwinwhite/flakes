@@ -28,6 +28,13 @@
       },
       {
         "type": "field",
+        "domain": [
+          "geosite:tencent"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
         "ip": [
           "223.5.5.5",
           "114.114.114.114"
@@ -111,7 +118,7 @@
     }
   ],
   "dns": {
-    "disableFallback": true,
+    "disableFallback": false,
     "hosts": {
       "geosite:category-ads": "127.0.0.1"
     },
@@ -170,6 +177,18 @@
         "sockopt": {
           "tproxy": "tproxy"
         }
+      }
+    },
+    {
+      "port": 10809,
+      "protocol": "http",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false
       }
     }
   ]

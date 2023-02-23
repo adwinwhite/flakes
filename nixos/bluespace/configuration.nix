@@ -281,17 +281,28 @@
               service = "api@internal";
               middlewares = [ "auth" ];
             };
+            v2ray = {
+              rule = "Host(`v2ray.adwin.win`) && Path(`/ray`)";
+              service = "v2ray";
+              middlewares = [ "sslheader" ];
+            };
           };
           services = {
             chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
             aggv2sub.loadBalancer.servers = [ { url = "http://localhost:8056"; }];
+            v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
           };
           middlewares = {
             rewriteToRoot = {
               replacePath = {
                 path = "/";
+              };
+            };
+            sslheader = {
+              headers = {
+                customRequestHeaders.X-Forwarded-Proto = "https";
               };
             };
             auth = {
@@ -303,7 +314,11 @@
         };
       };
     };
-
+    
+    v2ray = {
+      enable = true;
+      config = builtins.fromJSON (builtins.readFile ./v2ray.json);
+    };
     fail2ban.enable = true;
     openssh = {
       enable = true;

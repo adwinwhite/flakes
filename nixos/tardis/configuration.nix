@@ -12,9 +12,25 @@
     ];
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.resumeDevice = "/dev/nvme0n1p2";
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    resumeDevice = "/dev/nvme0n1p2";
+    enableContainers = true;
+  };
+
+  virtualisation = {
+    virtualbox.host.enable = true;
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.dnsname.enable = true;
+    };
+  };
 
   # systemd.targets.machines.enable = true;
   systemd.nspawn."archlinux" = {
@@ -46,7 +62,6 @@
     XMODIFIERS = "@im=fcitx";
   };
 
-  virtualisation.virtualbox.host.enable = true;
 
   fonts = {
     fonts = with pkgs; [
@@ -394,6 +409,10 @@
     cgproxy
     pavucontrol
   ];
+
+  programs = {
+    kdeconnect.enable = true;
+  };
 
 
 
