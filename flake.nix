@@ -148,6 +148,24 @@
         ];
         specialArgs = { inherit nixpkgs inputs; };
       };
+      foosha = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/foosha/configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [
+              inputs.neovim.overlay
+              inputs.rust-overlay.overlays.default
+              (import ./overlays/misc.nix)
+            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.p.flake = self;
+            nix.registry.pkgs.flake = nixpkgs;
+          }
+        ];
+        specialArgs = { inherit nixpkgs inputs; };
+      };
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ 
