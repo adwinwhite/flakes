@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    ssh-tools
     poetry
     traceroute
     headscale
@@ -117,6 +118,7 @@
     ssh = {
       enable = true;
       serverAliveInterval = 240;
+      serverAliveCountMax = 6;
       matchBlocks = {
         "github.com" = {
           hostname = "github.com";

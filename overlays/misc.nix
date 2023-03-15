@@ -15,4 +15,5 @@ final: prev: {
       hash = "sha256-+/kK6MU2EiSBFbfqQJwLkJICXZpf8oiShbcvsls3V8A=";
     };
   };
+  ssh-tools = prev.writers.writePython3Bin "ssht" { libraries = []; } (builtins.readFile ./scripts/ssh_tools.py);
 }
