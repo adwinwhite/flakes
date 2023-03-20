@@ -400,8 +400,9 @@ rt.setup({
 			-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
 			["rust-analyzer"] = {
 				-- enable clippy on save
-				checkOnSave = {
+				check = {
 					command = "clippy",
+					extraArgs = { "--all", "--", "-W", "clippy::all" },
 				},
 			},
 		},

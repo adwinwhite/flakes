@@ -48,6 +48,11 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+# Create directory if nonexist.
+if not os.path.exists(base_dir):
+    os.makedirs(base_dir)
+
+
 if args.add_host:
     if not os.path.isfile(config_filename):
         with open(config_filename, "w") as config_file:

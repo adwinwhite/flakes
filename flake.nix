@@ -119,6 +119,7 @@
             nixpkgs.overlays = [
               inputs.neovim.overlay
               inputs.rust-overlay.overlays.default
+              (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
