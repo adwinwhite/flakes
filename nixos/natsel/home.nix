@@ -1,7 +1,8 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    headscale
+    ssh-tools
+    nil
     bat
     rage
     htop
