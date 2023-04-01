@@ -28,7 +28,7 @@
       dockerCompat = true;
 
       # Required for containers under podman-compose to be able to talk to each other.
-      defaultNetwork.dnsname.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
     };
   };
 
@@ -227,8 +227,9 @@
       dns = "none";
       unmanaged = [ "interface-name:ve-*" ];
     };
+    # Need to be a external address so that it will be forwarded to v2ray by cgproxy.
     nameservers = [
-      "127.0.0.1"
+      "223.5.5.5"
     ];
     wireguard.interfaces = {
       # "wg0" is the network interface name. You can name the interface arbitrarily.
@@ -289,6 +290,7 @@
     cgproxy = {
       enable = true;
       settings = {
+        enable_dns = false;
         enable_gateway = true;
       };
     };
@@ -321,13 +323,14 @@
         };
       };
     };
+    # Cause DNS resolution failure.
     smartdns = {
-      enable = true;
+      enable = false;
       settings = {
         bind = "[::]:53";
         cache-size = 4096;
         speed-check-mode = "none";
-        server = "8.8.8.8:53";
+        server = "223.5.5.5:53";
       };
     };
     resolved.enable = false;
@@ -347,7 +350,6 @@
       alsa.support32Bit = true;
       jack.enable = true;
       wireplumber.enable = true;
-      media-session.enable = false;
     };
 
 
@@ -417,6 +419,7 @@
 
   programs = {
     kdeconnect.enable = true;
+    fish.enable = true;
   };
 
 

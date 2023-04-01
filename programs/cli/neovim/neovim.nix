@@ -21,6 +21,9 @@
       ''
     ];
   plugins = with pkgs.vimPlugins; [
+    lspkind-nvim
+    copilot-lua
+    copilot-cmp
     html5-vim
     vim-javascript
     vim-svelte
