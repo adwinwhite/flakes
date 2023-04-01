@@ -20,6 +20,9 @@
       luafile ${builtins.toString ./init.lua}
       ''
     ];
+  extraPackages = with pkgs; [
+    nodejs
+  ];
   plugins = with pkgs.vimPlugins; [
     lspkind-nvim
     copilot-lua
