@@ -32,11 +32,13 @@ set.foldnestmax = 2
 set.foldmethod = "expr"
 set.foldexpr = "nvim_treesitter#foldexpr()"
 
--- Filetype-based configuration
--- vim.api.nvim_create_autocmd("FileType", {
--- pattern = "proto",
--- command = "setlocal tabstop=4 shiftwidth=4 expandtab",
--- })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "lua",
+	callback = function()
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.tabstop = 2
+	end
+})
 
 -- Vimtex
 g.vimtex_view_method = "zathura"
@@ -466,22 +468,9 @@ require("lualine").setup({
 	},
 })
 
-use({
-	"zbirenbaum/copilot.lua",
-	cmd = "Copilot",
-	event = "InsertEnter",
-	config = function()
-		require("copilot").setup({
-			suggestion = { enabled = false },
-			panel = { enabled = false },
-		})
-	end,
+require("copilot").setup({
+	suggestion = { enabled = false },
+	panel = { enabled = false },
 })
 
-use({
-	"zbirenbaum/copilot-cmp",
-	after = { "copilot.lua" },
-	config = function()
-		require("copilot_cmp").setup()
-	end,
-})
+require("copilot_cmp").setup()
