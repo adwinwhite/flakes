@@ -1,10 +1,13 @@
-{ pkgs, lib, config, ...}:
+{ pkgs, ...}:
 {
   home.packages = with pkgs; [
+    dogdns
+    tmux
+    jetbrains.idea-community
     ssh-tools
     poetry
     traceroute
-    headscale
+    # headscale
     tailscale
     nil
     fzf
@@ -13,7 +16,7 @@
     bottom
     stylua
     xclip           # x11 clipboard cli program
-    xournalpp
+    # xournalpp
     xdotool         # simulate keyboard and mouse input
     gebaar-libinput # touchpad gestures 
     firefox
@@ -22,7 +25,7 @@
     feh
     xdg-utils    # to use xdg-open
     zathura
-    texlab       # latex lsp
+    # texlab       # latex lsp
     firejail     # sandbox untrusted executable
     black        # code formatter for python
     alsa-utils
@@ -31,7 +34,7 @@
     mpv
     # nmap
     # mach-nix
-    wezterm    
+    # wezterm
     bind         # dnsutils like dig
     # appimage-run
     cmake
@@ -64,7 +67,7 @@
     tealdeer        # tldr: brief command help
     graphviz
     v2t
-    fortran-language-server
+    # fortran-language-server
     exa
     zellij
     powerline-fonts
@@ -73,7 +76,6 @@
     rage            # age in rust
     sops
     tdesktop
-    qv2ray
   ];
 
   xdg = {
@@ -139,7 +141,7 @@
       };
     };
     texlive = {
-      enable = true;
+      enable = false;
       extraPackages = tpkgs: { inherit (tpkgs) scheme-full collection-langchinese ; };
     };
     nix-index ={

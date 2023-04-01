@@ -34,8 +34,8 @@ set.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- Filetype-based configuration
 -- vim.api.nvim_create_autocmd("FileType", {
-	-- pattern = "proto",
-	-- command = "setlocal tabstop=4 shiftwidth=4 expandtab",
+-- pattern = "proto",
+-- command = "setlocal tabstop=4 shiftwidth=4 expandtab",
 -- })
 
 -- Vimtex
@@ -68,7 +68,11 @@ vim.keymap.set("n", "<C-s>", "<cmd>w<CR>")
 vim.keymap.set("n", "<F6>", "<cmd>source ~/.config/nvim/init.vim<CR>")
 vim.keymap.set("n", "<Leader>en", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
+vim.keymap.set('n', '<Leader>el', vim.diagnostic.setloclist)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
+vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename)
+
+
 
 -- Completion by nvim-cmp
 set.completeopt = "menu,menuone,noselect"
@@ -77,6 +81,7 @@ local has_words_before = function()
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
+local lspkind = require("lspkind")
 local luasnip = require("luasnip")
 local cmp = require("cmp")
 cmp.setup({
@@ -128,6 +133,7 @@ cmp.setup({
 		end, { "i", "s" }),
 	},
 	sources = cmp.config.sources({
+		{ name = "copilot" },
 		{ name = "nvim_lsp" },
 		-- { name = "vsnip" }, -- For vsnip users.
 		{ name = "luasnip" }, -- For luasnip users.
@@ -136,6 +142,38 @@ cmp.setup({
 	}, {
 		{ name = "buffer" },
 	}),
+	formatting = {
+		format = lspkind.cmp_format({
+			mode = "symbol", -- show only symbol annotations
+			maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+
+			symbol_map = { Copilot = "" },
+			-- The function below will be called before any actual modifications from lspkind
+			-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+			before = function(entry, vim_item)
+				return vim_item
+			end,
+		}),
+	},
+	sorting = {
+		priority_weight = 2,
+		comparators = {
+			require("copilot_cmp.comparators").prioritize,
+
+			-- Below is the default comparitor list and order for nvim-cmp
+			cmp.config.compare.offset,
+			-- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+			cmp.config.compare.exact,
+			cmp.config.compare.score,
+			cmp.config.compare.recently_used,
+			cmp.config.compare.locality,
+			cmp.config.compare.kind,
+			cmp.config.compare.sort_text,
+			cmp.config.compare.length,
+			cmp.config.compare.order,
+		},
+	},
 	preselect = cmp.PreselectMode.None,
 })
 
@@ -426,4 +464,24 @@ require("lualine").setup({
 	tabline = {
 		lualine_a = { "buffers" },
 	},
+})
+
+use({
+	"zbirenbaum/copilot.lua",
+	cmd = "Copilot",
+	event = "InsertEnter",
+	config = function()
+		require("copilot").setup({
+			suggestion = { enabled = false },
+			panel = { enabled = false },
+		})
+	end,
+})
+
+use({
+	"zbirenbaum/copilot-cmp",
+	after = { "copilot.lua" },
+	config = function()
+		require("copilot_cmp").setup()
+	end,
 })

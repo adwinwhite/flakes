@@ -3,7 +3,7 @@ nixpkgs: final: prev: {
     (nixpkgs + /pkgs/development/tools/parsing/tree-sitter/grammar.nix) { } {
       language = "proto";
       version  = "0.1.0";
-      source   = prev.fetchFromGitHub {
+      src   = prev.fetchFromGitHub {
         owner = "mitchellh";
         repo = "tree-sitter-proto";
         rev = "42d82fa18f8afe59b5fc0b16c207ee4f84cb185f";

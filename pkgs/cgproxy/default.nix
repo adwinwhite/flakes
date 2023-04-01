@@ -2,14 +2,14 @@
 
 stdenv.mkDerivation {
   pname = "cgproxy";
-  version = "0.19";
+  version = "0.20";
 
   src = fetchFromGitHub {
     owner = "springzfx";
     repo = "cgproxy";
-    rev = "aaa628a76b2911018fc93b2e3276c177e85e0861";
-    sha256 = "j3GIO4CWujH/Do6fkIe3ulRnzQyrmZXf9bWFp4KOdFg=";
-    fetchSubmodules = true;
+    rev = "86fe42eccb2ad9a42955e371c849b2e160f65ab6";
+    sha256 = "mI57YGB0wG2ePHb8HXFth6g7QXrz8x5gGv2or0oBrEA=";
+    fetchSubmodules = false;
   };
 
   patches = [ ./env_config_file.patch ];
