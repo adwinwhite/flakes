@@ -37,7 +37,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	callback = function()
 		vim.opt_local.shiftwidth = 2
 		vim.opt_local.tabstop = 2
-	end
+	end,
 })
 
 -- Vimtex
@@ -70,11 +70,9 @@ vim.keymap.set("n", "<C-s>", "<cmd>w<CR>")
 vim.keymap.set("n", "<F6>", "<cmd>source ~/.config/nvim/init.vim<CR>")
 vim.keymap.set("n", "<Leader>en", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<Leader>el', vim.diagnostic.setloclist)
+vim.keymap.set("n", "<Leader>el", vim.diagnostic.setloclist)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
-vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename)
-
-
+vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
 
 -- Completion by nvim-cmp
 set.completeopt = "menu,menuone,noselect"
@@ -112,6 +110,8 @@ cmp.setup({
 	},
 	-- Cycle through completions with tab
 	mapping = {
+		["<C-c>"] = cmp.mapping.abort(),
+		["<C-Space>"] = cmp.mapping.confirm({ select = true }),
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
