@@ -73,6 +73,7 @@ vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<Leader>el", vim.diagnostic.setloclist)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
+vim.keymap.set("n", "<Leader>ic", vim.lsp.buf.incoming_calls) 
 
 -- Completion by nvim-cmp
 set.completeopt = "menu,menuone,noselect"
@@ -110,8 +111,18 @@ cmp.setup({
 	},
 	-- Cycle through completions with tab
 	mapping = {
+		["<C-x>"] = cmp.mapping.complete({
+			config = {
+				sources = {
+					{ name = "copilot" },
+				},
+			},
+		}),
 		["<C-c>"] = cmp.mapping.abort(),
-		["<C-Space>"] = cmp.mapping.confirm({ select = true }),
+		["<C-Space>"] = cmp.mapping.confirm({
+			select = true,
+			behavior = cmp.ConfirmBehavior.Replace,
+		}),
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
@@ -443,6 +454,9 @@ rt.setup({
 				check = {
 					command = "clippy",
 					extraArgs = { "--all", "--", "-W", "clippy::all" },
+				},
+				diagnostics = {
+					enable = true,
 				},
 			},
 		},
