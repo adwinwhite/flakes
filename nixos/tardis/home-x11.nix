@@ -1,6 +1,7 @@
 { pkgs, ...}:
 {
   home.packages = with pkgs; [
+    comma
     dogdns
     tmux
     jetbrains.idea-community
@@ -119,8 +120,11 @@
   programs = {
     ssh = {
       enable = true;
-      serverAliveInterval = 240;
-      serverAliveCountMax = 6;
+      serverAliveInterval = 30;
+      serverAliveCountMax = 600;
+      extraConfig = ''
+        TCPKeepAlive yes
+      '';
       matchBlocks = {
         "github.com" = {
           hostname = "github.com";
