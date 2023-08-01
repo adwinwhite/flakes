@@ -107,6 +107,13 @@
           # Simple NodeJS Template
         '';
       };
+      basic = {
+        path = ./templates/basic;
+        description = "A simple project";
+        welcomeText = ''
+          # Simple Template
+        '';
+      };
     };
     nixosConfigurations = {
       natsel = nixpkgs.lib.nixosSystem {
