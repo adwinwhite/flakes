@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, modulesPath, home-manager, ... }:
+{ config, pkgs, ... }:
 
 {
   imports =
@@ -33,12 +33,12 @@
   };
 
   # systemd.targets.machines.enable = true;
-  systemd.nspawn."archlinux" = {
-    enable = true;
-    execConfig = {
-      Boot = true;
-    };
-  };
+  # systemd.nspawn."archlinux" = {
+    # enable = true;
+    # execConfig = {
+      # Boot = true;
+    # };
+  # };
   # systemd.services."systemd-nspawn@archlinux" = {
     # enable = true;
     # wantedBy = [ "machines.target" ];
@@ -64,7 +64,7 @@
 
 
   fonts = {
-    fonts = with pkgs; [
+    packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
@@ -179,8 +179,6 @@
       dates = "weekly";
       options = "--delete-older-than 15";
     };
-  };
-  nix = {
     settings = {
       substituters = pkgs.lib.mkBefore [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39" 
@@ -302,24 +300,26 @@
       extraFlags = [ "--allow-newer-config" ];
       overrideDevices = true;     # overrides any devices added or deleted through the WebUI
       overrideFolders = true;     # overrides any folders added or deleted through the WebUI
-      devices = {
-        "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
-        "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
-        "bluespace" = { id = "2OOOY2Y-CIGAZR7-WRODB57-KCBQE7J-6BK6Z4Y-S44HSEF-SIPWY6U-VM3RKAG"; };
-        "foosha" = { id = "3T57V4E-OBLREVP-FTQMFXT-Y4MKFGG-RPXT6P2-NAPB4LA-MKILV4I-6HQ7OAM"; };
-      };
-      folders = {
-        "Logseq" = {        # Name of folder in Syncthing, also the folder ID
-          path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
-          devices = [ "MI10" "natsel" "bluespace" ];      # Which devices to share the folder with
+      settings = {
+        devices = {
+          "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
+          "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
+          "bluespace" = { id = "2OOOY2Y-CIGAZR7-WRODB57-KCBQE7J-6BK6Z4Y-S44HSEF-SIPWY6U-VM3RKAG"; };
+          "foosha" = { id = "3T57V4E-OBLREVP-FTQMFXT-Y4MKFGG-RPXT6P2-NAPB4LA-MKILV4I-6HQ7OAM"; };
         };
-        "flakes" = {        # Name of folder in Syncthing, also the folder ID
-          path = "/home/adwin/flakes";    # Which folder to add to Syncthing
-          devices = [ "MI10" "natsel" "bluespace" "foosha" ];      # Which devices to share the folder with
-        };
-        "spot" = {
-          path = "/home/adwin/Code/python/spottest";    # Which folder to add to Syncthing
-          devices = [ "foosha" ];      # Which devices to share the folder with
+        folders = {
+          "Logseq" = {        # Name of folder in Syncthing, also the folder ID
+            path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
+            devices = [ "MI10" "natsel" "bluespace" ];      # Which devices to share the folder with
+          };
+          "flakes" = {        # Name of folder in Syncthing, also the folder ID
+            path = "/home/adwin/flakes";    # Which folder to add to Syncthing
+            devices = [ "MI10" "natsel" "bluespace" "foosha" ];      # Which devices to share the folder with
+          };
+          "spot" = {
+            path = "/home/adwin/Code/python/spottest";    # Which folder to add to Syncthing
+            devices = [ "foosha" ];      # Which devices to share the folder with
+          };
         };
       };
     };
@@ -428,25 +428,6 @@
     "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
     # "cgproxy/config.json".text = builtins.readFile ./../../programs/cli/cgproxy.json;
   };
-
-
-  # systemd.services = {
-    # cgproxy = {
-      # enable = true;
-      # after = [
-        # "network.target"
-        # "network-online.target"
-      # ];
-      # description = "cgproxy service wrapped";
-      # wantedBy = [
-        # "multi-user.target"
-      # ];
-      # serviceConfig = {
-        # Type = "simple";
-        # ExecStart = "${pkgs.cgproxy}/bin/cgproxyd --execsnoop";
-      # };
-    # };
-  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
   

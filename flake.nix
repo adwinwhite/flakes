@@ -4,7 +4,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-22.05";
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -206,7 +206,7 @@
               # inputs.nixpkgs-wayland.overlay
               inputs.v2t.overlay
               inputs.rust-overlay.overlays.default
-              inputs.berberman.overlay
+              inputs.berberman.overlays.default
               (import ./overlays/misc.nix)
               (import ./overlays/sway/overlay.nix)
               (import ./overlays/cgproxy/overlay.nix)
@@ -214,7 +214,9 @@
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
+            # for compatibility.
             nix.registry.pkgs.flake = nixpkgs;
+            nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
         specialArgs = { inherit nixpkgs inputs; };
