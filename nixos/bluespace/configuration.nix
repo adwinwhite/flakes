@@ -129,6 +129,8 @@
     watchexec
   ];
 
+  programs.fish.enable = true;
+
   mailserver = {
     enable = true;
     fqdn = "mail.adwin.win";
@@ -162,7 +164,7 @@
     useFsLayout = true;
     hierarchySeparator = "/";
 
-    certificateScheme = 1;
+    certificateScheme = "manual";
     certificateFile = "/root/acme/certs/mail.adwin.win.crt";
     keyFile = "/root/acme/private/mail.adwin.win.key";
 
@@ -384,7 +386,7 @@
       ];
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme'";
+        ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} --delay-run=10 '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme || ${pkgs.coreutils}/bin/echo \"Traefik cert dumper went wrong\" | ${pkgs.mailutils}/bin/mail -s \"Service Failure\" -r bluespace@adwin.win i@adwin.win'";
       };
     };
     aggv2sub = {
