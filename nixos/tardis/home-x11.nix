@@ -102,6 +102,10 @@
         };
       };
     };
+    kdeconnect = {
+      enable = true;
+      indicator = true;
+    };
   };
 
   systemd.user = {

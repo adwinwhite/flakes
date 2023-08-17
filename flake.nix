@@ -50,7 +50,7 @@
       url = "github:berberman/flakes";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }: 
     flake-utils.lib.eachSystem [ "aarch64-linux" "x86_64-linux" ] (system: let

@@ -2,12 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, modulesPath, home-manager, ... }:
+{ config, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./cloudflare-warp.nix
     ];
 
   boot.cleanTmpDir = true;
@@ -177,6 +178,10 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    services.cloudflare-warp = {
+      enable = true;
+      certificate = ./Cloudflare_CA.crt; # download here https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/install-cloudflare-cert/
+    };
     # redis.servers = {
       # "niltalk" = {
         # enable = true;
