@@ -122,6 +122,14 @@
   };
 
   programs = {
+    zoxide = {
+      enable = true;
+      options = [ "--cmd" "z" ];
+    };
+    starship = {
+      enable = true;
+      settings = builtins.fromTOML (builtins.readFile ../../programs/cli/starship.toml);
+    };
     ssh = {
       enable = true;
       serverAliveInterval = 30;
@@ -199,16 +207,17 @@
         eval (direnv hook fish)
       '';
       plugins = [
-        {
-          name = "theme-budspencer";
-          src = pkgs.fetchFromGitHub {
-            owner = "oh-my-fish";
-            "repo" = "theme-budspencer";
-            "rev" = "835335af8e58dac22894fdd271d3b37789710be2";
-            "sha256" = "kzg1RMj2s2HPWqz9FX/fWQUCiWI65q6U8TcA0QajaX4=";
-            "fetchSubmodules" = true;
-          };
-        }
+        { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+        # {
+          # name = "theme-budspencer";
+          # src = pkgs.fetchFromGitHub {
+            # owner = "oh-my-fish";
+            # "repo" = "theme-budspencer";
+            # "rev" = "835335af8e58dac22894fdd271d3b37789710be2";
+            # "sha256" = "kzg1RMj2s2HPWqz9FX/fWQUCiWI65q6U8TcA0QajaX4=";
+            # "fetchSubmodules" = true;
+          # };
+        # }
       ];
     };
     neovim = import ../../programs/cli/neovim/neovim.nix { 

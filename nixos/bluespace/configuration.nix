@@ -178,9 +178,9 @@
 
   # Enable the OpenSSH daemon.
   services = {
-    services.cloudflare-warp = {
+    cloudflare-warp = {
       enable = true;
-      certificate = ./Cloudflare_CA.crt; # download here https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/install-cloudflare-cert/
+      certificate = ./Cloudflare_CA.pem; # download here https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/install-cloudflare-cert/
     };
     # redis.servers = {
       # "niltalk" = {
@@ -192,29 +192,29 @@
         # };
       # };
     # };
-    tailscale.enable = false;
-    headscale = {
-      enable = true;
-      address = "0.0.0.0";
-      port = 8085;
-      dns = {
-        magicDns = false;
-        baseDomain = "hs.adwin.win";
-        domains = [];
-        nameservers = [
-          "1.1.1.1"
-          "8.8.8.8"
-          "223.5.5.5"
-          "114.114.114.114"
-        ];
-      };
-      serverUrl = "https://headscale.adwin.win";
-      logLevel = "warn";
-      settings = {
-        logtail.enabled = false;
-        dns_config.override_local_dns = false;
-      };
-    };
+    # tailscale.enable = false;
+    # headscale = {
+      # enable = true;
+      # address = "0.0.0.0";
+      # port = 8085;
+      # dns = {
+        # magicDns = false;
+        # baseDomain = "hs.adwin.win";
+        # domains = [];
+        # nameservers = [
+          # "1.1.1.1"
+          # "8.8.8.8"
+          # "223.5.5.5"
+          # "114.114.114.114"
+        # ];
+      # };
+      # serverUrl = "https://headscale.adwin.win";
+      # logLevel = "warn";
+      # settings = {
+        # logtail.enabled = false;
+        # dns_config.override_local_dns = false;
+      # };
+    # };
 
     nginx = {
       enable = true;
@@ -394,21 +394,21 @@
         ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} --delay-run=10 '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme || ${pkgs.coreutils}/bin/echo \"Traefik cert dumper went wrong\" | ${pkgs.mailutils}/bin/mail -s \"Service Failure\" -r bluespace@adwin.win i@adwin.win'";
       };
     };
-    aggv2sub = {
-      enable = true;
-      after = [
-        "network.target"
-        "network-online.target"
-      ];
-      description = "Aggregate all my subscriptions";
-      wantedBy = [
-        "multi-user.target"
-      ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.aggv2sub}/bin/aggv2sub";
-      };
-    };
+    # aggv2sub = {
+      # enable = true;
+      # after = [
+        # "network.target"
+        # "network-online.target"
+      # ];
+      # description = "Aggregate all my subscriptions";
+      # wantedBy = [
+        # "multi-user.target"
+      # ];
+      # serviceConfig = {
+        # Type = "simple";
+        # ExecStart = "${pkgs.aggv2sub}/bin/aggv2sub";
+      # };
+    # };
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;

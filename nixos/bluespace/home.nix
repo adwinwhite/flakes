@@ -5,7 +5,7 @@
     bat
     gh
     tmux
-    headscale
+    # headscale
     killall
     tailscale
     # black

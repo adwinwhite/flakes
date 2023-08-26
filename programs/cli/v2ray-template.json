@@ -30,6 +30,13 @@
       {
         "type": "field",
         "domain": [
+          "doamin:openai.com"
+        ],
+        "outboundTag": "ic-out"
+      },
+      {
+        "type": "field",
+        "domain": [
           "geosite:google",
           "geosite:github",
           "geosite:cloudflare",
@@ -105,6 +112,44 @@
       "streamSettings": {
         "sockopt": {
           "mark": 255
+        }
+      }
+    },
+    {
+      "tag": "ic-out",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "v2ray.adwin.win",
+            "port": 443,
+            "users": [
+              {
+                "alterId": 0,
+                "encryption": "",
+                "flow": "",
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "level": 8,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "fingerprint": "",
+          "serverName": "v2ray.adwin.win",
+          "show": false
+        },
+        "wsSettings": {
+          "headers": {
+            "Host": "v2ray.adwin.win"
+          },
+          "path": "/ray"
         }
       }
     }
