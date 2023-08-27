@@ -382,7 +382,7 @@ truncation_symbol = "… " # default = ""
 # fish_style_pwd_dir_length = 3 # default = 0
 # use_logical_path = false
 # use_os_path_sep = false
-format = "([](bg:color_background_base fg:color_base_red)[$read_only]($read_only_style)[](bg:color_background_base fg:color_base_red))[](bg:color_directory fg:color_background_base)[$path]($style)[](bg:color_directory fg:color_background_base)"
+format = "([](bg:color_background_base fg:color_base_red)[$read_only]($read_only_style)[](bg:color_base_red fg:color_background_base))[](bg:color_background_base fg:color_directory)[$path]($style)[](bg:color_directory fg:color_background_base)"
 repo_root_format = """\
     ([](bg:color_background_base fg:color_base_red)[$read_only]($read_only_style)[](bg:color_base_red fg:color_background_base))\
     [](bg:color_background_base fg:color_directory)\
