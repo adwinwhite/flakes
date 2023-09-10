@@ -52,11 +52,9 @@
           tree-sitter-yaml
           tree-sitter-html
           tree-sitter-css
-        ] ++ (if builtins.hasAttr "tree-sitter-proto" pkgs 
-            then [ plugins.tree-sitter-markdown pkgs.tree-sitter-proto ]
-            else [ plugins.tree-sitter-markdown ]
-          )
-      ))
+          tree-sitter-markdown
+        ])
+      )
     nvim-cmp
     cmp-nvim-lsp
     cmp-cmdline

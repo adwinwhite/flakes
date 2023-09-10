@@ -124,7 +124,7 @@
   programs = {
     zoxide = {
       enable = true;
-      options = [ "--cmd" "z" ];
+      options = [ "--cmd" "cd" ];
     };
     starship = {
       enable = true;
@@ -195,6 +195,9 @@
     };
     fish = {
       enable = true;
+      shellAliases = {
+        rm = "trash";
+      };
       shellInit = ''
         fish_vi_key_bindings
         bind -M insert -m default jj backward-char force-repaint
