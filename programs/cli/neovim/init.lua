@@ -260,6 +260,7 @@ nvim_lsp.racket_langserver.setup({
 	autostart = false,
 })
 nvim_lsp.fortls.setup({})
+nvim_lsp.bufls.setup({})
 nvim_lsp.pyright.setup({})
 nvim_lsp.nil_ls.setup({})
 nvim_lsp.gopls.setup({})
