@@ -37,6 +37,15 @@
       {
         "type": "field",
         "domain": [
+          "doamin:binance.com",
+          "doamin:binancefuture.com",
+          "doamin:binance.vision"
+        ],
+        "outboundTag": "ba-out"
+      },
+      {
+        "type": "field",
+        "domain": [
           "geosite:google",
           "geosite:github",
           "geosite:cloudflare",
@@ -148,6 +157,44 @@
         "wsSettings": {
           "headers": {
             "Host": "v2ray.adwin.win"
+          },
+          "path": "/ray"
+        }
+      }
+    },
+    {
+      "tag": "ba-out",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "foosha.adwin.win",
+            "port": 443,
+            "users": [
+              {
+                "alterId": 0,
+                "encryption": "",
+                "flow": "",
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "level": 8,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "fingerprint": "",
+          "serverName": "foosha.adwin.win",
+          "show": false
+        },
+        "wsSettings": {
+          "headers": {
+            "Host": "foosha.adwin.win"
           },
           "path": "/ray"
         }
