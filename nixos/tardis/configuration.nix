@@ -305,7 +305,7 @@
           "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
           "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
           "bluespace" = { id = "2OOOY2Y-CIGAZR7-WRODB57-KCBQE7J-6BK6Z4Y-S44HSEF-SIPWY6U-VM3RKAG"; };
-          "foosha" = { id = "3T57V4E-OBLREVP-FTQMFXT-Y4MKFGG-RPXT6P2-NAPB4LA-MKILV4I-6HQ7OAM"; };
+          "foosha" = { id = "OYGFLOR-JTEGDF3-XR2SE7I-E3FELLK-V6XAWW5-SPMKLFG-TZXGCXP-GMB3CQO"; };
         };
         folders = {
           "Logseq" = {        # Name of folder in Syncthing, also the folder ID
@@ -420,6 +420,7 @@
   programs = {
     kdeconnect.enable = true;
     fish.enable = true;
+    firejail.enable = true;
   };
 
 

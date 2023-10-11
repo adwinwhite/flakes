@@ -61,7 +61,7 @@
     # to use fail2ban I have to enable firewall though I dont' really need it
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 8056 ];
+      allowedTCPPorts = [ 22 80 443 8056 10001 ];
       allowedUDPPorts = [ 41641 3478 ];
       checkReversePath = "loose";
     };
@@ -94,14 +94,81 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wireguard-tools
     bind
     lsof
   ];
 
+  programs.fish.enable = true;
+
 
   # Enable the OpenSSH daemon.
   services = {
+    traefik = {
+      enable = true;
+      staticConfigOptions = {
+        experimental.http3 = true;
+        log = {
+          level = "WARNING";
+        };
+        accessLog = {};
+        api = {
+          dashboard = true;
+        };
+        entryPoints = {
+          web = {
+            address = ":80";
+            http.redirections.entryPoint = {
+              to = "websecure";
+              scheme = "https";
+              permanent = false;
+            };
+          };
+          websecure = {
+            address = ":443";
+            http.tls.certResolver = "le";
+            http3 = { };
+          };
+        };
+        certificatesResolvers.le.acme = {
+          email = "adwinw01@gmail.com";
+          storage = config.services.traefik.dataDir + "/acme.json";
+          keyType = "EC256";
+          tlsChallenge = { };
+        };
+      };
+      dynamicConfigOptions = {
+        http = {
+          routers = {
+            v2ray = {
+              rule = "Host(`foosha.adwin.win`) && Path(`/ray`)";
+              service = "v2ray";
+              middlewares = [ "sslheader" ];
+            };
+          };
+          services = {
+            v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
+          };
+          middlewares = {
+            rewriteToRoot = {
+              replacePath = {
+                path = "/";
+              };
+            };
+            sslheader = {
+              headers = {
+                customRequestHeaders.X-Forwarded-Proto = "https";
+              };
+            };
+          };
+        };
+      };
+    };
+
+    v2ray = {
+      enable = true;
+      config = builtins.fromJSON (builtins.readFile ./v2ray.json);
+    };
+
     fail2ban.enable = true;
     openssh = {
       enable = true;
@@ -130,10 +197,6 @@
           path = "/home/adwin/flakes";    # Which folder to add to Syncthing
           devices = [ "MI10" "natsel" "Tardis" "bluespace" ];      # Which devices to share the folder with
         };
-        "spot" = {
-          path = "/home/adwin/Code/python/spottest";    # Which folder to add to Syncthing
-          devices = [ "Tardis" ];      # Which devices to share the folder with
-        };
       };
     };
   };
@@ -147,7 +210,7 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
+  system.stateVersion = "23.05"; # Did you read the comment?
 
 }
 
