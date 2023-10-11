@@ -1,8 +1,6 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
-    poetry
-    bat
     tmux
     killall
     # black
@@ -71,10 +69,12 @@
         }
       ];
     };
-    neovim = import ../../programs/cli/neovim/neovim.nix { 
-      inherit pkgs;
-    };  
+    neovim = {
+      enable = true;
+      vimAlias = true;
+      viAlias = true;
+    };
   };
 
-  home.stateVersion = "22.05";
+  home.stateVersion = "23.05";
 }
