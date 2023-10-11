@@ -806,11 +806,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1679992460,
-        "narHash": "sha256-DzvkDA07ezV9epzbl4zyFWKW5zAJHuqa7SD/9GJp+uo=",
+        "lastModified": 1697013443,
+        "narHash": "sha256-UUgqCIIq9W8lY4JX9E8tL4Vmqgya8yllVRCAB7/vGSs=",
         "owner": "adwingray",
         "repo": "v2ray-tools",
-        "rev": "af258fde9d9f76bd30f09fda4708b28b8c472419",
+        "rev": "203c08386b51a02c8aa738932255212dcb3f7556",
         "type": "github"
       },
       "original": {
