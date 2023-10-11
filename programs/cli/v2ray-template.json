@@ -30,16 +30,16 @@
       {
         "type": "field",
         "domain": [
-          "doamin:openai.com"
+          "domain:openai.com"
         ],
         "outboundTag": "ic-out"
       },
       {
         "type": "field",
         "domain": [
-          "doamin:binance.com",
-          "doamin:binancefuture.com",
-          "doamin:binance.vision"
+          "domain:binance.com",
+          "domain:binancefuture.com",
+          "domain:binance.vision"
         ],
         "outboundTag": "ba-out"
       },
@@ -51,7 +51,7 @@
           "geosite:cloudflare",
           "geosite:telegram",
           "domain:v2fly.org",
-          "doamin:github.com"
+          "domain:github.com"
         ],
         "outboundTag": "proxy"
       },
