@@ -50,7 +50,7 @@
     lsof
     tree
     ripgrep
-    ripgrep-all
+    # ripgrep-all
     xh        # xh: curl in rust
     chromium
     file
@@ -69,7 +69,7 @@
     graphviz
     v2t
     # fortran-language-server
-    exa
+    eza
     zellij
     powerline-fonts
     killall
@@ -204,8 +204,8 @@
         bind -M insert \cf forward-char
         bind -M insert \cg forward-word
 	set -g -x EDITOR nvim
-        alias ls="exa"
-        alias ll="exa -1la"
+        alias ls="eza"
+        alias ll="eza -1la"
         bind -e \cl
         eval (direnv hook fish)
       '';

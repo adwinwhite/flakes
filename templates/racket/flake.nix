@@ -21,7 +21,7 @@
           ];
 
           # shellHook = ''
-            # alias ls=exa
+            # alias ls=eza
             # alias find=fd
           # '';
         };

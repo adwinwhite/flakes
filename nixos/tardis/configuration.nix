@@ -104,17 +104,21 @@
         owner = config.users.users.adwin.name;
         group = config.users.users.adwin.group;
       };
-      "v2ray_subscriptions/v2spacex" = {
-        sopsFile = ../secrets.yaml;
-        owner = "adwin";
-      };
-      "v2ray_subscriptions/tomlink" = {
-        sopsFile = ../secrets.yaml;
-        owner = "adwin";
-      };
-      "v2ray_subscriptions/feiniaoyun" = {
-        sopsFile = ../secrets.yaml;
-        owner = "adwin";
+      # "v2ray_subscriptions/v2spacex" = {
+        # sopsFile = ../secrets.yaml;
+        # owner = "adwin";
+      # };
+      # "v2ray_subscriptions/tomlink" = {
+        # sopsFile = ../secrets.yaml;
+        # owner = "adwin";
+      # };
+      # "v2ray_subscriptions/feiniaoyun" = {
+        # sopsFile = ../secrets.yaml;
+        # owner = "adwin";
+      # };
+      "config.dae" = {
+        sopsFile = ./config.dae;
+        format = "binary";
       };
     };
   };
@@ -281,17 +285,21 @@
 
   services = {
     tailscale.enable = false;
-    v2ray = {
+    dae = {
       enable = true;
-      configFile = "/etc/v2ray/v2ray.json";
+      configFile = config.sops.secrets."config.dae".path;
     };
-    cgproxy = {
-      enable = true;
-      settings = {
-        enable_dns = false;
-        enable_gateway = true;
-      };
-    };
+    # v2ray = {
+      # enable = true;
+      # configFile = "/etc/v2ray/v2ray.json";
+    # };
+    # cgproxy = {
+      # enable = true;
+      # settings = {
+        # enable_dns = false;
+        # enable_gateway = true;
+      # };
+    # };
     syncthing = {
       enable = true;
       user = "adwin";
@@ -411,9 +419,9 @@
   environment.systemPackages = with pkgs; [
     # wireguard
     wireguard-tools
-    v2ray
-    v2t
-    cgproxy
+    # v2ray
+    # v2t
+    # cgproxy
     pavucontrol
   ];
 
@@ -425,10 +433,10 @@
 
 
 
-  environment.etc = {
-    "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
-    # "cgproxy/config.json".text = builtins.readFile ./../../programs/cli/cgproxy.json;
-  };
+  # environment.etc = {
+    # "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
+    # # "cgproxy/config.json".text = builtins.readFile ./../../programs/cli/cgproxy.json;
+  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
   
