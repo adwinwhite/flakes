@@ -33,6 +33,7 @@
     lualine-nvim
     nvim-lspconfig
     # nvim-treesitter
+    nvim-ufo
     (nvim-treesitter.withPlugins (
         plugins: with plugins; [
           tree-sitter-c

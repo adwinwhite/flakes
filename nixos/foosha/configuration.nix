@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, modulesPath, home-manager, ... }:
+{ config, pkgs, home-manager, ... }:
 
 {
   imports =
@@ -144,9 +144,14 @@
               service = "v2ray";
               middlewares = [ "sslheader" ];
             };
+            tgbot = {
+              rule = "Host(`tgbot.adwin.win`)";
+              service = "tgbot";
+            };
           };
           services = {
             v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
+            tgbot.loadBalancer.servers = [ { url = "http://localhost:3000"; }];
           };
           middlewares = {
             rewriteToRoot = {

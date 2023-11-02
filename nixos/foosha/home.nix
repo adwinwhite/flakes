@@ -22,7 +22,7 @@
     # rust-bin.stable.latest.default
     # poetry
     # fortran-language-server
-    exa
+    eza
   ];
 
   programs = {
