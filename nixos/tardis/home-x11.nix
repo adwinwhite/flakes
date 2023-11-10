@@ -209,8 +209,8 @@
         bind -e \cl
         eval (direnv hook fish)
       '';
-      plugins = [
-        { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+      # plugins = [
+        # { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
         # {
           # name = "theme-budspencer";
           # src = pkgs.fetchFromGitHub {
@@ -221,7 +221,7 @@
             # "fetchSubmodules" = true;
           # };
         # }
-      ];
+      # ];
     };
     neovim = import ../../programs/cli/neovim/neovim.nix { 
       inherit pkgs;
