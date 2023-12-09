@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/static.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -38,7 +39,6 @@
   nix = {
     settings = {
       substituters = pkgs.lib.mkBefore [
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=38" 
         "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39" 
         "https://nix-community.cachix.org"
       ];
@@ -172,6 +172,10 @@
     bind
     lsof
   ];
+  
+  programs = {
+    fish.enable = true;
+  };
  
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -196,6 +200,12 @@
         # };
       # };
     # };
+
+    static-host = {
+      enable = true;
+      port = 23456;
+      directory = "/tmp/files";
+    };
 
     nginx = {
       enable = true;
@@ -251,6 +261,10 @@
               rule = "Host(`www.adwin.icu`)";
               service = "blog";
             };
+            static = {
+              rule = "Host(`www.adwin.icu`) && (Path(`/upload`) || PathPrefix(`/files`))";
+              service = "static";
+            };
             artplace-ws = {
               rule = "Host(`www.adwin.icu`) && (Path(`/ws`) || Path(`/echo`) || PathPrefix(`/artplace`))";
               service = "artplace-ws";
@@ -265,6 +279,7 @@
           services = {
             blog.loadBalancer.servers = [{ url = "http://localhost:8081"; }];
             artplace-ws.loadBalancer.servers = [{ url = "http://10.100.0.2:8080"; }];
+            static.loadBalancer.servers = [{ url = "http://localhost:23456"; }];
           };
           middlewares = {
             sslheader = {

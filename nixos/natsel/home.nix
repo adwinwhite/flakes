@@ -1,6 +1,7 @@
 { pkgs, lib, config, ...}:
 {
   home.packages = with pkgs; [
+    tmux
     ssh-tools
     nil
     bat
@@ -8,14 +9,12 @@
     htop
     lsof
     tree
-    ripgrep-all
     ripgrep
     xh
     file
     trash-cli
     tealdeer
-    exa
-    zellij
+    eza
   ];
 
   programs = {
