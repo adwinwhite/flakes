@@ -146,9 +146,7 @@
           inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
-              inputs.neovim.overlay
               inputs.aggv2sub.overlay
-              inputs.rust-overlay.overlays.default
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];

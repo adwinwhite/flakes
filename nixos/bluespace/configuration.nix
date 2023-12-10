@@ -37,7 +37,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 15";
+      options = "--delete-older-than 15d";
     };
   };
   nix = {
@@ -381,6 +381,10 @@
     };
     traefik-certs-dumper = {
       enable = true;
+      path = with pkgs; [
+        getent
+        systemd
+      ];
       after = [
         "network.target"
         "network-online.target"
@@ -391,7 +395,7 @@
       ];
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${pkgs.watchexec}/bin/watchexec -w ${config.services.traefik.dataDir + "/acme.json"} --delay-run=10 '${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme || ${pkgs.coreutils}/bin/echo \"Traefik cert dumper went wrong\" | ${pkgs.mailutils}/bin/mail -s \"Service Failure\" -r bluespace@adwin.win i@adwin.win'";
+        ExecStart = "${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme --watch --post-hook \"systemctl reload-or-restart dovecot2 postfix\"";
       };
     };
     # aggv2sub = {
