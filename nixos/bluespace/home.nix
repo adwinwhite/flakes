@@ -13,7 +13,6 @@
     htop
     lsof
     tree
-    ripgrep-all
     ripgrep
     fd
     xh
@@ -29,8 +28,7 @@
     # rust-bin.stable.latest.default
     # poetry
     # fortran-language-server
-    exa
-    zellij
+    eza
   ];
 
   programs = {
@@ -77,9 +75,7 @@
         }
       ];
     };
-    neovim = import ../../programs/cli/neovim/neovim.nix { 
-      inherit pkgs;
-    };  
+    neovim.enable = true;
   };
 
   systemd.user = {
