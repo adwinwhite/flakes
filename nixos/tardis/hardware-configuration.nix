@@ -23,6 +23,12 @@
       fsType = "vfat";
     };
 
+  fileSystems."/mnt/getea" =
+    { device = "/dev/disk/by-uuid/ac8fd036-2dc5-4ed4-83b1-56aecb478522";
+      fsType = "btrfs";
+      options = [ "compress=zstd" ];
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/daf9166d-eda8-4130-a859-d28b171bf8d8"; }
     ];
