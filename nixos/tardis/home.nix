@@ -57,7 +57,6 @@
     graphviz
     # rust-bin.stable.latest.default
     poetry
-    v2t
     fortran-language-server
     exa
     zellij

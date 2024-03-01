@@ -18,29 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-wayland = {
-      url = "github:colemickens/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    v2t = {
-      url = "github:adwingray/v2ray-tools";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
-    aggv2sub = {
-      url = "github:adwingray/aggv2sub";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,6 +25,11 @@
 
     berberman = {
       url = "github:berberman/flakes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -125,7 +107,6 @@
           {
             nixpkgs.overlays = [
               inputs.neovim.overlay
-              inputs.rust-overlay.overlays.default
               (import ./overlays/static/overlay.nix)
               (import ./overlays/misc.nix)
             ];
@@ -183,7 +164,6 @@
             nixpkgs.overlays = [
               inputs.neovim.overlay
               inputs.nixpkgs-wayland.overlay
-              inputs.v2t.overlay
               inputs.rust-overlay.overlays.default
               (import ./overlays/misc.nix)
             ];
@@ -199,14 +179,17 @@
         system = "x86_64-linux";
         modules = [ 
           ./nixos/tardis/configuration.nix
+          inputs.nix-index-database.nixosModules.nix-index
+          # optional to also wrap and install comma
+          { programs.nix-index-database.comma.enable = true; 
+            programs.command-not-found.enable = false;
+          }
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
               inputs.neovim.overlay
               # inputs.nixpkgs-wayland.overlay
-              inputs.v2t.overlay
-              inputs.rust-overlay.overlays.default
               inputs.berberman.overlays.default
               (import ./overlays/misc.nix)
               (import ./overlays/sway/overlay.nix)

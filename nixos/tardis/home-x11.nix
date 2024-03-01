@@ -1,8 +1,24 @@
-{ pkgs, ...}:
+{ pkgs, osConfig, ...}: 
+let
+  chromium = let
+    wrapped = pkgs.writeShellScriptBin "chromium" ''
+      export GOOGLE_API_KEY=`cat ${osConfig.sops.secrets.google_api_key.path}`
+      export GOOGLE_DEFAULT_CLIENT_ID=`cat ${osConfig.sops.secrets.google_default_client_id.path}`
+      export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${osConfig.sops.secrets.google_default_client_secret.path}`
+      exec ${pkgs.chromium}/bin/chromium "''$@"
+    '';
+    in
+    pkgs.symlinkJoin {
+      name = "chromium";
+      paths = [
+        wrapped
+        pkgs.chromium
+      ];
+    };
+in
 {
   home.packages = with pkgs; [
     btrfs-progs
-    comma
     dogdns
     tmux
     jetbrains.idea-community
@@ -68,7 +84,6 @@
     delve           # go debugger
     tealdeer        # tldr: brief command help
     graphviz
-    v2t
     # fortran-language-server
     eza
     zellij
@@ -162,8 +177,10 @@
       extraPackages = tpkgs: { inherit (tpkgs) scheme-full collection-langchinese ; };
     };
     nix-index ={
-      enable = true;
+      enable = false;
       enableFishIntegration = true;
+      enableZshIntegration = false;
+      enableBashIntegration = false;
     };
     broot = {
       enable = true;
