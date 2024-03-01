@@ -122,15 +122,6 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
-    # gebaar-libinput = super.gebaar-libinput.overrideAttrs (finalAttrs: previousAttrs: {
-      # src = super.fetchFromGitHub {
-        # owner = "9ary";
-        # repo = "gebaar-libinput-fork";
-        # rev = "098a1ef00af563b25267807bdc1feb5b09d81184";
-        # sha256 = "+zBSy84wZoPtFkRfKgBODf34AlEKAuOv6QVXfxSNJVU=";
-        # fetchSubmodules = false;
-      # };
-    # });
     py3 = let
       python-with-my-packages = super.python3.withPackages (p: with p; [
         pandas
@@ -151,21 +142,6 @@
         # We create the bin folder ourselves and link every binary in it
         ln -s ${python-with-my-packages}/bin/python $out/bin/py3
       '';
-    # chromium = let
-      # wrapped = super.writeShellScriptBin "chromium" ''
-        # export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
-        # export GOOGLE_DEFAULT_CLIENT_ID=`cat ${config.sops.secrets.google_default_client_id.path}`
-        # export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${config.sops.secrets.google_default_client_secret.path}`
-        # exec ${super.chromium}/bin/chromium "''$@"
-      # '';
-      # in
-      # pkgs.symlinkJoin {
-        # name = "chromium";
-        # paths = [
-          # wrapped
-          # super.chromium
-        # ];
-      # };
   }) ];
 
   # Enable flakes and gc
