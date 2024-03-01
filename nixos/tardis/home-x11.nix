@@ -36,7 +36,6 @@ in
     xclip           # x11 clipboard cli program
     # xournalpp
     xdotool         # simulate keyboard and mouse input
-    gebaar-libinput # touchpad gestures 
     firefox
     bat
     sshfs
@@ -99,7 +98,6 @@ in
     enable = true;
     configFile = {
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
-      "gebaar/gebaard.toml".text = builtins.readFile ./gebaard.toml;
       "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
       "git/gitignore_global".text = builtins.readFile ./gitignore_global;
       # "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
@@ -110,6 +108,31 @@ in
   };
 
   services = {
+    fusuma = {
+      enable = true;
+      extraPackages = with pkgs; [ coreutils xdotool xorg.xprop ];
+      settings = {
+        threshold = {
+          swipe = 0.3;
+        };
+        interval = {
+          swipe = 0.5;
+        };
+        swipe = {
+          "3" = {
+            left = {
+              command = "xdotool key ctrl+shift+Tab";
+            };
+            right = {
+              command = "xdotool key ctrl+Tab";
+            };
+            up = {
+              command = "xdotool key Super_L+w";
+            };
+          };
+        };
+      };
+    };
     flameshot = {
       enable = true;
       settings = {
@@ -121,19 +144,6 @@ in
     kdeconnect = {
       enable = true;
       indicator = true;
-    };
-  };
-
-  systemd.user = {
-    services = {
-      gebaar = {
-        Service = {
-          Type = "simple";
-          ExecStart = "${pkgs.gebaar-libinput}/bin/gebaard";
-          Restart = "on-failure";
-        };
-        Install.WantedBy = [ "graphical.target" ];
-      };
     };
   };
 
