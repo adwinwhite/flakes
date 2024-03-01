@@ -15,7 +15,7 @@
         poetry2nix.overlay
         (final: prev: {
           # The application
-          aggv2sub = prev.poetry2nix.mkPoetryApplication {
+          app-name = poetry2nix.mkPoetryApplication {
             projectDir = ./.;
             preferWheels = true;
           };

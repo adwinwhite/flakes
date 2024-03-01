@@ -8,7 +8,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../../modules/cgproxy.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -123,15 +122,15 @@
     };
   };
   nixpkgs.overlays = [ (self: super: {
-    gebaar-libinput = super.gebaar-libinput.overrideAttrs (finalAttrs: previousAttrs: {
-      src = super.fetchFromGitHub {
-        owner = "9ary"; 
-        repo = "gebaar-libinput-fork"; 
-        rev = "098a1ef00af563b25267807bdc1feb5b09d81184"; 
-        sha256 = "+zBSy84wZoPtFkRfKgBODf34AlEKAuOv6QVXfxSNJVU=";
-        fetchSubmodules = false;  
-      };
-    });
+    # gebaar-libinput = super.gebaar-libinput.overrideAttrs (finalAttrs: previousAttrs: {
+      # src = super.fetchFromGitHub {
+        # owner = "9ary";
+        # repo = "gebaar-libinput-fork";
+        # rev = "098a1ef00af563b25267807bdc1feb5b09d81184";
+        # sha256 = "+zBSy84wZoPtFkRfKgBODf34AlEKAuOv6QVXfxSNJVU=";
+        # fetchSubmodules = false;
+      # };
+    # });
     py3 = let
       python-with-my-packages = super.python3.withPackages (p: with p; [
         pandas
@@ -152,21 +151,21 @@
         # We create the bin folder ourselves and link every binary in it
         ln -s ${python-with-my-packages}/bin/python $out/bin/py3
       '';
-    chromium = let
-      wrapped = super.writeShellScriptBin "chromium" ''
-        export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
-        export GOOGLE_DEFAULT_CLIENT_ID=`cat ${config.sops.secrets.google_default_client_id.path}`
-        export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${config.sops.secrets.google_default_client_secret.path}`
-        exec ${super.chromium}/bin/chromium "''$@"
-      '';
-      in
-      pkgs.symlinkJoin {
-        name = "chromium";
-        paths = [
-          wrapped
-          super.chromium
-        ];
-      };
+    # chromium = let
+      # wrapped = super.writeShellScriptBin "chromium" ''
+        # export GOOGLE_API_KEY=`cat ${config.sops.secrets.google_api_key.path}`
+        # export GOOGLE_DEFAULT_CLIENT_ID=`cat ${config.sops.secrets.google_default_client_id.path}`
+        # export GOOGLE_DEFAULT_CLIENT_SECRET=`cat ${config.sops.secrets.google_default_client_secret.path}`
+        # exec ${super.chromium}/bin/chromium "''$@"
+      # '';
+      # in
+      # pkgs.symlinkJoin {
+        # name = "chromium";
+        # paths = [
+          # wrapped
+          # super.chromium
+        # ];
+      # };
   }) ];
 
   # Enable flakes and gc
@@ -289,17 +288,6 @@
       enable = true;
       configFile = config.sops.secrets."config.dae".path;
     };
-    # v2ray = {
-      # enable = true;
-      # configFile = "/etc/v2ray/v2ray.json";
-    # };
-    # cgproxy = {
-      # enable = true;
-      # settings = {
-        # enable_dns = false;
-        # enable_gateway = true;
-      # };
-    # };
     syncthing = {
       enable = true;
       user = "adwin";
@@ -366,13 +354,13 @@
       lidSwitchDocked = "ignore";
     };
 
-    # To use Plasma5
+    # To use Plasma6
     xserver = {
       enable = true;
       layout = "us";
       xautolock.time = 60;
       displayManager.sddm.enable = true;
-      desktopManager.plasma5.enable = true;
+      desktopManager.plasma6.enable = true;
     };
   };
 
@@ -417,11 +405,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # wireguard
     wireguard-tools
-    # v2ray
-    # v2t
-    # cgproxy
     pavucontrol
   ];
 
@@ -430,13 +414,6 @@
     fish.enable = true;
     firejail.enable = true;
   };
-
-
-
-  # environment.etc = {
-    # "v2t.conf".source = "/home/adwin/.config/v2t/v2t.conf";
-    # # "cgproxy/config.json".text = builtins.readFile ./../../programs/cli/cgproxy.json;
-  # };
 
   systemd.services.NetworkManager-wait-online.enable = false;
   
