@@ -1,0 +1,53 @@
+diff --git a/src/virtualdesktops.cpp b/src/virtualdesktops.cpp
+index a0a0904..ebc67f5 100644
+--- a/src/virtualdesktops.cpp
++++ b/src/virtualdesktops.cpp
+@@ -758,32 +758,32 @@ void VirtualDesktopManager::initShortcuts()
+     connect(m_swipeGestureReleasedY.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedY);
+ 
+     const auto left = [this](qreal cb) {
+-        if (grid().width() > 1) {
+-            m_currentDesktopOffset.setX(cb);
+-            Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
+-        }
++        // if (grid().width() > 1) {
++            // m_currentDesktopOffset.setX(cb);
++            // Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
++        // }
+     };
+     const auto right = [this](qreal cb) {
+-        if (grid().width() > 1) {
+-            m_currentDesktopOffset.setX(-cb);
+-            Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
+-        }
++        // if (grid().width() > 1) {
++            // m_currentDesktopOffset.setX(-cb);
++            // Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
++        // }
+     };
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 4, m_swipeGestureReleasedX.get(), left);
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 4, m_swipeGestureReleasedX.get(), right);
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Down, 3, m_swipeGestureReleasedY.get(), [this](qreal cb) {
+-        if (grid().height() > 1) {
+-            m_currentDesktopOffset.setY(-cb);
+-            Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
+-        }
++        // if (grid().height() > 1) {
++            // m_currentDesktopOffset.setY(-cb);
++            // Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
++        // }
+     });
+     input()->registerTouchpadSwipeShortcut(SwipeDirection::Up, 3, m_swipeGestureReleasedY.get(), [this](qreal cb) {
+-        if (grid().height() > 1) {
+-            m_currentDesktopOffset.setY(cb);
+-            Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
+-        }
++        // if (grid().height() > 1) {
++            // m_currentDesktopOffset.setY(cb);
++            // Q_EMIT currentChanging(currentDesktop(), m_currentDesktopOffset);
++        // }
+     });
+     input()->registerTouchscreenSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
+     input()->registerTouchscreenSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
