@@ -15,6 +15,19 @@ let
         pkgs.chromium
       ];
     };
+  ydotool = let
+    wrapped = pkgs.writeShellScriptBin "ydotool" ''
+      export YDOTOOL_SOCKET=/tmp/ydotools
+      exec ${pkgs.ydotool}/bin/ydotool "$@"
+    '';
+    in
+    pkgs.symlinkJoin {
+      name = "ydotool";
+      paths = [
+        wrapped
+        pkgs.ydotool
+      ];
+    };
 in
 {
   home.packages = with pkgs; [
@@ -35,7 +48,9 @@ in
     stylua
     xclip           # x11 clipboard cli program
     # xournalpp
-    xdotool         # simulate keyboard and mouse input
+    # xdotool         # simulate keyboard and mouse input
+    # ydotool
+    ydotool
     firefox
     bat
     sshfs
@@ -110,7 +125,7 @@ in
   services = {
     fusuma = {
       enable = true;
-      extraPackages = with pkgs; [ coreutils xdotool xorg.xprop ];
+      extraPackages = with pkgs; [ coreutils ydotool xorg.xprop ];
       settings = {
         threshold = {
           swipe = 0.3;
@@ -121,13 +136,19 @@ in
         swipe = {
           "3" = {
             left = {
-              command = "xdotool key ctrl+shift+Tab";
+              # command = "xdotool key ctrl+shift+Tab";
+              command = "ydotool key 29:1 42:1 15:1 15:0 42:0 29:0";
+              # command = "dotool key ctrl+shift+Tab";
             };
             right = {
-              command = "xdotool key ctrl+Tab";
+              # command = "xdotool key ctrl+Tab";
+              command = "ydotool key 29:1 15:1 15:0 29:0";
+              # command = "dotool key ctrl+Tab";
             };
             up = {
-              command = "xdotool key Super_L+w";
+              # command = "xdotool key Super_L+w";
+              command = "ydotool key 125:1 17:1 17:1 125:0";
+              # command = "dotool key super+w";
             };
           };
         };
@@ -254,6 +275,23 @@ in
     neovim = import ../../programs/cli/neovim/neovim.nix { 
       inherit pkgs;
     };  
+  };
+
+  systemd.user.services = {
+    ydotoold = {
+      Unit = {
+        Description = "An auto-input utility for wayland";
+        Documentation = [ "man:ydotool(1)" "man:ydotoold(8)" ];
+      };
+
+      Service = {
+        ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path /tmp/ydotools";
+      };
+
+      Install = {
+        WantedBy = ["default.target"];
+      };
+    };
   };
 
   home.stateVersion = "22.05";

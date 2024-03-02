@@ -260,6 +260,12 @@
 
   services = {
     tailscale.enable = false;
+    udev = {
+      enable = true;
+      extraRules = ''
+        SUBSYSTEM=="misc", KERNEL=="uinput", MODE="0660", GROUP="uinput"
+      '';
+    };
     dae = {
       enable = true;
       configFile = config.sops.secrets."config.dae".path;
@@ -359,11 +365,12 @@
 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.groups.uinput = {};
   users.users.adwin = {
     isNormalUser = true;
     initialHashedPassword = "JbreyM/pvSAzM";
     home = "/home/adwin";
-    extraGroups = [ "wheel" "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
   };
 
