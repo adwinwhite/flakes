@@ -192,8 +192,9 @@
               # inputs.nixpkgs-wayland.overlay
               inputs.berberman.overlays.default
               (import ./overlays/misc.nix)
-              (import ./overlays/sway/overlay.nix)
-              (import ./overlays/cgproxy/overlay.nix)
+              # (import ./overlays/sway/overlay.nix)
+              # (import ./overlays/cgproxy/overlay.nix)
+              (import ./overlays/kde/overlay.nix)
               # (import ./overlays/tree-sitter/gen-overlay.nix nixpkgs)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
