@@ -138,15 +138,12 @@
         ];
         specialArgs = { inherit nixpkgs inputs; };
       };
-      foosha = nixpkgs.lib.nixosSystem {
+      sunny = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ 
-          ./nixos/foosha/configuration.nix
+          ./nixos/sunny/configuration.nix
           inputs.home-manager.nixosModules.home-manager
           {
-            nixpkgs.overlays = [
-              (import ./overlays/misc.nix)
-            ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.p.flake = self;
             nix.registry.pkgs.flake = nixpkgs;
