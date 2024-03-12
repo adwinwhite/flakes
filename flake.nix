@@ -13,11 +13,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    neovim = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -106,7 +101,6 @@
           inputs.home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
-              inputs.neovim.overlay
               (import ./overlays/static/overlay.nix)
               (import ./overlays/misc.nix)
             ];
@@ -159,7 +153,6 @@
           inputs.home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
-              inputs.neovim.overlay
               inputs.nixpkgs-wayland.overlay
               inputs.rust-overlay.overlays.default
               (import ./overlays/misc.nix)
@@ -185,7 +178,6 @@
           inputs.home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
-              inputs.neovim.overlay
               # inputs.nixpkgs-wayland.overlay
               inputs.berberman.overlays.default
               (import ./overlays/misc.nix)

@@ -12,7 +12,6 @@
   in
   {
   enable = true;
-  package = pkgs.neovim-nightly;
   vimAlias = true;
   viAlias = true;
   extraConfig = builtins.concatStringsSep "\n" [
