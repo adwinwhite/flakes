@@ -47,6 +47,7 @@ in
     bottom
     stylua
     xclip           # x11 clipboard cli program
+    wl-clipboard    # wayland clipboard cli program
     # xournalpp
     # xdotool         # simulate keyboard and mouse input
     # ydotool
