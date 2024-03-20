@@ -262,7 +262,7 @@ g.NERDTrimTrailingWhitespace = 1
 vim.keymap.set("n", "<C-f>", ":lua require'telescope.builtin'.live_grep()<cr>")
 vim.keymap.set("n", "<C-b>", ":lua require'telescope.builtin'.buffers()<cr>")
 vim.keymap.set("n", "<C-p>", ":lua require'telescope.builtin'.builtin()<cr>")
-vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions()<cr>")
+vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions { jump_type = \"never\" }<cr>")
 -- Formatter
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
 
