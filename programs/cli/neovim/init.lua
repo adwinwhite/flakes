@@ -9,6 +9,7 @@ set.showcmd = true
 set.ignorecase = true
 set.smartcase = true
 set.incsearch = true
+set.splitright = true
 -- Soft wrap at the edge of screen.
 -- No break in the middle of word.
 set.wrap = true
