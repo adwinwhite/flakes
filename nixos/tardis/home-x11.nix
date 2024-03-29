@@ -278,22 +278,6 @@ in
     };  
   };
 
-  systemd.user.services = {
-    ydotoold = {
-      Unit = {
-        Description = "An auto-input utility for wayland";
-        Documentation = [ "man:ydotool(1)" "man:ydotoold(8)" ];
-      };
-
-      Service = {
-        ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path /tmp/ydotools";
-      };
-
-      Install = {
-        WantedBy = ["default.target"];
-      };
-    };
-  };
 
   home.stateVersion = "22.05";
 }
