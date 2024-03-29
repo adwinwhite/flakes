@@ -403,6 +403,22 @@
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
+
+  systemd.services = {
+    ydotoold = {
+      unitConfig = {
+        Description = "An auto-input utility for wayland";
+        Documentation = [ "man:ydotool(1)" "man:ydotoold(8)" ];
+      };
+
+      serviceConfig = {
+        ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path /tmp/ydotools";
+      };
+
+      wantedBy = ["default.target"];
+    };
+  };
+
   
 
 
