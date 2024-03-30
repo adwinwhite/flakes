@@ -385,7 +385,7 @@
   home-manager = {
    useGlobalPkgs = true;
    useUserPackages = true;
-   users.adwin = import ./home-x11.nix;
+   users.adwin = import ./home.nix;
   };
    
 
@@ -395,6 +395,7 @@
     wireguard-tools
     pavucontrol
   ];
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   programs = {
     kdeconnect.enable = true;
