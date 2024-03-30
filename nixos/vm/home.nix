@@ -24,7 +24,6 @@
     usb-modeswitch
     nix-prefetch-github
     nodePackages.pyright
-    rnix-lsp
     ccls
     rust-analyzer
     clang
@@ -197,7 +196,6 @@
         local nvim_lsp = require'lspconfig'
         nvim_lsp.fortls.setup {}
         nvim_lsp.pyright.setup {}
-        nvim_lsp.rnix.setup {}
         nvim_lsp.rust_analyzer.setup {}
         nvim_lsp.gopls.setup {}
         nvim_lsp.ccls.setup {

@@ -91,7 +91,6 @@ in
     pciutils
     nix-prefetch-github
     nodePackages.pyright # python lsp
-    rnix-lsp
     ccls            # c/c++ lsp
     # clang
     # rust-analyzer # use rustup's one to sync rustc and RA.
