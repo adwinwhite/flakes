@@ -47,7 +47,6 @@
     pciutils
     nix-prefetch-github
     nodePackages.pyright # python lsp
-    rnix-lsp
     ccls            # c/c++ lsp
     rust-analyzer
     # clang
