@@ -412,7 +412,7 @@
       };
 
       serviceConfig = {
-        ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path /tmp/ydotools";
+        ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path=/tmp/ydotools --socket-own=1000:100";
       };
 
       wantedBy = ["default.target"];
