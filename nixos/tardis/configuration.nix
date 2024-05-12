@@ -31,6 +31,36 @@
     };
   };
 
+  systemd.services.nix-daemon = {
+    environment = {
+      TMPDIR = "/var/cache/nix";
+    };
+    serviceConfig = {
+      CacheDirectory = "nix";
+    };
+  };
+  environment.variables.NIX_REMOTE = "daemon";
+
+  environment.persistence."/nix/persistent" = {
+    hideMounts = true;
+
+    directories = [
+      "/etc/NetworkManager/system-connections"
+      "/home"
+      "/root"
+      "/var"
+      "/lost+found"
+    ];
+
+    files = [
+      "/etc/machine-id"
+      "/etc/ssh/ssh_host_ed25519_key.pub"
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_rsa_key.pub"
+      "/etc/ssh/ssh_host_rsa_key"
+    ];
+  };
+
   # systemd.targets.machines.enable = true;
   # systemd.nspawn."archlinux" = {
     # enable = true;
@@ -123,6 +153,7 @@
         sopsFile = ./config.dae;
         format = "binary";
       };
+      adwin_login_password = {};
     };
   };
   nixpkgs.overlays = [ (self: super: {
@@ -263,6 +294,7 @@
     };
   };
 
+
   services = {
     tailscale.enable = false;
     udev = {
@@ -371,9 +403,10 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.groups.uinput = {};
+  users.mutableUsers = false;
   users.users.adwin = {
     isNormalUser = true;
-    initialHashedPassword = "JbreyM/pvSAzM";
+    hashedPasswordFile = config.sops.secrets.adwin_login_password.path;
     home = "/home/adwin";
     extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
