@@ -139,16 +139,16 @@
 
     loginAccounts = {
       "i@adwin.win" = {
-        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/i";
+        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/i".path;
         aliases = [ "adwin@adwin.win" ];
         quota = "2G";
       };
       "bluespace@adwin.win" = {
-        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/bluespace";
+        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/bluespace".path;
         quota = "2G";
       };
       "1@adwin.win" = {
-        hashedPasswordFile = "/run/secrets/mail_hashed_passwords/1";
+        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/1".path;
         quota = "2G";
       };
       "yjyzlib@adwin.win" = {
@@ -278,11 +278,6 @@
               rule = "Host(`mail.adwin.win`)";
               service = "mail";
             };
-            aggv2sub = {
-              rule = "Host(`icecream.adwin.win`) && Path(`/aggv2sub`) && Query(`token=${builtins.readFile /run/secrets/aggv2sub_token}`)";
-              service = "aggv2sub";
-              middlewares = [ "rewriteToRoot" ];
-            };
             dashboard = {
               rule = "Host(`icecream.adwin.win`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
               service = "api@internal";
@@ -298,7 +293,6 @@
             chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
-            aggv2sub.loadBalancer.servers = [ { url = "http://localhost:8056"; }];
             v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
           };
           middlewares = {
@@ -314,7 +308,8 @@
             };
             auth = {
               basicAuth = {
-                users = [ "adwin:${builtins.readFile /run/secrets/traefik_dashboard_password}" ];
+                # TODO: figure out new secrets management method.
+                # users = [ "adwin:${builtins.readFile /run/secrets/traefik_dashboard_password}" ];
               };
             };
           };
@@ -329,11 +324,12 @@
     fail2ban.enable = true;
     openssh = {
       enable = true;
-      passwordAuthentication = false;
-      extraConfig = ''
-        ClientAliveInterval 240
-        ClientAliveCountMax 120
-      '';
+      settings = {
+        PasswordAuthentication = false;
+        ChallengeResponseAuthentication = false;
+        ClientAliveInterval = 240;
+        ClientAliveCountMax = 120;
+      };
     };
     syncthing = {
       enable = true;
@@ -349,10 +345,6 @@
         "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
       };
       folders = {
-        "Logseq" = {        # Name of folder in Syncthing, also the folder ID
-          path = "/home/adwin/Documents/TheNotes";    # Which folder to add to Syncthing
-          devices = [ "MI10" "natsel" "Tardis" ];      # Which devices to share the folder with
-        };
         "flakes" = {        # Name of folder in Syncthing, also the folder ID
           path = "/home/adwin/flakes";    # Which folder to add to Syncthing
           devices = [ "MI10" "natsel" "Tardis" ];      # Which devices to share the folder with
@@ -398,21 +390,6 @@
         ExecStart = "${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme --watch --post-hook \"systemctl reload-or-restart dovecot2 postfix\"";
       };
     };
-    # aggv2sub = {
-      # enable = true;
-      # after = [
-        # "network.target"
-        # "network-online.target"
-      # ];
-      # description = "Aggregate all my subscriptions";
-      # wantedBy = [
-        # "multi-user.target"
-      # ];
-      # serviceConfig = {
-        # Type = "simple";
-        # ExecStart = "${pkgs.aggv2sub}/bin/aggv2sub";
-      # };
-    # };
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;

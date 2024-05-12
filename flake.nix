@@ -121,7 +121,6 @@
           inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
-              inputs.aggv2sub.overlay
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
