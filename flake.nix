@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    impermanence.url = "github:nix-community/impermanence";
 
     mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
@@ -168,6 +169,7 @@
         system = "x86_64-linux";
         modules = [ 
           ./nixos/tardis/configuration.nix
+          inputs.impermanence.nixosModules.impermanence
           inputs.nix-index-database.nixosModules.nix-index
           # optional to also wrap and install comma
           { programs.nix-index-database.comma.enable = true; 
