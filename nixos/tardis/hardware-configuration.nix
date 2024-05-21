@@ -21,6 +21,7 @@
 
   fileSystems."/nix" =
     { device = "/dev/disk/by-uuid/534bb3c0-76f6-4dd8-acfb-63a0c5121ab5";
+      neededForBoot = true;
       fsType = "ext4";
     };
 

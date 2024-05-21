@@ -119,7 +119,9 @@
     defaultSopsFile = ./secrets.yaml;
     age = {
       keyFile = "/var/lib/sops.key";
+      sshKeyPaths = [];
     };
+    gnupg.sshKeyPaths = [];
     secrets = {
       wireguard_private = {};
       google_api_key = {
@@ -153,7 +155,9 @@
         sopsFile = ./config.dae;
         format = "binary";
       };
-      adwin_login_password = {};
+      adwin_login_password = {
+        neededForUsers = true;
+      };
     };
   };
   nixpkgs.overlays = [ (self: super: {
