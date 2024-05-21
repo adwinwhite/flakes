@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./cloudflare-warp.nix
+      ../../modules/static.nix
     ];
 
   boot.cleanTmpDir = true;
@@ -178,6 +179,12 @@
 
   # Enable the OpenSSH daemon.
   services = {
+    static-host = {
+      enable = true;
+      port = 23456;
+      directory = "/tmp/files";
+    };
+
     cloudflare-warp = {
       enable = true;
       certificate = ./Cloudflare_CA.pem; # download here https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/install-cloudflare-cert/
@@ -288,14 +295,29 @@
               service = "v2ray";
               middlewares = [ "sslheader" ];
             };
+            static = {
+              rule = "Host(`icecream.adwin.win`) && (Path(`/upload`) || PathPrefix(`/files`))";
+              service = "static";
+            };
+            joy = {
+              rule = "Host(`joy.adwin.win`)";
+              service = "static";
+              middlewares = [ "joyRewrite" ];
+            };
           };
           services = {
             chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
             v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
+            static.loadBalancer.servers = [{ url = "http://localhost:23456"; }];
           };
           middlewares = {
+            joyRewrite = {
+              replacePath = {
+                path = "/files/letter.html";
+              };
+            };
             rewriteToRoot = {
               replacePath = {
                 path = "/";
@@ -309,7 +331,7 @@
             auth = {
               basicAuth = {
                 # TODO: figure out new secrets management method.
-                # users = [ "adwin:${builtins.readFile /run/secrets/traefik_dashboard_password}" ];
+                users = [ "adwin:${config.sops.secrets."traefik_dashboard_password".path}" ];
               };
             };
           };

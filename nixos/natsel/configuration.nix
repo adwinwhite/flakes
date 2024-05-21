@@ -39,7 +39,7 @@
   nix = {
     settings = {
       substituters = pkgs.lib.mkBefore [
-        "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39" 
+        "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39"
         "https://nix-community.cachix.org"
       ];
       substitute = true;
@@ -265,6 +265,11 @@
               rule = "Host(`www.adwin.icu`) && (Path(`/upload`) || PathPrefix(`/files`))";
               service = "static";
             };
+            joy = {
+              rule = "Host(`joy.adwin.icu`)";
+              service = "static";
+              middlewares = [ "joyRewrite" ];
+            };
             artplace-ws = {
               rule = "Host(`www.adwin.icu`) && (Path(`/ws`) || Path(`/echo`) || PathPrefix(`/artplace`))";
               service = "artplace-ws";
@@ -282,6 +287,11 @@
             static.loadBalancer.servers = [{ url = "http://localhost:23456"; }];
           };
           middlewares = {
+            joyRewrite = {
+              replacePath = {
+                path = "/files/letter.html";
+              };
+            };
             sslheader = {
               headers = {
                 customRequestHeaders.X-Forwarded-Proto = "https";
