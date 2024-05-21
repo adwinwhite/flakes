@@ -204,6 +204,9 @@ in
         "icecream.adwin.win" = {
           forwardAgent = true;
         };
+        "natsel.adwin.win" = {
+          forwardAgent = true;
+        };
       };
     };
     texlive = {
