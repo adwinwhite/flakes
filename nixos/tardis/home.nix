@@ -201,6 +201,9 @@ in
             AddKeysToAgent = "yes";
           };
         };
+        "icecream.adwin.win" = {
+          forwardAgent = true;
+        };
       };
     };
     texlive = {

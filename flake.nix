@@ -122,6 +122,7 @@
           inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
+              (import ./overlays/static/overlay.nix)
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
