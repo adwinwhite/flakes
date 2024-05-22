@@ -2,18 +2,12 @@
 {
   home.packages = with pkgs; [
     tmux
-    ssh-tools
-    nil
-    bat
-    rage
     htop
     lsof
     tree
-    ripgrep
     xh
     file
     trash-cli
-    tealdeer
     eza
   ];
 
@@ -61,8 +55,10 @@
         }
       ];
     };
-    neovim = import ../../programs/cli/neovim/neovim.nix { 
-      inherit pkgs;
+    neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
     };  
   };
   home.stateVersion = "22.05";

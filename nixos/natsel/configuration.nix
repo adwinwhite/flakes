@@ -14,15 +14,6 @@
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
   # boot.loader.efi.canTouchEfiVariables = true;
-  virtualisation = {
-    podman = {
-      enable = true;
-      dockerCompat = true;
-    };
-  };
-
-  # Enable flakes and gc
-  nixpkgs.config.allowUnfree = true;
   nix = {
     package = pkgs.nixUnstable;
     extraOptions = ''
@@ -168,7 +159,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wireguard-tools
-    v2ray
     bind
     lsof
   ];
@@ -176,37 +166,13 @@
   programs = {
     fish.enable = true;
   };
- 
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
   services = {
-    # redis.servers = {
-      # "niltalk" = {
-        # enable = true;
-        # bind = "0.0.0.0";
-        # port = 6379;
-        # settings = {
-          # protected-mode = "no";
-        # };
-      # };
-    # };
-
     static-host = {
       enable = true;
       port = 23456;
       directory = "/tmp/files";
     };
-
     nginx = {
       enable = true;
       virtualHosts = {
@@ -306,8 +272,6 @@
         };
       };
     };
-
-    tailscale.enable = false;
 
     fail2ban.enable = true;
 
