@@ -199,8 +199,8 @@
     };
     settings = {
       substituters = pkgs.lib.mkBefore [
-        # "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39"
-        # "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39"
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39"
+        "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39"
         # "https://mirrors.ustc.edu.cn/nix-channels/store"
         "https://nix-community.cachix.org"
         # "https://nixpkgs-wayland.cachix.org"
@@ -439,6 +439,7 @@
     kdeconnect.enable = true;
     fish.enable = true;
     firejail.enable = true;
+    nix-ld.enable = true;
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
