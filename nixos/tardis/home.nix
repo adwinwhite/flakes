@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    libnotify
     btrfs-progs
     dogdns
     tmux
