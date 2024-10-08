@@ -12,7 +12,7 @@ in
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = lib.mdDoc ''
+        description = ''
           Whether to run static.
         '';
       };
@@ -21,7 +21,7 @@ in
         type = types.int;
         default = 2345;
         example = 2345;
-        description = lib.mdDoc ''
+        description = ''
           The port to listen on.
         '';
       };
@@ -30,7 +30,7 @@ in
         type = types.str;
         default = "/tmp/files";
         example = "/tmp/files";
-        description = lib.mdDoc ''
+        description = ''
           The directory to save files and serve.
         '';
       };
