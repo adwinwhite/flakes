@@ -6,7 +6,7 @@ final: prev: {
       sed -i '7i LimitNOFILE=102400' $out/lib/systemd/system/v2ray.service
     '';
   };
-  rust-tools-nvim = prev.vimUtils.buildVimPluginFrom2Nix {
+  rust-tools-nvim = prev.vimUtils.buildVimPlugin {
     name = "rust-tools-nvim";
     src = prev.fetchFromGitHub {
       owner = "simrat39";

@@ -76,7 +76,8 @@
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
-      enabled = "fcitx5";
+      enable = true;
+      type = "fcitx5";
       fcitx5 = {
         addons = with pkgs; [
           fcitx5-chinese-addons
@@ -383,11 +384,11 @@
     # To use Plasma6
     xserver = {
       enable = true;
-      layout = "us";
+      xkb.layout = "us";
       xautolock.time = 60;
-      displayManager.sddm.enable = true;
-      desktopManager.plasma6.enable = true;
     };
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm.enable = true;
   };
 
   xdg = {

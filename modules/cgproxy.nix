@@ -13,7 +13,7 @@ in
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = lib.mdDoc ''
+        description = ''
           Whether to run cgproxyd.
         '';
       };
@@ -22,7 +22,7 @@ in
         type = types.nullOr types.str;
         default = null;
         example = "/etc/cgproxy/config.json";
-        description = lib.mdDoc ''
+        description = ''
           The absolute path to the configuration file.
           `configFile` will override `settings`.
         '';
@@ -46,7 +46,7 @@ in
           program_proxy = [ ]; 
           table = 10007; 
         };
-        description = lib.mdDoc ''
+        description = ''
           The configuration.
           `program_noproxy` and `program_proxy` must be provided in `environment.systemPackages`.
           See <https://github.com/springzfx/cgproxy#configuration>.

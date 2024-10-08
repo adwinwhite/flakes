@@ -1,4 +1,4 @@
-{ pkgs } : let html5-vim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+{ pkgs } : let html5-vim = pkgs.vimUtils.buildVimPlugin {
                 pname = "html5.vim";
                 version = "2020-08-22";
                 src = pkgs.fetchFromGitHub {
