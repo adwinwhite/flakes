@@ -1,0 +1,35 @@
+diff --git a/lua/copilot_cmp/completion_functions.lua b/lua/copilot_cmp/completion_functions.lua
+index c7ee231..f1ed1cd 100644
+--- a/lua/copilot_cmp/completion_functions.lua
++++ b/lua/copilot_cmp/completion_functions.lua
+@@ -8,7 +8,7 @@ local methods = {
+   }
+ }
+ 
+-methods.getCompletionsCycling = function (self, params, callback)
++methods.getCompletions = function (self, params, callback)
+   local respond_callback = function(err, response)
+ 
+     if err or not response or not response.completions then
+@@ -25,7 +25,7 @@ methods.getCompletionsCycling = function (self, params, callback)
+     })
+   end
+ 
+-  api.get_completions_cycling(self.client, util.get_doc_params(), respond_callback)
++  api.get_completions(self.client, util.get_doc_params(), respond_callback)
+   return callback({isIncomplete = true, items = {}})
+ end
+ 
+diff --git a/lua/copilot_cmp/source.lua b/lua/copilot_cmp/source.lua
+index 712791a..84bed53 100644
+--- a/lua/copilot_cmp/source.lua
++++ b/lua/copilot_cmp/source.lua
+@@ -54,7 +54,7 @@ source.new = function(client, opts)
+ 
+   self.client = client
+   self.request_ids = {}
+-  self.complete = completion_functions.init('getCompletionsCycling', opts)
++  self.complete = completion_functions.init('getCompletions', opts)
+ 
+   return self
+ end
