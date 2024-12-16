@@ -28,21 +28,21 @@ g.colors_name = "onedark"
 set.termguicolors = true
 
 -- Fold
-set.foldcolumn = '1' -- '0' is not bad
+set.foldcolumn = "1" -- '0' is not bad
 set.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 set.foldlevelstart = 99
 set.foldenable = true
 
 -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
-vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
 
 -- Only depend on `nvim-treesitter/queries/filetype/folds.scm`,
 -- performance and stability are better than `foldmethod=nvim_treesitter#foldexpr()`
 -- require('ufo').setup({
-    -- provider_selector = function(bufnr, filetype, buftype)
-        -- return {'lsp', 'treesitter'}
-    -- end
+-- provider_selector = function(bufnr, filetype, buftype)
+-- return {'lsp', 'treesitter'}
+-- end
 -- })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -55,16 +55,17 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Cancel luasnip session when changing mode.
 -- More at https://github.com/L3MON4D3/LuaSnip/issues/258
-vim.api.nvim_create_autocmd('ModeChanged', {
-  pattern = '*',
-  callback = function()
-    if ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
-        and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
-        and not require('luasnip').session.jump_active
-    then
-      require('luasnip').unlink_current()
-    end
-  end
+vim.api.nvim_create_autocmd("ModeChanged", {
+	pattern = "*",
+	callback = function()
+		if
+			((vim.v.event.old_mode == "s" and vim.v.event.new_mode == "n") or vim.v.event.old_mode == "i")
+			and require("luasnip").session.current_nodes[vim.api.nvim_get_current_buf()]
+			and not require("luasnip").session.jump_active
+		then
+			require("luasnip").unlink_current()
+		end
+	end,
 })
 
 -- Vimtex
@@ -97,16 +98,18 @@ vim.keymap.set("n", "<C-s>", "<cmd>w<CR>")
 vim.keymap.set("n", "<F6>", "<cmd>source ~/.config/nvim/init.vim<CR>")
 vim.keymap.set("n", "<Leader>en", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
-vim.keymap.set("n", "<Leader>el", vim.diagnostic.setloclist)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
-vim.keymap.set("n", "<Leader>ic", vim.lsp.buf.incoming_calls) 
 
 -- Completion by nvim-cmp
 set.completeopt = "menu,menuone,noselect"
+
 local has_words_before = function()
+	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+		return false
+	end
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
 local lspkind = require("lspkind")
@@ -150,27 +153,20 @@ cmp.setup({
 			select = true,
 			behavior = cmp.ConfirmBehavior.Replace,
 		}),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			elseif has_words_before() then
-				cmp.complete()
+		["<Tab>"] = vim.schedule_wrap(function(fallback)
+			if cmp.visible() and has_words_before() then
+				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 			else
 				fallback()
 			end
-		end, { "i", "s" }),
-
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
+		end),
+		["<S-Tab>"] = vim.schedule_wrap(function(fallback)
+			if cmp.visible() and has_words_before() then
+				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 			else
 				fallback()
 			end
-		end, { "i", "s" }),
+		end),
 	},
 	sources = cmp.config.sources({
 		{ name = "copilot" },
@@ -265,11 +261,15 @@ vim.keymap.set("n", "<C-b>", ":lua require'telescope.builtin'.buffers()<cr>")
 vim.keymap.set("n", "<C-p>", ":lua require'telescope.builtin'.builtin()<cr>")
 vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions { jump_type = \"never\" }<cr>")
 vim.keymap.set("n", "<leader>fr", ":lua require'telescope.builtin'.lsp_references()<cr>")
+vim.keymap.set("n", "<leader>ic", ":lua require'telescope.builtin'.lsp_incoming_calls()<cr>")
+vim.keymap.set("n", "<leader>oc", ":lua require'telescope.builtin'.lsp_outgoing_calls()<cr>")
+vim.keymap.set("n", "<leader>el", ":lua require'telescope.builtin'.diagnostics { bufnr = 0 }<cr>")
+
 -- Formatter
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
 
 require("neoconf").setup({
-  -- override any of the default settings here
+	-- override any of the default settings here
 })
 
 local nvim_lsp = require("lspconfig")
@@ -323,17 +323,17 @@ nvim_lsp.ccls.setup({
 -- Neovim hasn't added foldingRange to default capabilities, users must add it manually
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true
+	dynamicRegistration = false,
+	lineFoldingOnly = true,
 }
 local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
 for _, ls in ipairs(language_servers) do
-    require('lspconfig')[ls].setup({
-        capabilities = capabilities
-        -- you can add other fields for setting up lsp server in this table
-    })
+	require("lspconfig")[ls].setup({
+		capabilities = capabilities,
+		-- you can add other fields for setting up lsp server in this table
+	})
 end
-require('ufo').setup()
+require("ufo").setup()
 
 require("nvim-treesitter.configs").setup({
 	highlight = {
@@ -532,6 +532,13 @@ require("lualine").setup({
 require("copilot").setup({
 	suggestion = { enabled = false },
 	panel = { enabled = false },
+	server_opts_overrides = {
+		settings = {
+			advanced = {
+				inlineSuggestCount = 3, -- #completions for getCompletions
+			},
+		},
+	},
 })
 
 require("copilot_cmp").setup()
