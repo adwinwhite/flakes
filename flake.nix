@@ -106,8 +106,7 @@
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-            nix.registry.p.flake = self;
-            nix.registry.pkgs.flake = nixpkgs;
+            nix.registry.os.flake = self;
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
@@ -126,8 +125,7 @@
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-            nix.registry.p.flake = self;
-            nix.registry.pkgs.flake = nixpkgs;
+            nix.registry.os.flake = self;
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
@@ -140,8 +138,7 @@
           inputs.home-manager.nixosModules.home-manager
           {
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-            nix.registry.p.flake = self;
-            nix.registry.pkgs.flake = nixpkgs;
+            nix.registry.os.flake = self;
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
@@ -159,8 +156,7 @@
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-            nix.registry.p.flake = self;
-            nix.registry.pkgs.flake = nixpkgs;
+            nix.registry.os.flake = self;
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
@@ -190,9 +186,8 @@
               # (import ./overlays/tree-sitter/gen-overlay.nix nixpkgs)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-            nix.registry.p.flake = self;
+            nix.registry.os.flake = self;
             # for compatibility.
-            nix.registry.pkgs.flake = nixpkgs;
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
