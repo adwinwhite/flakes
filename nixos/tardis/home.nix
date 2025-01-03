@@ -35,13 +35,13 @@ in
     btrfs-progs
     dogdns
     tmux
-    jetbrains.idea-community
+    # jetbrains.idea-community
     ssh-tools
     poetry
     traceroute
     # headscale
     tailscale
-    nil
+    # nil
     fzf
     py3
     logseq
@@ -53,7 +53,7 @@ in
     # xdotool         # simulate keyboard and mouse input
     # ydotool
     ydotool
-    firefox
+    # firefox
     bat
     sshfs
     feh
@@ -61,23 +61,23 @@ in
     zathura
     # texlab       # latex lsp
     firejail     # sandbox untrusted executable
-    black        # code formatter for python
+    # black        # code formatter for python
     alsa-utils
-    blueberry
-    ffmpeg
-    mpv
+    # blueberry
+    # ffmpeg
+    # mpv
     # nmap
     # mach-nix
     # wezterm
     bind         # dnsutils like dig
     # appimage-run
-    cmake
-    gnumake
+    # cmake
+    # gnumake
     gh           # github cli
     unzip
     zip
-    light        # brightness control
-    helix        # modal terminal editor in rust
+    # light        # brightness control
+    # helix        # modal terminal editor in rust
     socat
     htop
     lsof
@@ -91,16 +91,16 @@ in
     usbutils
     pciutils
     nix-prefetch-github
-    ccls            # c/c++ lsp
+    # ccls            # c/c++ lsp
     # clang
     # rust-analyzer # use rustup's one to sync rustc and RA.
-    gopls           # go lsp
-    delve           # go debugger
+    # gopls           # go lsp
+    # delve           # go debugger
     tealdeer        # tldr: brief command help
     graphviz
     # fortran-language-server
     eza
-    zellij
+    # zellij
     powerline-fonts
     killall
     fd              # find in rust
@@ -284,6 +284,13 @@ in
     neovim = import ../../programs/cli/neovim/neovim.nix { 
       inherit pkgs;
     };  
+  };
+
+  systemd.user.targets.tray = {
+    Unit = {
+      Description = "Home Manager System Tray";
+      Requires = [ "graphical-session-pre.target" ];
+    };
   };
 
 

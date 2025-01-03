@@ -110,7 +110,7 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        specialArgs = { inherit nixpkgs inputs; };
+        # specialArgs = { inherit nixpkgs inputs; };
       };
       bluespace = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -129,7 +129,7 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        specialArgs = { inherit nixpkgs inputs; };
+        # specialArgs = { inherit nixpkgs inputs; };
       };
       sunny = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -142,7 +142,7 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        specialArgs = { inherit nixpkgs inputs; };
+        # specialArgs = { inherit nixpkgs inputs; };
       };
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -160,7 +160,7 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        specialArgs = { inherit nixpkgs inputs; };
+        # specialArgs = { inherit nixpkgs inputs; };
       };
       tardis = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -191,7 +191,7 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        specialArgs = { inherit nixpkgs inputs; };
+        # specialArgs = { inherit nixpkgs inputs; };
       };
     };
   };
