@@ -74,6 +74,6 @@
     vimtex
     which-key-nvim
     onedark-nvim
-    pkgs.rust-tools-nvim
+    rustaceanvim
   ];
 }

@@ -100,9 +100,10 @@
   fonts = {
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       noto-fonts-emoji
-      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; })
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
     ];
     fontconfig = {
       enable = true;
@@ -447,6 +448,7 @@
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.suppressedSystemUnits = [ "systemd-machine-id-commit.service" ];
 
   systemd.services = {
     ydotoold = {
