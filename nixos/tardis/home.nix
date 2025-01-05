@@ -42,6 +42,7 @@ in
     # headscale
     tailscale
     # nil
+    nixd
     fzf
     py3
     logseq
