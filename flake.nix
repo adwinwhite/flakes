@@ -19,11 +19,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    berberman = {
-      url = "github:berberman/flakes";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -110,7 +105,6 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        # specialArgs = { inherit nixpkgs inputs; };
       };
       bluespace = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -129,7 +123,6 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        # specialArgs = { inherit nixpkgs inputs; };
       };
       sunny = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -142,7 +135,6 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        # specialArgs = { inherit nixpkgs inputs; };
       };
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -151,8 +143,6 @@
           inputs.home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
-              inputs.nixpkgs-wayland.overlay
-              inputs.rust-overlay.overlays.default
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
@@ -160,7 +150,6 @@
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        # specialArgs = { inherit nixpkgs inputs; };
       };
       tardis = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -175,23 +164,11 @@
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
           {
-            nixpkgs.overlays = [
-              # inputs.nixpkgs-wayland.overlay
-              inputs.berberman.overlays.default
-              (import ./overlays/misc.nix)
-              # (import ./overlays/sway/overlay.nix)
-              # (import ./overlays/cgproxy/overlay.nix)
-              (import ./overlays/kde/overlay.nix)
-              (import ./overlays/nvim-plugins/copilot-cmp/overlay.nix)
-              # (import ./overlays/tree-sitter/gen-overlay.nix nixpkgs)
-            ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.os.flake = self;
-            # for compatibility.
             nix.registry.nixpkgs.flake = nixpkgs;
           }
         ];
-        # specialArgs = { inherit nixpkgs inputs; };
       };
     };
   };

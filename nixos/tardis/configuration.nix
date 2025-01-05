@@ -162,28 +162,32 @@
       };
     };
   };
-  nixpkgs.overlays = [ (self: super: {
-    py3 = let
-      python-with-my-packages = super.python3.withPackages (p: with p; [
-        pandas
-        requests
-        numpy
-        matplotlib
-        scipy
-        # other python packages you want
-      ]);
-      in
-      super.runCommand "py3" {} ''
-        mkdir $out
-        # Link every top-level folder from pkgs.hello to our new target
-        ln -s ${python-with-my-packages}/* $out
-        # Except the bin folder
-        rm $out/bin
-        mkdir $out/bin
-        # We create the bin folder ourselves and link every binary in it
-        ln -s ${python-with-my-packages}/bin/python $out/bin/py3
-      '';
-  }) ];
+  nixpkgs.overlays = [ 
+    (self: super: {
+      py3 = let
+        python-with-my-packages = super.python3.withPackages (p: with p; [
+          pandas
+          requests
+          numpy
+          matplotlib
+          scipy
+          # other python packages you want
+        ]);
+        in
+        super.runCommand "py3" {} ''
+          mkdir $out
+          # Link every top-level folder from pkgs.hello to our new target
+          ln -s ${python-with-my-packages}/* $out
+          # Except the bin folder
+          rm $out/bin
+          mkdir $out/bin
+          # We create the bin folder ourselves and link every binary in it
+          ln -s ${python-with-my-packages}/bin/python $out/bin/py3
+        '';
+      }) 
+    (import ../../overlays/misc.nix)
+    (import ../../overlays/kde/overlay.nix)
+  ];
 
   # Enable flakes and gc
   nixpkgs.config.allowUnfree = true;
