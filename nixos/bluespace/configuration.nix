@@ -8,8 +8,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./cloudflare-warp.nix
-      ../../modules/static.nix
     ];
 
   boot.cleanTmpDir = true;
@@ -29,7 +27,7 @@
   # Enable flakes and gc
   nixpkgs.config.allowUnfree = true;
   nix = {
-    package = pkgs.nixUnstable;
+    package = pkgs.nixVersions.latest;
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
@@ -62,6 +60,7 @@
       "mail_hashed_passwords/1" = {};
       "aggv2sub_token" = {};
       "traefik_dashboard_password" = {};
+      "yjy_blog_password" = {};
       "v2ray_subscriptions/v2spacex" = {
         sopsFile = ../secrets.yaml;
       };
@@ -179,50 +178,6 @@
 
   # Enable the OpenSSH daemon.
   services = {
-    static-host = {
-      enable = true;
-      port = 23456;
-      directory = "/tmp/files";
-    };
-
-    cloudflare-warp = {
-      enable = true;
-      certificate = ./Cloudflare_CA.pem; # download here https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/install-cloudflare-cert/
-    };
-    # redis.servers = {
-      # "niltalk" = {
-        # enable = true;
-        # bind = "0.0.0.0";
-        # port = 6379;
-        # settings = {
-          # protected-mode = "no";
-        # };
-      # };
-    # };
-    # tailscale.enable = false;
-    # headscale = {
-      # enable = true;
-      # address = "0.0.0.0";
-      # port = 8085;
-      # dns = {
-        # magicDns = false;
-        # baseDomain = "hs.adwin.win";
-        # domains = [];
-        # nameservers = [
-          # "1.1.1.1"
-          # "8.8.8.8"
-          # "223.5.5.5"
-          # "114.114.114.114"
-        # ];
-      # };
-      # serverUrl = "https://headscale.adwin.win";
-      # logLevel = "warn";
-      # settings = {
-        # logtail.enabled = false;
-        # dns_config.override_local_dns = false;
-      # };
-    # };
-
     nginx = {
       enable = true;
       virtualHosts = {
@@ -240,7 +195,6 @@
     traefik = {
       enable = true;
       staticConfigOptions = {
-        experimental.http3 = true;
         log = {
           level = "INFO";
         };
@@ -273,6 +227,15 @@
       dynamicConfigOptions = {
         http = {
           routers = {
+            yjyBlog = {
+              rule = "Host(`seedjoy.adwin.win`)";
+              middlewares = [ "yjyBlogAuth" ];
+              service = "yjyBlog";
+            };
+            yjyBlogWebhook = {
+              rule = "Host(`seedjoy.adwin.win`) && Path(`/webhook`)";
+              service = "yjyBlogWebhook";
+            };
             chat = {
               rule = "Host(`chat.adwin.win`)";
               service = "chat";
@@ -295,22 +258,14 @@
               service = "v2ray";
               middlewares = [ "sslheader" ];
             };
-            static = {
-              rule = "Host(`icecream.adwin.win`) && (Path(`/upload`) || PathPrefix(`/files`))";
-              service = "static";
-            };
-            joy = {
-              rule = "Host(`joy.adwin.win`)";
-              service = "static";
-              middlewares = [ "joyRewrite" ];
-            };
           };
           services = {
             chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
             v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
-            static.loadBalancer.servers = [{ url = "http://localhost:23456"; }];
+            yjyBlog.loadBalancer.servers = [{ url = "http://localhost:1313"; }];
+            yjyBlogWebhook.loadBalancer.servers = [{ url = "http://localhost:1314"; }];
           };
           middlewares = {
             joyRewrite = {
@@ -332,6 +287,14 @@
               basicAuth = {
                 # TODO: figure out new secrets management method.
                 users = [ "adwin:${config.sops.secrets."traefik_dashboard_password".path}" ];
+              };
+            };
+            yjyBlogAuth = {
+              basicAuth = {
+                users = [ 
+                  "yjy:$2b$05$/jUd5uYX7r95/qKuGH9lVOHLfccp2d3Fh9wgIya.zEttzzvHw2/46"
+                  "joy:${config.sops.secrets."yjy_blog_password".path}"
+              ];
               };
             };
           };

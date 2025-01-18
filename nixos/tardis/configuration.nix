@@ -171,6 +171,7 @@
           numpy
           matplotlib
           scipy
+          cryptography
           # other python packages you want
         ]);
         in

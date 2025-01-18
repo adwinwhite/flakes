@@ -80,6 +80,41 @@
 
   systemd.user = {
     services = {
+      "hugo" = {
+        Unit = {
+          Description = "hugo for yjy blog";
+        };
+        Service = {
+          Type = "simple";
+          WorkingDirectory = "/home/adwin/yjy-blog";
+          ExecStart = "${pkgs.hugo}/bin/hugo server -p 1313";
+        };
+        Install = { WantedBy = [ "default.target" ]; };
+      };
+      "yjy-blog-sync" = {
+        Unit = {
+          Description = "yjy blog sync service";
+        };
+        Service = {
+          Type = "simple";
+          WorkingDirectory = "/home/adwin/yjy-blog";
+          ExecStart = let push_handler = pkgs.writeShellApplication {
+            name = "push_handler";
+
+            runtimeInputs = with pkgs; [ 
+              git
+              openssh
+              (python3.withPackages (ps: with ps; [ fastapi uvicorn ]))
+            ];
+
+            text = ''
+              python sync_repo.py
+            '';
+          }; in 
+              "${push_handler}/bin/push_handler";
+        };
+        Install = { WantedBy = [ "default.target" ]; };
+      };
       "status_email_user@" = {
         Unit = {
           Description = "status email for %i to user";

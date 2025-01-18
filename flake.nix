@@ -45,6 +45,13 @@
           # Simple Rust Template
         '';
       };
+      rust-global = {
+        path = ./templates/rust-global;
+        description = "A simple Rust project with shared rust toolchain";
+        welcomeText = ''
+          # Simple Rust Template with shared rust toolchain 
+        '';
+      };
       racket = {
         path = ./templates/racket;
         description = "A simple Racket project";
@@ -115,7 +122,6 @@
           inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
-              (import ./overlays/static/overlay.nix)
               (import ./overlays/misc.nix)
             ];
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
