@@ -326,13 +326,16 @@
       openDefaultPorts = true;
       devices = {
         "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
-        "natsel" = { id = "GE4RPI2-QKV3G5A-MZ7BFT3-VJRS3RI-6S3NM6Q-3UL6FH7-QG67AKK-KEELIAO"; };
         "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
       };
       folders = {
         "flakes" = {        # Name of folder in Syncthing, also the folder ID
           path = "/home/adwin/flakes";    # Which folder to add to Syncthing
-          devices = [ "MI10" "natsel" "Tardis" ];      # Which devices to share the folder with
+          devices = [ "MI10" "Tardis" ];      # Which devices to share the folder with
+        };
+        "Logseq" = {
+          path = "/home/adwin/Documents/TheNotes";
+          devices = [ "MI10" "Tardis" ];
         };
       };
     };
