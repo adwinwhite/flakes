@@ -24,6 +24,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    extra-container = {
+      url = "github:erikarvstedt/extra-container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }: 
     flake-utils.lib.eachSystem [ "aarch64-linux" "x86_64-linux" ] (system: let
@@ -169,6 +174,7 @@
           }
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
+          inputs.extra-container.nixosModules.default
           {
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.os.flake = self;
