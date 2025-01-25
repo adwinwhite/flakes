@@ -272,6 +272,21 @@ require("neoconf").setup({
 	-- override any of the default settings here
 })
 
+g.rustaceanvim = {
+  -- LSP configuration
+  server = {
+    default_settings = {
+      -- rust-analyzer language server configuration
+      ['rust-analyzer'] = {
+				cargo = {
+					features = "all",
+				},
+      },
+    },
+  },
+}
+
+
 local nvim_lsp = require("lspconfig")
 nvim_lsp.volar.setup({})
 nvim_lsp.racket_langserver.setup({
@@ -503,3 +518,4 @@ require("copilot_cmp").setup()
 
 -- Set up lsp inlay hint
 vim.lsp.inlay_hint.enable(true)
+
