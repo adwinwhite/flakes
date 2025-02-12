@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    aider-chat
     libnotify
     btrfs-progs
     dogdns

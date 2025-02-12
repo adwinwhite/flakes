@@ -16,6 +16,7 @@
     loader.efi.canTouchEfiVariables = true;
     resumeDevice = "/dev/nvme0n1p2";
     enableContainers = true;
+    kernel.sysctl."vm.swappiness" = 10;
   };
 
   virtualisation = {
@@ -214,18 +215,13 @@
       substituters = pkgs.lib.mkBefore [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39"
         "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39"
-        # "https://mirrors.ustc.edu.cn/nix-channels/store"
         "https://nix-community.cachix.org"
-        # "https://nixpkgs-wayland.cachix.org"
-        # "https://berberman.cachix.org"
       ];
       builders-use-substitutes = true;
       auto-optimise-store = true;
       trusted-users = [ "root" "adwin" ];
       trusted-public-keys = [ 
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
-        # "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-        # "berberman.cachix.org-1:UHGhodNXVruGzWrwJ12B1grPK/6Qnrx2c3TjKueQPds="
       ];
     };
   };
@@ -362,12 +358,21 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.groups.uinput = {};
   users.mutableUsers = false;
-  users.users.adwin = {
-    isNormalUser = true;
-    hashedPasswordFile = config.sops.secrets.adwin_login_password.path;
-    home = "/home/adwin";
-    extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
-    shell = pkgs.fish;
+  users.users = {
+    adwin = {
+      isNormalUser = true;
+      hashedPasswordFile = config.sops.secrets.adwin_login_password.path;
+      home = "/home/adwin";
+      extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
+      shell = pkgs.fish;
+    };
+    qq = {
+      isNormalUser = true;
+      hashedPassword = "$2b$05$zI/d/JA0xiDu88Gyp60rwuYm6vGWgfj3UKyJNMh76MWMRB6XYrbDG";
+      home = "/home/qq";
+      extraGroups = [ "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
+      shell = pkgs.fish;
+    };
   };
 
   users.extraGroups.vboxusers.members = [ "adwin" ];
@@ -377,7 +382,10 @@
   home-manager = {
    useGlobalPkgs = true;
    useUserPackages = true;
-   users.adwin = import ./home.nix;
+   users = {
+    adwin = import ./home.nix;
+    qq = import ./home-qq.nix;
+  };
   };
    
 
