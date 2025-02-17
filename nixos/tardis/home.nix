@@ -287,6 +287,7 @@ in
 	set -g -x EDITOR nvim
         alias ls="eza"
         alias ll="eza -1la"
+        alias lg="lazygit"
         bind -e \cl
         eval (direnv hook fish)
       '';
