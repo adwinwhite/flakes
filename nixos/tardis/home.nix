@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    delta
     aider-chat
     libnotify
     btrfs-progs
@@ -232,6 +233,15 @@ in
       enable = true;
       nix-direnv.enable = true; 
     };
+    lazygit = {
+      enable = true;
+      settings = {
+        git.paging = {
+          colorArg = "always";
+          pager = "delta --dark --paging=never";
+        };
+      };
+    };
     git = {
       enable = true;
       userName  = "Adwin White";
@@ -244,6 +254,17 @@ in
         core = {
           editor = "nvim";
           excludeFile = "/home/adwin/.config/git/gitignore_global";
+          pager = "delta";
+        };
+        interactive = {
+          diffFilter = "delta --color-only";
+        };
+        delta = {
+          navigate = true;
+          dark = true;
+        };
+        merge = {
+          conflictStyle = "zdiff3";
         };
         init = {
           defaultBranch = "main";
