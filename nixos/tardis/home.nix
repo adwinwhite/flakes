@@ -238,7 +238,7 @@ in
       settings = {
         git.paging = {
           colorArg = "always";
-          pager = "delta --dark --paging=never";
+          pager = "delta --light --paging=never";
         };
       };
     };
@@ -262,6 +262,8 @@ in
         delta = {
           navigate = true;
           dark = true;
+          minus-style = "normal \"#330022\"";
+          plus-style = "syntax \"#423200\"";
         };
         merge = {
           conflictStyle = "zdiff3";
