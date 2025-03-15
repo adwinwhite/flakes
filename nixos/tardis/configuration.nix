@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -256,7 +256,12 @@
 
 
   services = {
-    tailscale.enable = false;
+    greetd = {
+      enable = true;
+      settings = {
+        default_session.command = "${lib.getExe pkgs.greetd.tuigreet} --cmd niri-session";
+      };
+    };
     udev = {
       enable = true;
       extraRules = ''
@@ -328,21 +333,26 @@
     };
 
     # To use Plasma6
-    xserver = {
-      enable = true;
-      xkb.layout = "us";
-      xautolock.time = 60;
-    };
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm.enable = true;
+    # xserver = {
+      # enable = true;
+      # xkb.layout = "us";
+      # xautolock.time = 60;
+    # };
+    # desktopManager.plasma6.enable = true;
+    # displayManager.sddm.enable = true;
   };
 
   xdg = {
     portal = {
       enable = true;
-      wlr = {
-        enable = true;
-      };
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-gnome
+      ];
+      # wlr = {
+        # enable = true;
+      # };
+      configPackages = [ pkgs.niri ];
     };
   };
 
@@ -366,13 +376,13 @@
       extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
       shell = pkgs.fish;
     };
-    qq = {
-      isNormalUser = true;
-      hashedPassword = "$2b$05$zI/d/JA0xiDu88Gyp60rwuYm6vGWgfj3UKyJNMh76MWMRB6XYrbDG";
-      home = "/home/qq";
-      extraGroups = [ "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
-      shell = pkgs.fish;
-    };
+    # qq = {
+      # isNormalUser = true;
+      # hashedPassword = "$2b$05$zI/d/JA0xiDu88Gyp60rwuYm6vGWgfj3UKyJNMh76MWMRB6XYrbDG";
+      # home = "/home/qq";
+      # extraGroups = [ "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
+      # shell = pkgs.fish;
+    # };
   };
 
   users.extraGroups.vboxusers.members = [ "adwin" ];
@@ -384,7 +394,7 @@
    useUserPackages = true;
    users = {
     adwin = import ./home.nix;
-    qq = import ./home-qq.nix;
+    # qq = import ./home-qq.nix;
   };
   };
    
@@ -392,13 +402,15 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wireguard-tools
+    # wireguard-tools
     pavucontrol
   ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
+  security.pam.services.swaylock = { };
+
   programs = {
-    kdeconnect.enable = true;
+    # kdeconnect.enable = true;
     fish.enable = true;
     firejail.enable = true;
     nix-ld.enable = true;
