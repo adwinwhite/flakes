@@ -1,4 +1,4 @@
-{ pkgs, osConfig, ...}: 
+{ pkgs, osConfig, config, ...}: 
 let
   chromium = let
     wrapped = pkgs.writeShellScriptBin "chromium" ''
@@ -31,6 +31,9 @@ let
 in
 {
   home.packages = with pkgs; [
+    fuzzel
+    alacritty
+    niri
     delta
     aider-chat
     libnotify
@@ -94,6 +97,7 @@ in
     usbutils
     pciutils
     nix-prefetch-github
+    pyright
     # ccls            # c/c++ lsp
     # clang
     # rust-analyzer # use rustup's one to sync rustc and RA.
@@ -115,6 +119,7 @@ in
   xdg = {
     enable = true;
     configFile = {
+      "niri/config.kdl".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/niri.kdl";
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
       "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
       "git/gitignore_global".text = builtins.readFile ./gitignore_global;
@@ -137,7 +142,7 @@ in
           swipe = 0.5;
         };
         swipe = {
-          "3" = {
+          "4" = {
             left = {
               # command = "xdotool key ctrl+shift+Tab";
               command = "ydotool key 29:1 42:1 15:1 15:0 42:0 29:0";
@@ -148,11 +153,11 @@ in
               command = "ydotool key 29:1 15:1 15:0 29:0";
               # command = "dotool key ctrl+Tab";
             };
-            up = {
-              # command = "xdotool key Super_L+w";
-              command = "ydotool key 125:1 17:1 17:1 125:0";
-              # command = "dotool key super+w";
-            };
+            # up = {
+              # # command = "xdotool key Super_L+w";
+              # command = "ydotool key 125:1 17:1 17:1 125:0";
+              # # command = "dotool key super+w";
+            # };
           };
         };
       };
@@ -172,6 +177,12 @@ in
   };
 
   programs = {
+    waybar = {
+      enable = true;
+      settings = [ (import ./waybar.nix { inherit pkgs; }) ];
+      style = builtins.readFile ./waybar.css;
+      systemd.enable = true;
+    };
     zoxide = {
       enable = true;
       options = [ "--cmd" "cd" ];
