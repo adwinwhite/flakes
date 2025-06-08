@@ -105,6 +105,7 @@
     initialHashedPassword = "$6$IJuzB39ajEELQigc$BurZefRiK/Sehk9UQDdVOljc7ccmKQ9iHxcNdU7klUP4ECwWQKKccX7H7ArlJ8Lov.rmwtNg3H3DGBNSnd95A0";
     home = "/home/adwin";
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    linger = true;
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCXwWJH+vsxzntGdP0Cn4piSp1Tocg98YIrvzQIaHbL9wW/1Jj5w9bOYtFP5XbWQSQjbHqH04ISB6boV08Pb41Fs3iCwVXMdUa6qkRh9z0UmXq74Vp58AJ3ONQFOQM/IYkbMFVWE1TjbrXlA/dpPhXKBdCj2ZA7gParqXEfk6KAVNKnFED02YvqoVotOzcfH9nlsMzMRVpfm6he0aP04RZE/Bs/UXzuQXZEwnOBYpuDSLW+CQcoxGhEKgTxgDnfdLNqYyp6rVHWy0+b46fbx1JVU02xMH8YplrIC/b/ysBVboCPf79gZPnw7jQNf+EX9sAm2bNuje1DSSGqivpLe199 adwin@Tardis" 
@@ -190,6 +191,15 @@
             }
           ];
         };
+        "lightboulder.adwin.win" = {
+          root = "/var/www/lightboulder";
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 8100;
+            }
+          ];
+        };
       };
     };
     traefik = {
@@ -205,11 +215,11 @@
         entryPoints = {
           web = {
             address = ":80";
-            http.redirections.entryPoint = {
-              to = "websecure";
-              scheme = "https";
-              permanent = false;
-            };
+            # http.redirections.entryPoint = {
+              # to = "websecure";
+              # scheme = "https";
+              # permanent = false;
+            # };
           };
           websecure = {
             address = ":443";
@@ -229,45 +239,62 @@
           routers = {
             yjyBlog = {
               rule = "Host(`seedjoy.adwin.win`)";
-              middlewares = [ "yjyBlogAuth" ];
+              middlewares = [ "yjyBlogAuth" "forceHttps" ];
               service = "yjyBlog";
             };
             yjyBlogWebhook = {
               rule = "Host(`seedjoy.adwin.win`) && Path(`/webhook`)";
+              middlewares = [ "forceHttps" ];
               service = "yjyBlogWebhook";
             };
             chat = {
               rule = "Host(`chat.adwin.win`)";
+              middlewares = [ "forceHttps" ];
               service = "chat";
             };
             headscale = {
               rule = "Host(`headscale.adwin.win`)";
+              middlewares = [ "forceHttps" ];
               service = "headscale";
             };
             mail = {
               rule = "Host(`mail.adwin.win`)";
+              middlewares = [ "forceHttps" ];
               service = "mail";
+            };
+            lightboulder = {
+              rule = "Host(`lightboulder.adwin.win`)";
+              entryPoints = [ "web" ];
+              service = "lightboulder";
             };
             dashboard = {
               rule = "Host(`icecream.adwin.win`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
               service = "api@internal";
-              middlewares = [ "auth" ];
+              middlewares = [ "auth" "forceHttps" ];
             };
             v2ray = {
               rule = "Host(`v2ray.adwin.win`) && Path(`/ray`)";
               service = "v2ray";
-              middlewares = [ "sslheader" ];
+              middlewares = [ "sslheader" "forceHttps" ];
             };
           };
           services = {
             chat.loadBalancer.servers = [{ url = "http://localhost:9000"; }];
             headscale.loadBalancer.servers = [{ url = "http://localhost:8085"; }];
             mail.loadBalancer.servers = [{ url = "http://localhost:8099"; }];
+            lightboulder.loadBalancer.servers = [{ url = "http://localhost:8100"; }];
             v2ray.loadBalancer.servers = [ { url = "http://localhost:10001"; }];
             yjyBlog.loadBalancer.servers = [{ url = "http://localhost:1313"; }];
             yjyBlogWebhook.loadBalancer.servers = [{ url = "http://localhost:1314"; }];
           };
           middlewares = {
+            forceHttps = {
+              redirectScheme = {
+                scheme = "https";
+                permanent = true;
+                port = 443;
+              };
+            };
             joyRewrite = {
               replacePath = {
                 path = "/files/letter.html";
