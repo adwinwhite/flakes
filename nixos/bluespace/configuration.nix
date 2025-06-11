@@ -291,7 +291,7 @@
             forceHttps = {
               redirectScheme = {
                 scheme = "https";
-                permanent = true;
+                permanent = false;
                 port = 443;
               };
             };
