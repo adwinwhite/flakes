@@ -259,6 +259,9 @@
     tailscale.enable = false;
     udev = {
       enable = true;
+      packages = [
+        pkgs.android-udev-rules
+      ];
       extraRules = ''
         SUBSYSTEM=="misc", KERNEL=="uinput", MODE="0660", GROUP="uinput"
       '';
@@ -363,7 +366,7 @@
       isNormalUser = true;
       hashedPasswordFile = config.sops.secrets.adwin_login_password.path;
       home = "/home/adwin";
-      extraGroups = [ "wheel" "networkmanager" "input" "uinput" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" "networkmanager" "input" "uinput" "dialout" "adbusers" ]; # Enable ‘sudo’ for the user.
       shell = pkgs.fish;
     };
     qq = {
@@ -394,10 +397,16 @@
   environment.systemPackages = with pkgs; [
     wireguard-tools
     pavucontrol
+    adwaita-icon-theme
+    gtk3
   ];
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    GSETTINGS_SCHEMA_DIR = "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}/glib-2.0/schemas";
+  };
 
   programs = {
+    dconf.enable = true;
     kdeconnect.enable = true;
     fish.enable = true;
     firejail.enable = true;
