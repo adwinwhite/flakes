@@ -189,7 +189,8 @@ in
       '';
       matchBlocks = {
         "github.com" = {
-          hostname = "github.com";
+          hostname = "ssh.github.com";
+          port = 443;
           user = "git";
           identityFile = "~/.ssh/id_rsa";
           extraOptions = {
@@ -262,8 +263,8 @@ in
         delta = {
           navigate = true;
           dark = true;
-          minus-style = "normal \"#330022\"";
-          plus-style = "syntax \"#423200\"";
+          minus-style = "normal \"#423200\"";
+          plus-style = "syntax \"#330022\"";
         };
         merge = {
           conflictStyle = "zdiff3";
@@ -290,6 +291,7 @@ in
         alias ls="eza"
         alias ll="eza -1la"
         alias lg="lazygit"
+        alias done="notify-send 'command is done'"
         bind -e \cl
         eval (direnv hook fish)
       '';
