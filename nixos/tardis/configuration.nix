@@ -256,7 +256,6 @@
 
 
   services = {
-    tailscale.enable = false;
     udev = {
       enable = true;
       packages = [
@@ -295,18 +294,7 @@
         };
       };
     };
-    # Cause DNS resolution failure.
-    smartdns = {
-      enable = false;
-      settings = {
-        bind = "[::]:53";
-        cache-size = 4096;
-        speed-check-mode = "none";
-        server = "223.5.5.5:53";
-      };
-    };
-    resolved.enable = false;
-    fail2ban.enable = false;
+    fail2ban.enable = true;
     openssh = {
       enable = true;
       extraConfig = ''
