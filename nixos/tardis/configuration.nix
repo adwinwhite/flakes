@@ -387,7 +387,6 @@
     fish.enable = true;
     firejail.enable = true;
     nix-ld.enable = true;
-    extra-container.enable = true;
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
