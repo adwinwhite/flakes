@@ -182,6 +182,24 @@
           }
         ];
       };
+      black = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ 
+          ./nixos/black/configuration.nix
+          inputs.impermanence.nixosModules.impermanence
+          inputs.nix-index-database.nixosModules.nix-index
+          # optional to also wrap and install comma
+          { programs.nix-index-database.comma.enable = true; 
+            programs.command-not-found.enable = false;
+          }
+          inputs.home-manager.nixosModules.home-manager
+          {
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.os.flake = self;
+            nix.registry.nixpkgs.flake = nixpkgs;
+          }
+        ];
+      };
     };
   };
 }
