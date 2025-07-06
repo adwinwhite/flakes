@@ -1,4 +1,4 @@
-{ pkgs, osConfig, ...}: 
+{ pkgs, osConfig, config, ...}: 
 let
   chromium = let
     wrapped = pkgs.writeShellScriptBin "chromium" ''
@@ -31,6 +31,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    fuzzel
+    alacritty
     delta
     aider-chat
     libnotify
@@ -116,6 +118,7 @@ in
     enable = true;
     configFile = {
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
+      "niri/config.kdl".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/niri.kdl";
       "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
       "git/gitignore_global".text = builtins.readFile ./gitignore_global;
       # "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
@@ -137,7 +140,7 @@ in
           swipe = 0.5;
         };
         swipe = {
-          "3" = {
+          "4" = {
             left = {
               # command = "xdotool key ctrl+shift+Tab";
               command = "ydotool key 29:1 42:1 15:1 15:0 42:0 29:0";
@@ -172,6 +175,12 @@ in
   };
 
   programs = {
+    waybar = {
+      enable = true;
+      settings = [ (import ./waybar.nix {inherit pkgs; }) ];
+      style = builtins.readFile ./waybar.css;
+      systemd.enable = true;
+    };
     zoxide = {
       enable = true;
       options = [ "--cmd" "cd" ];

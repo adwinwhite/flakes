@@ -294,7 +294,6 @@
         };
       };
     };
-    fail2ban.enable = true;
     openssh = {
       enable = true;
       extraConfig = ''
@@ -317,23 +316,11 @@
       lidSwitch = "lock";
       lidSwitchDocked = "ignore";
     };
-
-    # To use Plasma6
-    xserver = {
-      enable = true;
-      xkb.layout = "us";
-      xautolock.time = 60;
-    };
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm.enable = true;
   };
 
   xdg = {
     portal = {
       enable = true;
-      wlr = {
-        enable = true;
-      };
     };
   };
 
@@ -394,6 +381,7 @@
   };
 
   programs = {
+    niri.enable = true;
     dconf.enable = true;
     kdeconnect.enable = true;
     fish.enable = true;
