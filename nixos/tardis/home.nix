@@ -32,19 +32,19 @@ in
 {
   home.packages = with pkgs; [
     fuzzel
-    alacritty
+    wezterm
     delta
-    aider-chat
+    # aider-chat
     libnotify
     btrfs-progs
-    dogdns
-    tmux
+    # dogdns
+    # tmux
     # jetbrains.idea-community
-    ssh-tools
-    poetry
-    traceroute
+    # ssh-tools
+    # poetry
+    # traceroute
     # headscale
-    tailscale
+    # tailscale
     # nil
     nixd
     fzf
@@ -52,22 +52,22 @@ in
     logseq
     bottom
     stylua
-    xclip           # x11 clipboard cli program
+    # xclip           # x11 clipboard cli program
     wl-clipboard    # wayland clipboard cli program
     # xournalpp
     # xdotool         # simulate keyboard and mouse input
     # ydotool
     ydotool
     # firefox
-    bat
-    sshfs
+    # bat
+    # sshfs
     feh
     xdg-utils    # to use xdg-open
-    zathura
+    # zathura
     # texlab       # latex lsp
-    firejail     # sandbox untrusted executable
+    # firejail     # sandbox untrusted executable
     # black        # code formatter for python
-    alsa-utils
+    # alsa-utils
     # blueberry
     # ffmpeg
     # mpv
@@ -83,7 +83,7 @@ in
     zip
     # light        # brightness control
     # helix        # modal terminal editor in rust
-    socat
+    # socat
     htop
     lsof
     tree
@@ -102,7 +102,7 @@ in
     # gopls           # go lsp
     # delve           # go debugger
     tealdeer        # tldr: brief command help
-    graphviz
+    # graphviz
     # fortran-language-server
     eza
     # zellij
@@ -119,12 +119,12 @@ in
     configFile = {
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
       "niri/config.kdl".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/niri.kdl";
-      "wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
+      "wezterm/wezterm.lua".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/wezterm.lua";
       "git/gitignore_global".text = builtins.readFile ./gitignore_global;
       # "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
       # No use since wrapped chromium does not read flags.conf.
       # "chromium-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland\n--enable-webrtc-pipewire-capturer=enabled\n--gtk-version=4";
-      "zathura/zathurarc".text = "set selection-clipboard clipboard";
+      # "zathura/zathurarc".text = "set selection-clipboard clipboard";
     };
   };
 
@@ -268,6 +268,9 @@ in
         };
         interactive = {
           diffFilter = "delta --color-only";
+        };
+        diff = {
+          tool = "delta";
         };
         delta = {
           navigate = true;
