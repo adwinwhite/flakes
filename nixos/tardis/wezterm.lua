@@ -51,7 +51,7 @@ return {
     top = 0,
     bottom = 0,
   },
-  font = wezterm.font("Source Code Pro for Powerline"),
+  font = wezterm.font("FiraCode Nerd Font"),
   font_size = 11.0,
   enable_tab_bar = false,
   disable_default_key_bindings = true,

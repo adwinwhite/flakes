@@ -16,6 +16,15 @@ input {
     }
 }
 
+output "eDP-1" {
+    position x=0 y=0
+}
+
+output "DP-2" {
+    scale 2.0
+    position x=0 y=-720
+}
+
 layout {
     gaps 6
     default-column-width { proportion 1.0; }
@@ -23,6 +32,7 @@ layout {
 
 prefer-no-csd
 
+/*
 workspace "terminal"
 workspace "browser"
 workspace "note"
@@ -47,6 +57,7 @@ window-rule {
     match app-id=r#"^org\.telegram\.desktop$"#
     open-on-workspace "chat"
 }
+*/
 
 
 window-rule {
@@ -56,7 +67,7 @@ window-rule {
 
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
-    Mod+Return { spawn "alacritty"; }
+    Mod+Return { spawn "wezterm"; }
     Mod+W { spawn "chromium"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Alt+L { spawn "swaylock"; }

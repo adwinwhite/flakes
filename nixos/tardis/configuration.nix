@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -145,18 +145,6 @@
         owner = config.users.users.adwin.name;
         group = config.users.users.adwin.group;
       };
-      # "v2ray_subscriptions/v2spacex" = {
-        # sopsFile = ../secrets.yaml;
-        # owner = "adwin";
-      # };
-      # "v2ray_subscriptions/tomlink" = {
-        # sopsFile = ../secrets.yaml;
-        # owner = "adwin";
-      # };
-      # "v2ray_subscriptions/feiniaoyun" = {
-        # sopsFile = ../secrets.yaml;
-        # owner = "adwin";
-      # };
       "config.dae" = {
         sopsFile = ./config.dae;
         format = "binary";
@@ -256,6 +244,14 @@
 
 
   services = {
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd niri-session";
+        };
+      };
+    };
     udev = {
       enable = true;
       packages = [
@@ -344,13 +340,6 @@
       extraGroups = [ "wheel" "networkmanager" "input" "uinput" "dialout" "adbusers" ]; # Enable ‘sudo’ for the user.
       shell = pkgs.fish;
     };
-    qq = {
-      isNormalUser = true;
-      hashedPassword = "$2b$05$zI/d/JA0xiDu88Gyp60rwuYm6vGWgfj3UKyJNMh76MWMRB6XYrbDG";
-      home = "/home/qq";
-      extraGroups = [ "networkmanager" "input" ]; # Enable ‘sudo’ for the user.
-      shell = pkgs.fish;
-    };
   };
 
   users.extraGroups.vboxusers.members = [ "adwin" ];
@@ -362,7 +351,6 @@
    useUserPackages = true;
    users = {
     adwin = import ./home.nix;
-    qq = import ./home-qq.nix;
   };
   };
    

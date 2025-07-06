@@ -168,7 +168,6 @@
           }
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
-          inputs.extra-container.nixosModules.default
           {
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.os.flake = self;
