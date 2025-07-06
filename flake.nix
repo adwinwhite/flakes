@@ -23,12 +23,6 @@
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    extra-container = {
-      url = "github:erikarvstedt/extra-container";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }: 
     flake-utils.lib.eachSystem [ "aarch64-linux" "x86_64-linux" ] (system: let
