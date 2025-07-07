@@ -31,6 +31,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    swayidle
+    swaylock
     fuzzel
     wezterm
     delta
@@ -129,6 +131,12 @@ in
   };
 
   services = {
+    swayidle = {
+      enable = true;
+      events = [
+        { event = "before-sleep"; command = "${pkgs.swaylock}/bin/swaylock -fF"; }
+      ];
+    };
     fusuma = {
       enable = true;
       extraPackages = with pkgs; [ coreutils ydotool xorg.xprop ];

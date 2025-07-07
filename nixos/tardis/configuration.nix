@@ -178,8 +178,7 @@
           ln -s ${python-with-my-packages}/bin/python $out/bin/py3
         '';
       }) 
-    (import ../../overlays/misc.nix)
-    (import ../../overlays/kde/overlay.nix)
+    (import ../../overlays/niri/overlay.nix)
   ];
 
   # Enable flakes and gc
@@ -244,14 +243,7 @@
 
 
   services = {
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd niri-session";
-        };
-      };
-    };
+    gnome.gnome-keyring.enable = true;
     udev = {
       enable = true;
       packages = [
@@ -317,6 +309,10 @@
   xdg = {
     portal = {
       enable = true;
+      extraPortals = with pkgs;[
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+      ];
     };
   };
 
