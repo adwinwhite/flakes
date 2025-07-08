@@ -71,6 +71,7 @@ binds {
     Mod+W { spawn "chromium"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Alt+L { spawn "swaylock"; }
+    Mod+B { spawn "killall" "-SIGUSR1" ".waybar-wrapped"; }
 
     Mod+Q { close-window; }
     Mod+O repeat=false { toggle-overview; }
