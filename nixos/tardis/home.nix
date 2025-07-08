@@ -169,18 +169,6 @@ in
         };
       };
     };
-    flameshot = {
-      enable = true;
-      settings = {
-        General = {
-          savePathFixed = true;
-        };
-      };
-    };
-    kdeconnect = {
-      enable = true;
-      indicator = true;
-    };
   };
 
   programs = {
