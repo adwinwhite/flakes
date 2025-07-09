@@ -4,7 +4,7 @@
   viAlias = true;
   extraConfig = builtins.concatStringsSep "\n" [
       ''
-      luafile ${builtins.toString ./init.lua}
+      luafile ~/.config/nvim/out_of_store_symlink.lua
       ''
     ];
   extraPackages = with pkgs; [
