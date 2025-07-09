@@ -5,7 +5,7 @@ hotkey-overlay {
 input {
     keyboard {
         xkb {
-            options "ctrl:nocaps"
+            layout "us"
         }
         repeat-delay 400
         repeat-rate 50
