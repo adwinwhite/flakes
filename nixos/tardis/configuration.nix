@@ -17,6 +17,7 @@
     resumeDevice = "/dev/nvme0n1p2";
     enableContainers = true;
     kernel.sysctl."vm.swappiness" = 10;
+    initrd.systemd.network.wait-online.enable = false;
   };
 
   virtualisation = {

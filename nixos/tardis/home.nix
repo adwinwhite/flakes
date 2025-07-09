@@ -123,6 +123,7 @@ in
       # "zellij/config.yaml".text = builtins.readFile ./../../programs/cli/zellij.yaml;
       "niri/config.kdl".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/niri.kdl";
       "wezterm/wezterm.lua".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/nixos/tardis/wezterm.lua";
+      "nvim/out_of_store_symlink.lua".source = config.lib.file.mkOutOfStoreSymlink "/home/adwin/flakes/programs/cli/neovim/init.lua";
       "git/gitignore_global".text = builtins.readFile ./gitignore_global;
       # "electron-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland";
       # No use since wrapped chromium does not read flags.conf.

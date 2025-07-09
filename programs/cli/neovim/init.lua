@@ -275,7 +275,7 @@ require("neoconf").setup({
 g.rustaceanvim = {
   -- LSP configuration
   server = {
-		auto_attach = false,
+		auto_attach = not vim.env.NVIM_NO_RA,
     default_settings = {
       -- rust-analyzer language server configuration
       ['rust-analyzer'] = {
