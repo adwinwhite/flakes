@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    networkmanagerapplet
     brightnessctl
     swayidle
     swaylock
@@ -129,6 +130,14 @@ in
       # No use since wrapped chromium does not read flags.conf.
       # "chromium-flags.conf".text = "--enable-features=UseOzonePlatform\n--ozone-platform=wayland\n--enable-webrtc-pipewire-capturer=enabled\n--gtk-version=4";
       # "zathura/zathurarc".text = "set selection-clipboard clipboard";
+    };
+  };
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.adwaita-icon-theme;
+      name = "adwaita-icon-theme";
     };
   };
 
