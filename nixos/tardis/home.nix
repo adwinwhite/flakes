@@ -133,6 +133,13 @@ in
   };
 
   services = {
+    mako = {
+      enable = true;
+      settings = {
+        default-timeout = 15;
+      };
+    };
+    network-manager-applet.enable = true;
     swayidle = {
       enable = true;
       events = [
