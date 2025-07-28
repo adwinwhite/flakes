@@ -20,7 +20,7 @@ output "eDP-1" {
     position x=0 y=0
 }
 
-output "DP-2" {
+output "DP-1" {
     scale 2.0
     position x=0 y=-720
 }
