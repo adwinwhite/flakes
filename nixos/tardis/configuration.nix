@@ -201,7 +201,8 @@
     };
     settings = {
       substituters = pkgs.lib.mkBefore [
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39"
+        # bad gate way now
+        # "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=39"
         "https://mirrors.ustc.edu.cn/nix-channels/store?priority=39"
         "https://nix-community.cachix.org"
       ];
