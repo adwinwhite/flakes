@@ -7,6 +7,7 @@ local mykeys = {
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 	{ key = "f", mods = "CTRL|SHIFT", action = act.Search({ Regex = "" }) },
 	{ key = "r", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
+	{ key = "k", mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = true }) },
 	{ key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
 	{ key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
 }

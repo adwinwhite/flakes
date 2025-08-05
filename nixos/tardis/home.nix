@@ -287,11 +287,12 @@ in
         diff = {
           tool = "delta";
         };
+        include = {
+          path = "/home/adwin/flakes/nixos/tardis/themes.gitconfig";
+        };
         delta = {
-          navigate = true;
+          features = "weeping-willow";
           dark = true;
-          minus-style = "normal \"#423200\"";
-          plus-style = "syntax \"#330022\"";
         };
         merge = {
           conflictStyle = "zdiff3";
