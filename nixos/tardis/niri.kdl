@@ -25,6 +25,11 @@ output "DP-1" {
     position x=0 y=-720
 }
 
+output "DP-2" {
+    scale 2.0
+    position x=0 y=-720
+}
+
 layout {
     gaps 6
     default-column-width { proportion 1.0; }
