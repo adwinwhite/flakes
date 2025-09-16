@@ -31,6 +31,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    just
+    bluetuith
     nautilus
     networkmanagerapplet
     brightnessctl
