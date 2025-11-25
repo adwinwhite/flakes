@@ -31,6 +31,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    inotify-tools
+    markdown-oxide
     just
     bluetuith
     nautilus
@@ -218,7 +220,7 @@ in
           hostname = "ssh.github.com";
           port = 443;
           user = "git";
-          identityFile = "~/.ssh/id_rsa";
+          identityFile = "~/.ssh/2025";
           extraOptions = {
             AddKeysToAgent = "yes";
           };

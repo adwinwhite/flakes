@@ -154,14 +154,15 @@ cmp.setup({
 			behavior = cmp.ConfirmBehavior.Replace,
 		}),
 		["<Tab>"] = vim.schedule_wrap(function(fallback)
-			if cmp.visible() and has_words_before() then
+			-- if cmp.visible() and has_words_before() then
+			if cmp.visible() then
 				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 			else
 				fallback()
 			end
 		end),
 		["<S-Tab>"] = vim.schedule_wrap(function(fallback)
-			if cmp.visible() and has_words_before() then
+			if cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 			else
 				fallback()
@@ -170,7 +171,13 @@ cmp.setup({
 	},
 	sources = cmp.config.sources({
 		{ name = "copilot" },
-		{ name = "nvim_lsp" },
+		{ name = "nvim_lsp",
+			option = {
+				markdown_oxide = {
+					keyword_pattern = [[\(\k\| \|\/\|#\)\+]]
+				}
+			}
+		},
 		-- { name = "vsnip" }, -- For vsnip users.
 		{ name = "luasnip" }, -- For luasnip users.
 		-- { name = 'ultisnips' }, -- For ultisnips users.
@@ -256,14 +263,22 @@ g.NERDSpaceDelims = 1
 -- Enable trimming of trailing whitespace when uncommenting
 g.NERDTrimTrailingWhitespace = 1
 -- Telescope
-vim.keymap.set("n", "<C-f>", ":lua require'telescope.builtin'.live_grep()<cr>")
-vim.keymap.set("n", "<C-b>", ":lua require'telescope.builtin'.buffers()<cr>")
-vim.keymap.set("n", "<C-p>", ":lua require'telescope.builtin'.builtin()<cr>")
-vim.keymap.set("n", "<C-d>", ":lua require'telescope.builtin'.lsp_definitions { jump_type = \"never\" }<cr>")
-vim.keymap.set("n", "<leader>fr", ":lua require'telescope.builtin'.lsp_references()<cr>")
-vim.keymap.set("n", "<leader>ic", ":lua require'telescope.builtin'.lsp_incoming_calls()<cr>")
-vim.keymap.set("n", "<leader>oc", ":lua require'telescope.builtin'.lsp_outgoing_calls()<cr>")
-vim.keymap.set("n", "<leader>el", ":lua require'telescope.builtin'.diagnostics { bufnr = 0 }<cr>")
+local telescope_builtin = require('telescope.builtin')
+vim.keymap.set("n", "<C-f>", telescope_builtin.live_grep, {})
+vim.keymap.set("n", "<C-b>", function ()
+	telescope_builtin.buffers({ path_display = { "truncate" } })
+end, {})
+vim.keymap.set("n", "<C-p>", telescope_builtin.builtin, {})
+vim.keymap.set("n", "<C-d>", function() 
+	telescope_builtin.lsp_definitions({ jump_type = "never" })
+end, {})
+vim.keymap.set("n", "<C-e>", telescope_builtin.find_files, {})
+vim.keymap.set("n", "<leader>fr", telescope_builtin.lsp_references, {})
+vim.keymap.set("n", "<leader>ic", telescope_builtin.lsp_incoming_calls, {})
+vim.keymap.set("n", "<leader>oc", telescope_builtin.lsp_outgoing_calls, {})
+vim.keymap.set("n", "<leader>el", function()
+	telescope_builtin.diagnostics({ bufnr = 0 })
+end, {})
 
 -- Formatter
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
@@ -344,11 +359,66 @@ capabilities.textDocument.foldingRange = {
 }
 local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
 for _, ls in ipairs(language_servers) do
-	require("lspconfig")[ls].setup({
-		capabilities = capabilities,
-		-- you can add other fields for setting up lsp server in this table
-	})
+	if ls ~= "markdown_oxide" then
+		require("lspconfig")[ls].setup({
+			capabilities = capabilities,
+			-- you can add other fields for setting up lsp server in this table
+		})
+	end
 end
+
+local markdown_capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+require("lspconfig").markdown_oxide.setup({
+    -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
+    -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+    capabilities = vim.tbl_deep_extend(
+        'force',
+        markdown_capabilities,
+        {
+            workspace = {
+                didChangeWatchedFiles = {
+                    dynamicRegistration = true,
+                },
+            },
+        }
+    ),
+    on_attach = function () 
+			local function check_codelens_support()
+			local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+			for _, c in ipairs(clients) do
+				if c.server_capabilities.codeLensProvider then
+					return true
+				end
+				if c.name == "markdown_oxide" then
+					vim.api.nvim_create_user_command(
+						"Daily",
+						function(args)
+							local input = args.args
+
+							vim.lsp.buf.execute_command({command="jump", arguments={input}})
+
+						end,
+						{desc = 'Open daily note', nargs = "*"}
+					)
+				end
+			end
+			return false
+			end
+
+			vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach', 'BufEnter' }, {
+			buffer = bufnr,
+			callback = function ()
+				if check_codelens_support() then
+					vim.lsp.codelens.refresh({bufnr = 0})
+				end
+			end
+			})
+			-- trigger codelens refresh
+			vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+		end
+})
+
 require("ufo").setup()
 
 require("nvim-treesitter.configs").setup({

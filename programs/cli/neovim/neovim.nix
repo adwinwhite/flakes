@@ -11,6 +11,7 @@
     nodejs
   ];
   plugins = with pkgs.vimPlugins; [
+    lspsaga-nvim
     neoconf-nvim
     lspkind-nvim
     copilot-lua
