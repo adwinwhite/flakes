@@ -24,7 +24,6 @@ local g = vim.g
 g.tex_flavor = "latex"
 
 -- Put your favorite colorscheme here
-g.colors_name = "onedark"
 set.termguicolors = true
 
 -- Fold
@@ -555,10 +554,15 @@ vim.opt.listchars = {
 }
 require("ibl").setup()
 require("which-key").setup({})
-require("onedark").load()
+require('bamboo').setup({
+	style = 'light',
+	toggle_style_key = "<leader>ts", -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+	toggle_style_list = { 'vulgaris', 'multiplex', 'light' },
+})
+require("bamboo").load()
 require("lualine").setup({
 	options = {
-		theme = "onedark",
+		theme = "bamboo",
 	},
 	sections = {
 		lualine_a = { "mode" },

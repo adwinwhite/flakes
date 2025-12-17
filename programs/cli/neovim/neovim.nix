@@ -62,7 +62,7 @@
     vim-sleuth
     vimtex
     which-key-nvim
-    onedark-nvim
+    bamboo-nvim
     rustaceanvim
   ];
 }

@@ -33,6 +33,7 @@
       devShells.default = pkgs.mkShell {
         buildInputs = [];
       };
+      devShells.rust = (import ./devShells/rust.nix) pkgs;
     }
     )
   // {

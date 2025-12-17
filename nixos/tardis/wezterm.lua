@@ -30,11 +30,35 @@ for i = 1, 9 do
 	})
 end
 
+local light_color_scheme = "Bamboo Light"
+local dark_color_scheme = "Afterglow"
+
+-- Toggle between light/dark themes
+table.insert(mykeys, {
+	key = "l",
+	mods = "CTRL|SHIFT",
+	action = wezterm.action_callback(function(window, pane)
+		local overrides = window:get_config_overrides() or {}
+
+		if not overrides.color_scheme then
+			overrides.color_scheme = light_color_scheme
+		else
+			if overrides.color_scheme == light_color_scheme then
+				overrides.color_scheme = dark_color_scheme -- Dark scheme
+			else
+				overrides.color_scheme = light_color_scheme -- Light scheme
+			end
+		end
+
+		window:set_config_overrides(overrides)
+	end),
+})
+
 return {
 	check_for_updates = false,
 	enable_wayland = true,
 	enable_scroll_bar = false,
-	color_scheme = "Afterglow",
+	color_scheme = light_color_scheme,
 	window_padding = {
 		left = 0,
 		right = "1px",
