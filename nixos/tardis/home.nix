@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    rustup
     inotify-tools
     markdown-oxide
     just
