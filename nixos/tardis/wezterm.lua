@@ -10,6 +10,8 @@ local mykeys = {
 	{ key = "k", mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = true }) },
 	{ key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
 	{ key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
+  { key = '{', mods = 'SHIFT|ALT', action = act.MoveTabRelative(-1) },
+  { key = '}', mods = 'SHIFT|ALT', action = act.MoveTabRelative(1) },
 }
 
 for i = 1, 9 do

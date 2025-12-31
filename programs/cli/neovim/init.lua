@@ -264,6 +264,9 @@ g.NERDTrimTrailingWhitespace = 1
 -- Telescope
 local telescope_builtin = require('telescope.builtin')
 vim.keymap.set("n", "<C-f>", telescope_builtin.live_grep, {})
+vim.keymap.set("n", "<leader>fo", function() 
+	telescope_builtin.live_grep({grep_open_files=true})
+end, {})
 vim.keymap.set("n", "<C-b>", function ()
 	telescope_builtin.buffers({ path_display = { "truncate" } })
 end, {})

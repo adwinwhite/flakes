@@ -6,6 +6,9 @@ pkgs: let
     in
 pkgs.mkShell {
   buildInputs = with pkgs; [
+    pkg-config
+    alsa-lib
+    openssl
     mold
     clang
     # Replace llvmPackages with llvmPackages_X, where X is the latest LLVM version (at the time of writing, 16)

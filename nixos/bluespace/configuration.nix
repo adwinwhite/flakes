@@ -353,7 +353,7 @@
       openDefaultPorts = true;
       devices = {
         "MI10" = { id = "QSR37KC-3TAUX2H-H7X4YVI-VBQR4VT-WXEGXYK-6AR2PZI-XGHL3W6-ASGNQAO"; };
-        "Tardis" = { id = "CETAQ3H-PQQTRPB-KO37QXB-GLGXLR7-OP5CDYU-D2TUFM2-3TZWWOI-YHIZZAK"; };
+        "Tardis" = { id = "XBQWM3D-QIIXUQ3-3EHPIRK-MOGGBP2-GVTDFQE-CSFQMLZ-TSPH6P2-FJFHNQH"; };
       };
       folders = {
         "flakes" = {        # Name of folder in Syncthing, also the folder ID
