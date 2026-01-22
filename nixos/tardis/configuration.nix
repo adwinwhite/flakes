@@ -160,6 +160,7 @@
       py3 = let
         python-with-my-packages = super.python3.withPackages (p: with p; [
           pandas
+          openpyxl
           requests
           numpy
           matplotlib

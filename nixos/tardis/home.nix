@@ -31,6 +31,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    distrobox
     rustup
     inotify-tools
     markdown-oxide
@@ -325,6 +326,7 @@ in
         alias ll="eza -1la"
         alias lg="lazygit"
         alias done="notify-send 'command is done'"
+        alias vin="set -lx NVIM_NO_RA 1; vi"
         bind -e \cl
         eval (direnv hook fish)
       '';

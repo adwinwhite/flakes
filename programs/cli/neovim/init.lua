@@ -99,6 +99,8 @@ vim.keymap.set("n", "<Leader>en", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>eN", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<Leader>ef", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
+vim.keymap.set("n", "<Leader>bn", "<cmd>bn<CR>")
+vim.keymap.set("n", "<Leader>bp", "<cmd>bp<CR>")
 
 -- Completion by nvim-cmp
 set.completeopt = "menu,menuone,noselect"
@@ -263,7 +265,9 @@ g.NERDSpaceDelims = 1
 g.NERDTrimTrailingWhitespace = 1
 -- Telescope
 local telescope_builtin = require('telescope.builtin')
-vim.keymap.set("n", "<C-f>", telescope_builtin.live_grep, {})
+vim.keymap.set("n", "<C-f>", function()
+	telescope_builtin.grep_string{ only_sort_text = true, search = vim.fn.input("Grep For >") }
+end, {})
 vim.keymap.set("n", "<leader>fo", function() 
 	telescope_builtin.live_grep({grep_open_files=true})
 end, {})
