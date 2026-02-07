@@ -39,7 +39,25 @@
     nixosConfigurations.bluespace = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [ 
-        ./configuration.nix
+        ./nixos/bluespace/configuration.nix
+        inputs.home-manager.nixosModules.home-manager
+        {
+          nixpkgs.overlays = [
+            inputs.neovim.overlay
+            inputs.nixpkgs-wayland.overlay
+            inputs.v2t.overlay
+            inputs.rust-overlay.overlay
+          ];
+          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+          nix.registry.p.flake = self;
+        }
+      ];
+      specialArgs = { inherit nixpkgs inputs; };
+    };
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [ 
+        ./nixos/vm/configuration.nix
         inputs.home-manager.nixosModules.home-manager
         {
           nixpkgs.overlays = [
