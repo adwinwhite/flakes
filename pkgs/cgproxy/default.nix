@@ -17,10 +17,13 @@ stdenv.mkDerivation {
   buildInputs = [ 
     nlohmann_json
     libbpf
-    clang
-    cmake
     libelf
     zlib
+  ];
+
+  nativeBuildInputs = [
+    clang
+    cmake
   ];
 
   configurePhase = ''
