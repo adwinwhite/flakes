@@ -1,6 +1,7 @@
 pkgs: let 
   overrides = { toolchain = { channel = "nightly"; }; };
   libPath = with pkgs; lib.makeLibraryPath [
+    openssl
     # load external libraries that you need in your rust project here
   ];
     in
@@ -16,6 +17,57 @@ pkgs.mkShell {
     rustup
     cmake
     fontconfig
+    systemdLibs
+    glib
+    dbus
+    libepoxy
+    nettle
+    ffmpeg-headless
+    xorg.libX11
+    fuse
+    fuse3
+    zstd
+    chafa
+    mpich
+    kdePackages.wayland
+    zfs
+    zfs.dev
+    libgpg-error
+    cyrus_sasl
+    protobuf
+    nasm
+    gpgme
+    gst_all_1.gstreamer
+    cairo
+    python3
+    llvmPackages_18.libllvm
+    gtk3
+    libpq
+    libxkbcommon
+    gdk-pixbuf
+    libmysqlclient
+    mate.mate-settings-daemon
+    capnproto
+    speechd-minimal
+    libjack2
+    webkitgtk_4_1
+    gnum4
+    libsoup_3
+    openssl
+    pcsclite.lib
+    pcsclite.dev
+    libelf
+    libbpf
+    cyrus_sasl
+    graphene.dev
+    gtk4.dev
+    xorg.libXtst
+    zfs.dev
+    libxml2.dev
+    wxGTK31
+    libadwaita.dev
+    libadwaita
+    curl.dev
   ];
   RUSTC_VERSION = overrides.toolchain.channel;
   # https://github.com/rust-lang/rust-bindgen#environment-variables
@@ -28,6 +80,9 @@ pkgs.mkShell {
   RUSTFLAGS = (builtins.map (a: ''-L ${a}/lib'') [
     # add libraries here (e.g. pkgs.libvmi)
   ]);
+  LLVM_SYS_181_PREFIX = pkgs.llvmPackages_18.libllvm;
+  # K8S_OPENAPI_ENABLED_VERSION = "1.50";
+  PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1";
   LD_LIBRARY_PATH = libPath;
   # Add glibc, clang, glib, and other headers to bindgen search path
   BINDGEN_EXTRA_CLANG_ARGS =

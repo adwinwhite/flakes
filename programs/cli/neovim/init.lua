@@ -316,7 +316,7 @@ nvim_lsp.racket_langserver.setup({
 })
 nvim_lsp.fortls.setup({})
 nvim_lsp.buf_ls.setup({})
-nvim_lsp.pyright.setup({})
+nvim_lsp.basedpyright.setup({})
 nvim_lsp.nixd.setup{}
 nvim_lsp.gopls.setup({})
 -- nvim_lsp.rust_analyzer.setup({})
@@ -584,17 +584,19 @@ require("lualine").setup({
 	},
 })
 
-require("copilot").setup({
-	suggestion = { enabled = false },
-	panel = { enabled = false },
-	server_opts_overrides = {
-		settings = {
-			advanced = {
-				inlineSuggestCount = 3, -- #completions for getCompletions
-			},
-		},
-	},
-})
+-- disable the notification for now.
+-- require("copilot").setup({
+	-- suggestion = { enabled = false },
+	-- panel = { enabled = false },
+	-- server_opts_overrides = {
+		-- settings = {
+			-- advanced = {
+				-- inlineSuggestCount = 3, -- #completions for getCompletions
+			-- },
+		-- },
+	-- },
+	-- disable_limit_reached_message = true,
+-- })
 
 require("copilot_cmp").setup()
 

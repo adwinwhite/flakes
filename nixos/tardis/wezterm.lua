@@ -1,6 +1,14 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
+-- walkaround for clipboard issue: https://github.com/wezterm/wezterm/issues/6685
+wezterm.on(
+	'window-focus-changed',
+	function(window, pane)
+		wezterm.run_child_process { 'sh', '-c', 'wl-paste -n | wl-copy' }
+	end
+)
+
 local mykeys = {
 	{ key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab("CurrentPaneDomain") },
 	{ key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },

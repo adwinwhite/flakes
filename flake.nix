@@ -34,6 +34,8 @@
         buildInputs = [];
       };
       devShells.rust = (import ./devShells/rust.nix) pkgs;
+      devShells.spurious = (import ./devShells/spurious.nix) pkgs;
+      devShells.python = (import ./devShells/python.nix) pkgs;
     }
     )
   // {

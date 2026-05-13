@@ -31,6 +31,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    jujutsu
+    ast-grep
     distrobox
     rustup
     inotify-tools
@@ -291,7 +293,7 @@ in
           diffFilter = "delta --color-only";
         };
         diff = {
-          tool = "delta";
+          tool = "nvimdiff";
         };
         include = {
           path = "/home/adwin/flakes/nixos/tardis/themes.gitconfig";
@@ -322,6 +324,7 @@ in
         bind -M insert \cf forward-char
         bind -M insert \cg forward-word
 	set -g -x EDITOR nvim
+        alias jc="jj"
         alias ls="eza"
         alias ll="eza -1la"
         alias lg="lazygit"

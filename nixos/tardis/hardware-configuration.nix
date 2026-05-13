@@ -33,7 +33,7 @@
   fileSystems."/getea" =
     { device = "/dev/disk/by-uuid/ac8fd036-2dc5-4ed4-83b1-56aecb478522";
       fsType = "btrfs";
-      options = [ "compress=zstd" ];
+      options = [ "compress=zstd,nofail,x-systemd.automount,x-systemd.idle-timeout=60" ];
     };
 
   swapDevices =

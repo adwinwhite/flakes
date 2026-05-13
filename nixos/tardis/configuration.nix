@@ -159,6 +159,7 @@
     (self: super: {
       py3 = let
         python-with-my-packages = super.python3.withPackages (p: with p; [
+          toml
           pandas
           openpyxl
           requests
@@ -237,6 +238,7 @@
       enable = true;
       dns = "none";
       unmanaged = [ "interface-name:ve-*" ];
+      wifi.powersave = false;
     };
     # Need to be a external address so that it will be forwarded to v2ray by cgproxy.
     nameservers = [

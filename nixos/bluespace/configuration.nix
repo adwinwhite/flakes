@@ -112,12 +112,25 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVot4JY8t81DTWEe3St37AAY1htXmHsQb7K0NVtz5pU adwinw01@gmail.com"
     ];
   };
+  users.users.blue = {
+    isNormalUser = true;
+    initialHashedPassword = "$6$IJuzB39ajEELQigc$BurZefRiK/Sehk9UQDdVOljc7ccmKQ9iHxcNdU7klUP4ECwWQKKccX7H7ArlJ8Lov.rmwtNg3H3DGBNSnd95A0";
+    home = "/home/blue";
+    # extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    linger = true;
+    shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCXwWJH+vsxzntGdP0Cn4piSp1Tocg98YIrvzQIaHbL9wW/1Jj5w9bOYtFP5XbWQSQjbHqH04ISB6boV08Pb41Fs3iCwVXMdUa6qkRh9z0UmXq74Vp58AJ3ONQFOQM/IYkbMFVWE1TjbrXlA/dpPhXKBdCj2ZA7gParqXEfk6KAVNKnFED02YvqoVotOzcfH9nlsMzMRVpfm6he0aP04RZE/Bs/UXzuQXZEwnOBYpuDSLW+CQcoxGhEKgTxgDnfdLNqYyp6rVHWy0+b46fbx1JVU02xMH8YplrIC/b/ysBVboCPf79gZPnw7jQNf+EX9sAm2bNuje1DSSGqivpLe199 adwin@Tardis" 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVot4JY8t81DTWEe3St37AAY1htXmHsQb7K0NVtz5pU adwinw01@gmail.com"
+    ];
+  };
 
   # Enable home manager
   home-manager = {
    useGlobalPkgs = true;
    useUserPackages = true;
    users.adwin = import ./home.nix;
+   users.blue = import ./home-blue.nix;
   };
    
 
@@ -175,6 +188,7 @@
     enablePop3 = true;
     enableImapSsl = true;
     enablePop3Ssl = true;
+    stateVersion = 1;
   };
 
   # Enable the OpenSSH daemon.
