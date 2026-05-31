@@ -1,5 +1,7 @@
 { pkgs } : {
   enable = true;
+  withPython3 = true;
+  withRuby = true;
   vimAlias = true;
   viAlias = true;
   extraConfig = builtins.concatStringsSep "\n" [

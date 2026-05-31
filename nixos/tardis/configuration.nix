@@ -82,12 +82,11 @@
       type = "fcitx5";
       fcitx5 = {
         addons = with pkgs; [
-          fcitx5-chinese-addons
+          qt6Packages.fcitx5-chinese-addons
           fcitx5-pinyin-zhwiki
           fcitx5-pinyin-moegirl
         ];
         waylandFrontend = true;
-        plasma6Support = true;
       };
     };
   };
@@ -104,7 +103,7 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       source-han-sans
       source-han-serif
       nerd-fonts.fira-code
@@ -181,7 +180,7 @@
           ln -s ${python-with-my-packages}/bin/python $out/bin/py3
         '';
       }) 
-    (import ../../overlays/niri/overlay.nix)
+    # (import ../../overlays/niri/overlay.nix)
   ];
 
   # Enable flakes and gc
@@ -252,7 +251,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
           user = "greeter";
         };
       };
@@ -261,7 +260,6 @@
     udev = {
       enable = true;
       packages = [
-        pkgs.android-udev-rules
       ];
       extraRules = ''
         SUBSYSTEM=="misc", KERNEL=="uinput", MODE="0660", GROUP="uinput"

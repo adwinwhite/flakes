@@ -36,6 +36,12 @@
       options = [ "compress=zstd,nofail,x-systemd.automount,x-systemd.idle-timeout=60" ];
     };
 
+  # fileSystems."/etc/NetworkManager/system-connections".fsType = "auto";
+  # fileSystems."/home".fsType = "auto";
+  # fileSystems."/root".fsType = "auto";
+  # fileSystems."/var".fsType = "auto";
+  # fileSystems."/lost+found".fsType = "auto";
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/daf9166d-eda8-4130-a859-d28b171bf8d8"; }
     ];

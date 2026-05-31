@@ -124,7 +124,7 @@ in
     fd              # find in rust
     rage            # age in rust
     sops
-    tdesktop
+    telegram-desktop
   ];
 
   xdg = {
