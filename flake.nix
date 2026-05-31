@@ -3,6 +3,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     impermanence.url = "github:nix-community/impermanence";
+    daeuniverse = {
+      url = "github:daeuniverse/flake.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
@@ -171,10 +175,15 @@
           }
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
+          inputs.daeuniverse.nixosModules.dae
+          inputs.daeuniverse.nixosModules.daed
           {
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.os.flake = self;
             nix.registry.nixpkgs.flake = nixpkgs;
+          }
+          {
+            services.dae.package = inputs.daeuniverse.packages.x86_64-linux.dae-unstable;
           }
         ];
       };
