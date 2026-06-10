@@ -269,10 +269,21 @@ in
     lazygit = {
       enable = true;
       settings = {
-        git.paging = {
-          colorArg = "always";
-          pager = "delta --light --paging=never";
-        };
+        git.pagers = [
+          {
+            colorArg = "always";
+            pager = "delta --light --paging=never";
+          }
+        ];
+        customCommands = [
+          {
+            key = "V";
+            context = "commitFiles";
+            description = "View whole historical file in less";
+            command = "git show {{.SelectedCommit.Hash}}:{{.SelectedCommitFile.Name}} | vi";
+            output = "terminal";
+          }
+        ];
       };
     };
     git = {

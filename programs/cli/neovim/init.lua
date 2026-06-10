@@ -393,13 +393,35 @@ nvim_lsp("markdown_oxide", {
         }
     ),
     on_attach = function () 
-			local function check_codelens_support()
-			local clients = vim.lsp.get_active_clients({ bufnr = 0 })
-			for _, c in ipairs(clients) do
-				if c.server_capabilities.codeLensProvider then
-					return true
+			local function codelens_supported(bufnr)
+				for _, c in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+					if c.server_capabilities and c.server_capabilities.codeLensProvider then
+						return true
+					end
 				end
-				if c.name == "markdown_oxide" then
+				return false
+			end
+
+			vim.api.nvim_create_autocmd(
+				{ 'TextChanged', 'InsertLeave', 'CursorHold', 'BufEnter' },
+				{
+					buffer = bufnr,
+					callback = function()
+						if codelens_supported(bufnr) then
+							vim.lsp.codelens.refresh({ bufnr = bufnr })
+						end
+					end,
+				}
+			)
+
+			if codelens_supported(bufnr) then
+				vim.lsp.codelens.refresh({ bufnr = bufnr })
+			end
+			-- setup Markdown Oxide daily note commands
+			local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+      for _, client in ipairs(clients) do
+				if client.name == "markdown_oxide" then
+
 					vim.api.nvim_create_user_command(
 						"Daily",
 						function(args)
@@ -412,19 +434,6 @@ nvim_lsp("markdown_oxide", {
 					)
 				end
 			end
-			return false
-			end
-
-			vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach', 'BufEnter' }, {
-			buffer = bufnr,
-			callback = function ()
-				if check_codelens_support() then
-					vim.lsp.codelens.refresh({bufnr = 0})
-				end
-			end
-			})
-			-- trigger codelens refresh
-			vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
 		end
 })
 
