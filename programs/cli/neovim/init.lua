@@ -285,6 +285,11 @@ vim.keymap.set("n", "<leader>oc", telescope_builtin.lsp_outgoing_calls, {})
 vim.keymap.set("n", "<leader>el", function()
 	telescope_builtin.diagnostics({ bufnr = 0 })
 end, {})
+vim.keymap.set('n', '<leader>fw', function()
+	local word = vim.fn.expand('<cword>') -- Get current word
+	telescope_builtin.grep_string{ only_sort_text = true, search = word }
+end, {})
+
 
 -- Formatter
 vim.keymap.set("n", "<leader><Space>f", ":Format<CR>")
