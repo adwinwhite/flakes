@@ -8,10 +8,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # mailserver = {
+      # url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
+      # inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -125,7 +125,7 @@
           ./nixos/bluespace/configuration.nix
           inputs.sops-nix.nixosModules.sops
           inputs.home-manager.nixosModules.home-manager
-          inputs.mailserver.nixosModules.mailserver
+          # inputs.mailserver.nixosModules.mailserver
           {
             nixpkgs.overlays = [
               (import ./overlays/misc.nix)

@@ -46,7 +46,7 @@
       ];
       builders-use-substitutes = true;
       auto-optimise-store = true;
-      trusted-users = [ "root" "adwin" ];
+      trusted-users = [ "root" "adwin" "agent" ];
       trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
     };
   };
@@ -124,6 +124,18 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVot4JY8t81DTWEe3St37AAY1htXmHsQb7K0NVtz5pU adwinw01@gmail.com"
     ];
   };
+  users.users.agent = {
+    isNormalUser = true;
+    initialHashedPassword = "$6$IJuzB39ajEELQigc$BurZefRiK/Sehk9UQDdVOljc7ccmKQ9iHxcNdU7klUP4ECwWQKKccX7H7ArlJ8Lov.rmwtNg3H3DGBNSnd95A0";
+    home = "/home/agent";
+    # extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    linger = true;
+    shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCXwWJH+vsxzntGdP0Cn4piSp1Tocg98YIrvzQIaHbL9wW/1Jj5w9bOYtFP5XbWQSQjbHqH04ISB6boV08Pb41Fs3iCwVXMdUa6qkRh9z0UmXq74Vp58AJ3ONQFOQM/IYkbMFVWE1TjbrXlA/dpPhXKBdCj2ZA7gParqXEfk6KAVNKnFED02YvqoVotOzcfH9nlsMzMRVpfm6he0aP04RZE/Bs/UXzuQXZEwnOBYpuDSLW+CQcoxGhEKgTxgDnfdLNqYyp6rVHWy0+b46fbx1JVU02xMH8YplrIC/b/ysBVboCPf79gZPnw7jQNf+EX9sAm2bNuje1DSSGqivpLe199 adwin@Tardis" 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVot4JY8t81DTWEe3St37AAY1htXmHsQb7K0NVtz5pU adwinw01@gmail.com"
+    ];
+  };
 
   # Enable home manager
   home-manager = {
@@ -131,6 +143,7 @@
    useUserPackages = true;
    users.adwin = import ./home.nix;
    users.blue = import ./home-blue.nix;
+   users.agent = import ./home-agent.nix;
   };
    
 
@@ -146,50 +159,50 @@
 
   programs.fish.enable = true;
 
-  mailserver = {
-    enable = true;
-    fqdn = "mail.adwin.win";
-    domains = [ "adwin.win" ];
+  # mailserver = {
+    # enable = true;
+    # fqdn = "mail.adwin.win";
+    # domains = [ "adwin.win" ];
 
-    loginAccounts = {
-      "i@adwin.win" = {
-        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/i".path;
-        aliases = [ "adwin@adwin.win" ];
-        quota = "2G";
-      };
-      "bluespace@adwin.win" = {
-        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/bluespace".path;
-        quota = "2G";
-      };
-      "1@adwin.win" = {
-        hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/1".path;
-        quota = "2G";
-      };
-      "yjyzlib@adwin.win" = {
-        hashedPassword = "$2b$05$bq6w.Gsi3.T2603ZfLw/8usws6C/bvs48hIK5JpgmWCG25acVneFm";
-        quota = "512M";
-      };
-    };
-
-    indexDir = "/var/lib/dovecot/indices";
-    fullTextSearch.enable = false;
-    # forwards = {
-      # "i@adwin.win" = "adwinw01@gmail.com";
+    # loginAccounts = {
+      # "i@adwin.win" = {
+        # hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/i".path;
+        # aliases = [ "adwin@adwin.win" ];
+        # quota = "2G";
+      # };
+      # "bluespace@adwin.win" = {
+        # hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/bluespace".path;
+        # quota = "2G";
+      # };
+      # "1@adwin.win" = {
+        # hashedPasswordFile = config.sops.secrets."mail_hashed_passwords/1".path;
+        # quota = "2G";
+      # };
+      # "yjyzlib@adwin.win" = {
+        # hashedPassword = "$2b$05$bq6w.Gsi3.T2603ZfLw/8usws6C/bvs48hIK5JpgmWCG25acVneFm";
+        # quota = "512M";
+      # };
     # };
-    useFsLayout = true;
-    hierarchySeparator = "/";
 
-    certificateScheme = "manual";
-    certificateFile = "/root/acme/certs/mail.adwin.win.crt";
-    keyFile = "/root/acme/private/mail.adwin.win.key";
+    # indexDir = "/var/lib/dovecot/indices";
+    # fullTextSearch.enable = false;
+    # # forwards = {
+      # # "i@adwin.win" = "adwinw01@gmail.com";
+    # # };
+    # useFsLayout = true;
+    # hierarchySeparator = "/";
 
-    # Enable IMAP and POP3
-    enableImap = true;
-    enablePop3 = true;
-    enableImapSsl = true;
-    enablePop3Ssl = true;
-    stateVersion = 1;
-  };
+    # certificateScheme = "manual";
+    # certificateFile = "/root/acme/certs/mail.adwin.win.crt";
+    # keyFile = "/root/acme/private/mail.adwin.win.key";
+
+    # # Enable IMAP and POP3
+    # enableImap = true;
+    # enablePop3 = true;
+    # enableImapSsl = true;
+    # enablePop3Ssl = true;
+    # stateVersion = 1;
+  # };
 
   # Enable the OpenSSH daemon.
   services = {
@@ -423,7 +436,8 @@
       ];
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme --watch --post-hook \"systemctl reload-or-restart dovecot2 postfix\"";
+        ExecStart = "${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme --watch";
+        # ExecStart = "${pkgs.traefik-certs-dumper}/bin/traefik-certs-dumper file --version v2 --source ${config.services.traefik.dataDir + "/acme.json"} --dest /root/acme --watch --post-hook \"systemctl reload-or-restart dovecot2 postfix\"";
       };
     };
   };

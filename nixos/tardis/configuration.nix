@@ -247,6 +247,7 @@
 
 
   services = {
+    tailscale.enable = true;
     greetd = {
       enable = true;
       settings = {
@@ -266,7 +267,7 @@
       '';
     };
     dae = {
-      enable = true;
+      enable = false;
       configFile = config.sops.secrets."config.dae".path;
     };
     syncthing = {
@@ -384,6 +385,12 @@
     fish.enable = true;
     firejail.enable = true;
     nix-ld.enable = true;
+    clash-verge = {
+      enable = true;
+      serviceMode = true;
+      tunMode = true;
+      autoStart = true;
+    };
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
