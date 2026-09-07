@@ -1,3 +1,4 @@
+
 // NOTE: This is a simple example.
 // Please refer to https://github.com/mbrt/gmailctl#configuration for docs about
 // the config format. Don't forget to change the configuration before to apply it
@@ -24,33 +25,45 @@ local toMe = { to: me };
         and: [
           { from: 'notifications@github.com' },
           { list: 'rust.rust-lang.github.com' },
+          { query: 'header:X-GitHub-Reason:"subscribed"' },
+          { 
+            not: 
+              { query: 'header:X-GitHub-Labels:rollup' },
+          },
           {
             or: [
-              { query: 'header:X-GitHub-Labels:"rollup"' },
-              {
-                not: {
-                  or: [
-                    { query: 'header:X-GitHub-Labels:"T-types"' },
-                    { query: 'header:X-GitHub-Labels:"WG-trait-system-refactor"' },
-                    { query: 'header:X-GitHub-Labels:"-Zassumptions-on-binders"' },
-                    { query: 'header:X-GitHub-Reason:"manual"' },
-                    { query: 'header:X-GitHub-Reason:"assign"' },
-                    { query: 'header:X-GitHub-Reason:"author"' },
-                    { query: 'header:X-GitHub-Reason:"comment"' },
-                    { query: 'header:X-GitHub-Reason:"mention"' },
-                    { query: 'header:X-GitHub-Reason:"review_requested"' },
-                    { query: 'header:X-GitHub-Reason:"team_mention"' },
-                  ],
-                },
-              },
+              { query: 'header:X-GitHub-Labels:"T-types"' },
+              { query: 'header:X-GitHub-Labels:"WG-trait-system-refactor"' },
+              { query: 'header:X-GitHub-Labels:"-Zassumptions-on-binders"' },
             ],
           },
         ],
       },
       actions: {
-        delete: true
+        labels: ['Rust Types'],
+      },
+    },
+    {
+      filter: {
+        and: [
+          { from: 'notifications@github.com' },
+          { list: 'rust.rust-lang.github.com' },
+          {
+            or: [
+              { query: 'header:X-GitHub-Reason:"manual"' },
+              { query: 'header:X-GitHub-Reason:"assign"' },
+              { query: 'header:X-GitHub-Reason:"author"' },
+              { query: 'header:X-GitHub-Reason:"comment"' },
+              { query: 'header:X-GitHub-Reason:"mention"' },
+              { query: 'header:X-GitHub-Reason:"review_requested"' },
+              { query: 'header:X-GitHub-Reason:"team_mention"' },
+            ],
+          },
+        ],
+      },
+      actions: {
+        labels: ['GH Participation'],
       },
     },
   ],
 }
-
