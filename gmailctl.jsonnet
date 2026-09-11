@@ -23,9 +23,7 @@ local toMe = { to: me };
     {
       filter: {
         and: [
-          { from: 'notifications@github.com' },
           { list: 'rust.rust-lang.github.com' },
-          { query: 'header:X-GitHub-Reason:"subscribed"' },
           { 
             not: 
               { query: 'header:X-GitHub-Labels:rollup' },
@@ -46,8 +44,6 @@ local toMe = { to: me };
     {
       filter: {
         and: [
-          { from: 'notifications@github.com' },
-          { list: 'rust.rust-lang.github.com' },
           {
             or: [
               { query: 'header:X-GitHub-Reason:"manual"' },

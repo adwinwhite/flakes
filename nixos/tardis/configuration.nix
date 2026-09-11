@@ -267,7 +267,7 @@
       '';
     };
     dae = {
-      enable = false;
+      enable = true;
       configFile = config.sops.secrets."config.dae".path;
     };
     syncthing = {
@@ -386,7 +386,7 @@
     firejail.enable = true;
     nix-ld.enable = true;
     clash-verge = {
-      enable = true;
+      enable = false;
       serviceMode = true;
       tunMode = true;
       autoStart = true;

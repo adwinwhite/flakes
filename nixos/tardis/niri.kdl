@@ -21,14 +21,14 @@ output "eDP-1" {
     position x=0 y=0
 }
 
-output "DP-1" {
+output "PNP(TFC) TF27S3-UIH0 327EFGA100832" {
     scale 2.0
     position x=0 y=-1080
 }
 
-output "DP-2" {
-    scale 2.0
-    position x=0 y=-1080
+output "PNP(SAC) HDMI Unknown" {
+    scale 1.5
+    position x=0 y=-960
 }
 
 layout {
